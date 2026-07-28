@@ -1,15 +1,3 @@
-Here is the fully updated single-file codebase. I have taken all of your raw data and cleaned up the grammar, spelling, and consistency issues.
-
-More importantly, I updated the JavaScript data structure and CSS to perfectly map to your **4-level hierarchy**:
-
-1. **Tabs** are now your major shifts (e.g., *8:30 (9:30) Preclose*).
-2. **Sections** inside those tabs group the cards by **Zone** (e.g., *Front Counter*, *Dining Room*).
-3. **Cards** represent the **Primary Task** (e.g., *Break down lemonades*).
-4. **Card Faces** now feature a clean, left-aligned bulleted list for the **Sub-tasks** (e.g., *Turn lemonade dispenser off...*). I also added scrollbars to the front of the cards so longer tasks (like the Coffee Pots) fit perfectly without breaking the 3D flip.
-
-Copy and save this into your `.html` file:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +23,7 @@ Copy and save this into your `.html` file:
             --text-muted: #475569;
             --success: #22c55e;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-            --transition-speed: 0.6s;
+            --transition-speed: 0.3s;
         }
 
         * {
@@ -44,7 +32,6 @@ Copy and save this into your `.html` file:
             padding: 0;
         }
 
-        /* Global Font Application */
         body {
             font-family: 'Apercu Regular Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
@@ -62,25 +49,25 @@ Copy and save this into your `.html` file:
         /* Top Bar & Controls */
         header {
             background: var(--card-bg);
-            padding: 1rem 2rem;
+            padding: 1.25rem 2rem;
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.25rem;
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
         .top-controls {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
+            width: 100%;
         }
 
         .am-pm-toggle {
+            grid-column: 2;
             display: flex;
             background: #e2e8f0;
             border-radius: 9999px;
@@ -103,6 +90,11 @@ Copy and save this into your `.html` file:
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        .leader-controls {
+            grid-column: 3;
+            justify-self: end;
+        }
+
         .leader-btn {
             background: #0f172a;
             color: white;
@@ -114,14 +106,13 @@ Copy and save this into your `.html` file:
             transition: background 0.2s;
         }
 
-        .leader-btn:hover {
-            background: #334155;
-        }
+        .leader-btn:hover { background: #334155; }
 
         /* Checklist Navigation Tabs */
         .checklist-nav {
             display: flex;
-            gap: 0.5rem;
+            justify-content: center;
+            gap: 0.75rem;
             overflow-x: auto;
             padding-bottom: 0.5rem;
         }
@@ -129,12 +120,14 @@ Copy and save this into your `.html` file:
         .nav-tab {
             background: #f1f5f9;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.3s ease;
+            color: var(--text-muted);
         }
 
         .nav-tab.active {
@@ -142,7 +135,7 @@ Copy and save this into your `.html` file:
             color: white;
         }
 
-        /* Main Viewport & Momentum/Swing Transition */
+        /* Main Viewport */
         .viewport-container {
             flex: 1;
             padding: 2rem;
@@ -150,43 +143,117 @@ Copy and save this into your `.html` file:
             width: 100%;
             margin: 0 auto;
             position: relative;
-            overflow: hidden;
         }
 
-        .slide-wrapper {
-            display: flex;
-            width: 100%;
-            transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .fade-in {
+            animation: fadeIn var(--transition-speed) ease forwards;
         }
 
-        .checklist-panel {
-            min-width: 100%;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .panel-title {
-            font-size: 1.85rem;
+        /* View 1: Area Selection Grid */
+        .view-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .view-title {
+            font-size: 2rem;
             font-weight: 700;
             color: #0f172a;
         }
 
-        .zone-section {
-            background: rgba(255, 255, 255, 0.5);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            border: 1px solid #e2e8f0;
+        .areas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
 
-        .zone-title {
-            font-size: 1.35rem;
-            font-weight: 600;
+        .area-card {
+            background: var(--card-bg);
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+        }
+
+        .area-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .area-card h3 {
+            font-size: 1.5rem;
             color: var(--primary);
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .area-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            background: #f1f5f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            display: inline-block;
+        }
+
+        /* View 2: Tasks List */
+        .task-view-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .btn-back {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .task-zone-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .task-subtitle-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 1rem;
+            vertical-align: middle;
         }
 
         /* Card Grid */
@@ -199,7 +266,7 @@ Copy and save this into your `.html` file:
         /* 3D Card Flip Mechanics */
         .task-card-container {
             perspective: 1000px;
-            height: 260px; /* Made slightly taller to accommodate sub-lists */
+            height: 260px;
             cursor: pointer;
         }
 
@@ -244,10 +311,9 @@ Copy and save this into your `.html` file:
             background: var(--card-bg);
             border: 2px solid #e2e8f0;
             justify-content: flex-start;
-            overflow-y: auto; /* Allows scrolling if steps are long */
+            overflow-y: auto;
         }
 
-        /* Custom Scrollbar for Card Front */
         .card-front::-webkit-scrollbar { width: 6px; }
         .card-front::-webkit-scrollbar-track { background: transparent; }
         .card-front::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -271,16 +337,13 @@ Copy and save this into your `.html` file:
             gap: 0.4rem;
         }
 
-        .card-front ul li {
-            line-height: 1.35;
-        }
-
         .card-back {
-            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            background: linear-gradient(135deg, var(--success), #16a34a);
             color: white;
             transform: rotateY(180deg);
             justify-content: center;
             align-items: center;
+            border: 2px solid #16a34a;
         }
 
         .stamp {
@@ -311,7 +374,34 @@ Copy and save this into your `.html` file:
             100% { transform: translate(var(--tx), var(--ty)) scale(0.5) rotate(720deg); opacity: 0; }
         }
 
-        /* Leader View Modal */
+        /* Area Submit Button */
+        .submit-section {
+            margin-top: 3rem;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 2px dashed #cbd5e1;
+        }
+
+        .btn-submit-area {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-submit-area:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.5);
+        }
+
+        /* Leader Modal */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -347,8 +437,12 @@ Copy and save this into your `.html` file:
 
         @media (max-width: 768px) {
             header { padding: 1rem; }
+            .top-controls { grid-template-columns: 1fr; gap: 1rem; }
+            .am-pm-toggle { grid-column: 1; justify-self: center; }
+            .leader-controls { grid-column: 1; justify-self: center; }
             .viewport-container { padding: 1rem; }
-            .zone-section { padding: 1rem; }
+            .task-view-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .task-subtitle-badge { margin-left: 0; margin-top: 0.5rem; display: inline-block; }
         }
     </style>
 </head>
@@ -356,21 +450,22 @@ Copy and save this into your `.html` file:
 
     <header>
         <div class="top-controls">
+            <div></div> <!-- Spacer for grid centering -->
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
                 <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
             </div>
-            <button class="leader-btn" onclick="openLeaderView()">Leader Overview</button>
+            <div class="leader-controls">
+                <button class="leader-btn" onclick="openLeaderView()">Leader Overview</button>
+            </div>
         </div>
         <div class="checklist-nav" id="checklistNav">
             <!-- Tabs injected here -->
         </div>
     </header>
 
-    <div class="viewport-container">
-        <div class="slide-wrapper" id="slideWrapper">
-            <!-- Panels injected here -->
-        </div>
+    <div class="viewport-container" id="appViewport">
+        <!-- Dynamic Content Injected Here -->
     </div>
 
     <!-- Leader View PIN Modal -->
@@ -385,14 +480,16 @@ Copy and save this into your `.html` file:
     </div>
 
     <script>
-        // --- 4-Level Data Hierarchy: Shift -> Zone -> Task -> Sub-Tasks ---
+        // --- Restructured Data Hierarchy ---
+        // Preclose categorized into its own Tab, applying subtitles.
         const checklistsData = [
             {
-                id: "8-930",
-                title: "8:00 (9:30) Preclose",
+                id: "preclose",
+                title: "Preclose",
                 zones: [
                     {
                         name: "Dining Room",
+                        subtitle: "Start at 8:00 PM",
                         tasks: [
                             { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways."] },
                             { title: "Flowers", steps: ["Collect flowers and store them in the walk-in."] },
@@ -403,15 +500,10 @@ Copy and save this into your `.html` file:
                             { title: "Return Items", steps: ["Line all clean trays.", "Return trays, table toppers, and unused sauces to the front counter."] },
                             { title: "Sweep", steps: ["Sweep thoroughly, including under all tables, chairs, and booths."] }
                         ]
-                    }
-                ]
-            },
-            {
-                id: "830-930",
-                title: "8:30 (9:30) Preclose",
-                zones: [
+                    },
                     {
                         name: "Front Counter",
+                        subtitle: "Start at 8:30 PM",
                         tasks: [
                             { title: "Break down lemonades", steps: ["Turn lemonade dispenser off.", "Drain lemonade into empty pitchers.", "Remove the lid, metal plunger, container, gaskets, spinners, and drip tray.", "Bring all removed parts to dish."] },
                             { title: "Transfer and clean tea", steps: ["Transfer remaining sweet/unsweet tea to Drive-Thru.", "Dump the remainder into pitchers.", "Remove tea nozzles, throw away liners.", "Bring tea urn, nozzles, and tea drip tray to dish."] },
@@ -422,11 +514,46 @@ Copy and save this into your `.html` file:
                             { title: "Wipe down all counters", steps: ["Spray all white surfaces with blue spray, dry with paper towel.", "Follow up with a sanitizing wipe."] },
                             { title: "Clean POS terminals", steps: ["Wipe down all card readers with a sanitizing wipe.", "Clean all terminals with blue spray, dry with paper towel."] }
                         ]
+                    },
+                    {
+                        name: "Desserts",
+                        subtitle: "Start at 9:30 PM",
+                        tasks: [
+                            { title: "Taylor - Wash Cycle", steps: ["Put one side of Taylor on wash."] },
+                            { title: "Prepare Kay-5 Solution", steps: ["Prepare Kay-5 solution (1 packet to 10 quarts lukewarm water), verify 50-100 ppm."] },
+                            { title: "Dishes & Leftovers", steps: ["Take back machine arm, disassembled shooter, cherry/lemon holder, and all Taylor/shakebase drip trays.", "Save leftover oreo, chocolate syrup, cherries, and lemons in a labeled styrofoam cup.", "Wed/Sat: Bring back disassembled oreo dispenser.", "Sat: Bring back disassembled chocolate syrup dispenser."] },
+                            { title: "Taylor - Exterior", steps: ["Clean the outside of the machine including the spindles."] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out; clean wall behind and to the left, and any mess on the right."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                        ]
+                    },
+                    {
+                        name: "Drinks",
+                        subtitle: "Start at 9:30 PM",
+                        tasks: [
+                            { title: "Break down lemonades", steps: ["Turn off, drain into pitchers, remove parts, bring to dish."] },
+                            { title: "Remaining Dishes", steps: ["Bring back disassembled shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts."] },
+                            { title: "Wipe Counters", steps: ["Wipe down all drinks area counters, tea/coffee brewing area, and team member drink rack with sanitizing wipe."] },
+                            { title: "DT Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels."] },
+                            { title: "Clean FC Coffee Pot", steps: ["Empty pot into dump sink, add clean filter/cleaning tab, run small brew.", "Discard filter/tab, scrub inside with white brush.", "Empty solution, run rinse cycle (no filter/tab), drain rinse water.", "Replace lid, return to station."] },
+                            { title: "Clean DT Coffee Pot", steps: ["Repeat the exact same cleaning process for the DT coffee pot."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                        ]
+                    },
+                    {
+                        name: "Chutes",
+                        subtitle: "Start at 9:30 PM",
+                        tasks: [
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
+                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set aside.", "Empty them and wipe down thoroughly.", "Refill with bags when dry and place them back."] },
+                            { title: "Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe."] }
+                        ]
                     }
                 ]
             },
             {
-                id: "930",
+                id: "close-930",
                 title: "9:30 Close",
                 zones: [
                     {
@@ -496,45 +623,7 @@ Copy and save this into your `.html` file:
                 ]
             },
             {
-                id: "930-1030",
-                title: "9:30 (10:30) Preclose",
-                zones: [
-                    {
-                        name: "Desserts",
-                        tasks: [
-                            { title: "Taylor - Wash Cycle", steps: ["Put one side of Taylor on wash."] },
-                            { title: "Prepare Kay-5 Solution", steps: ["Prepare Kay-5 solution (1 packet to 10 quarts lukewarm water), verify 50-100 ppm."] },
-                            { title: "Dishes & Leftovers", steps: ["Take back machine arm, disassembled shooter, cherry/lemon holder, and all Taylor/shakebase drip trays.", "Save leftover oreo, chocolate syrup, cherries, and lemons in a labeled styrofoam cup.", "Wed/Sat: Bring back disassembled oreo dispenser.", "Sat: Bring back disassembled chocolate syrup dispenser."] },
-                            { title: "Taylor - Exterior", steps: ["Clean the outside of the machine including the spindles."] },
-                            { title: "Wall & Surroundings", steps: ["Pull Taylor out; clean wall behind and to the left, and any mess on the right."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
-                        ]
-                    },
-                    {
-                        name: "Drinks",
-                        tasks: [
-                            { title: "Break down lemonades", steps: ["Turn off, drain into pitchers, remove parts, bring to dish."] },
-                            { title: "Remaining Dishes", steps: ["Bring back disassembled shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts."] },
-                            { title: "Wipe Counters", steps: ["Wipe down all drinks area counters, tea/coffee brewing area, and team member drink rack with sanitizing wipe."] },
-                            { title: "DT Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels."] },
-                            { title: "Clean FC Coffee Pot", steps: ["Empty pot into dump sink, add clean filter/cleaning tab, run small brew.", "Discard filter/tab, scrub inside with white brush.", "Empty solution, run rinse cycle (no filter/tab), drain rinse water.", "Replace lid, return to station."] },
-                            { title: "Clean DT Coffee Pot", steps: ["Repeat the exact same cleaning process for the DT coffee pot."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
-                        ]
-                    },
-                    {
-                        name: "Chutes",
-                        tasks: [
-                            { title: "Fry Bins", steps: ["Bring fry bins back to dish."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
-                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set aside.", "Empty them and wipe down thoroughly.", "Refill with bags when dry and place them back."] },
-                            { title: "Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe."] }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: "1030",
+                id: "close-1030",
                 title: "10:30 Close",
                 zones: [
                     {
@@ -599,86 +688,127 @@ Copy and save this into your `.html` file:
             }
         ];
 
-        let currentAmPm = 'PM'; // Defaulting to PM given the shifts
-        let currentChecklistIndex = 0;
+        // State Management
+        let currentAmPm = 'PM'; 
+        let activeTabIndex = 0; // Index of current shift (0=Preclose, 1=9:30, 2=10:30)
+        let activeZoneIndex = null; // null means we are viewing the Area Menu
+        let completedTasks = new Set(); // Stores specific IDs of completed tasks to persist across navigation
         const LEADER_PIN = "1234";
 
         document.addEventListener("DOMContentLoaded", () => {
-            buildUI();
+            renderTabs();
+            renderApp();
         });
 
-        // --- Render UI mapping to 4-Levels ---
-        function buildUI() {
+        // Setup the top navigation tabs
+        function renderTabs() {
             const navContainer = document.getElementById("checklistNav");
-            const slideWrapper = document.getElementById("slideWrapper");
-            
             navContainer.innerHTML = "";
-            slideWrapper.innerHTML = "";
-
+            
             checklistsData.forEach((shift, index) => {
-                // Build Tab (Level 1)
                 const tab = document.createElement("button");
-                tab.className = `nav-tab ${index === 0 ? 'active' : ''}`;
-                tab.innerText = shift.title.split(' ')[0]; // Use short title for tab (e.g. "8:00")
-                tab.onclick = () => switchToChecklist(index);
+                tab.className = `nav-tab ${index === activeTabIndex ? 'active' : ''}`;
+                tab.innerText = shift.title;
+                tab.onclick = () => {
+                    activeTabIndex = index;
+                    activeZoneIndex = null; // Reset to Area view when changing time
+                    renderTabs();
+                    renderApp();
+                };
                 navContainer.appendChild(tab);
-
-                // Build Shift Panel
-                const panel = document.createElement("div");
-                panel.className = "checklist-panel";
-                
-                let panelHtml = `<h2 class="panel-title">${shift.title} (${currentAmPm})</h2>`;
-
-                // Build Zones (Level 2)
-                shift.zones.forEach((zone, zIndex) => {
-                    panelHtml += `
-                        <div class="zone-section">
-                            <h3 class="zone-title">${zone.name}</h3>
-                            <div class="cards-grid">
-                    `;
-                    
-                    // Build Tasks (Level 3 & 4)
-                    zone.tasks.forEach((task, tIndex) => {
-                        // Generate bullet points from sub-steps array
-                        let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
-                        let cardId = `${shift.id}-${zIndex}-${tIndex}`;
-
-                        panelHtml += `
-                            <div class="task-card-container" id="card-${cardId}" onclick="handleCardClick(this, '${shift.title}', '${task.title}')">
-                                <div class="task-card-inner">
-                                    <div class="card-face card-front">
-                                        <h3>${task.title}</h3>
-                                        <ul>${stepsHtml}</ul>
-                                    </div>
-                                    <div class="card-face card-back">
-                                        <div class="stamp">COMPLETED</div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-
-                    panelHtml += `</div></div>`; // Close grid and zone section
-                });
-
-                panel.innerHTML = panelHtml;
-                slideWrapper.appendChild(panel);
             });
         }
 
-        function switchToChecklist(index) {
-            const distance = Math.abs(currentChecklistIndex - index);
-            const slideWrapper = document.getElementById("slideWrapper");
+        // Render the main viewport (Areas or Tasks)
+        function renderApp() {
+            const appViewport = document.getElementById("appViewport");
+            const shift = checklistsData[activeTabIndex];
             
-            const dynamicSpeed = Math.min(0.8, 0.4 + (distance * 0.08));
-            slideWrapper.style.transition = `transform ${dynamicSpeed}s cubic-bezier(0.175, 0.885, 0.32, 1.275)`;
-            
-            currentChecklistIndex = index;
-            slideWrapper.style.transform = `translateX(-${index * 100}%)`;
+            // View 1: Show Area Selection Menu
+            if (activeZoneIndex === null) {
+                let html = `
+                    <div class="fade-in">
+                        <div class="view-header">
+                            <h2 class="view-title">${shift.title} Areas</h2>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
+                        </div>
+                        <div class="areas-grid">
+                `;
+                
+                shift.zones.forEach((zone, zIndex) => {
+                    html += `
+                        <div class="area-card" onclick="selectZone(${zIndex})">
+                            <h3>${zone.name}</h3>
+                            ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                        </div>
+                    `;
+                });
 
-            document.querySelectorAll(".nav-tab").forEach((tab, idx) => {
-                tab.classList.toggle("active", idx === index);
-            });
+                html += `</div></div>`;
+                appViewport.innerHTML = html;
+            } 
+            // View 2: Show Specific Tasks for Selected Area
+            else {
+                const zone = shift.zones[activeZoneIndex];
+                
+                let html = `
+                    <div class="fade-in">
+                        <div class="task-view-header">
+                            <div>
+                                <h2 class="task-zone-title">
+                                    ${zone.name}
+                                    ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
+                                </h2>
+                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
+                            </div>
+                            <button class="btn-back" onclick="goBackToAreas()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back to Areas
+                            </button>
+                        </div>
+                        <div class="cards-grid">
+                `;
+
+                zone.tasks.forEach((task, tIndex) => {
+                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                    const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
+                    let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+                    
+                    html += `
+                        <div class="task-card-container ${isFlipped}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                            <div class="task-card-inner">
+                                <div class="card-face card-front">
+                                    <h3>${task.title}</h3>
+                                    <ul>${stepsHtml}</ul>
+                                </div>
+                                <div class="card-face card-back">
+                                    <div class="stamp">COMPLETED</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn-submit-area" onclick="submitZoneChecklist()">Submit ${zone.name} Checklist</button>
+                        </div>
+                    </div>
+                `;
+                appViewport.innerHTML = html;
+            }
+        }
+
+        // Navigation Controllers
+        function selectZone(index) {
+            activeZoneIndex = index;
+            renderApp();
+        }
+
+        function goBackToAreas() {
+            activeZoneIndex = null;
+            renderApp();
         }
 
         function setAmPm(val) {
@@ -686,9 +816,63 @@ Copy and save this into your `.html` file:
             document.querySelectorAll(".am-pm-btn").forEach(btn => {
                 btn.classList.toggle("active", btn.innerText === val);
             });
-            buildUI();
+            // Don't need to re-render if data is the same, but safe to do so
         }
 
+        // Card Flip/Undo Mechanics
+        function toggleCard(cardContainer, taskId) {
+            const isCurrentlyFlipped = cardContainer.classList.contains('flipped');
+
+            if (isCurrentlyFlipped) {
+                // UNDO functionality
+                cardContainer.classList.remove('flipped');
+                cardContainer.classList.remove('bounce'); // Clean up bounce anim
+                completedTasks.delete(taskId);
+            } else {
+                // COMPLETE functionality
+                cardContainer.classList.add('flipped');
+                completedTasks.add(taskId);
+                
+                playChime();
+                triggerConfetti(cardContainer);
+
+                setTimeout(() => {
+                    cardContainer.classList.add('bounce');
+                }, 550);
+            }
+        }
+
+        // Bulk Submit specific area
+        function submitZoneChecklist() {
+            const shift = checklistsData[activeTabIndex];
+            const zone = shift.zones[activeZoneIndex];
+            
+            // Check if all are complete (optional validation)
+            let totalTasks = zone.tasks.length;
+            let completedCount = 0;
+            
+            zone.tasks.forEach((task, tIndex) => {
+                const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                if (completedTasks.has(taskId)) completedCount++;
+            });
+
+            if (completedCount < totalTasks) {
+                const confirmSubmit = confirm(`You have only completed ${completedCount}/${totalTasks} tasks in the ${zone.name}. Submit anyway?`);
+                if (!confirmSubmit) return;
+            }
+
+            // In reality, this is where you format your Google Form POST request
+            // You can append the data for this specific zone here.
+            console.log(`Submitting ${shift.title} - ${zone.name} [Session: ${currentAmPm}]`);
+            console.log(`Status: ${completedCount}/${totalTasks} completed.`);
+
+            alert(`${zone.name} checklist successfully submitted!`);
+            
+            // Return to areas view
+            goBackToAreas();
+        }
+
+        // Audio & FX
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -731,37 +915,7 @@ Copy and save this into your `.html` file:
             }
         }
 
-        function handleCardClick(cardContainer, shiftName, taskName) {
-            if (cardContainer.classList.contains('flipped')) return;
-
-            cardContainer.classList.add('flipped');
-            playChime();
-            triggerConfetti(cardContainer);
-
-            setTimeout(() => {
-                cardContainer.classList.add('bounce');
-            }, 550);
-
-            submitToGoogleForm(shiftName, taskName, currentAmPm);
-        }
-
-        function submitToGoogleForm(shiftName, taskName, amPm) {
-            const GOOGLE_FORM_URL = "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE";
-            
-            const formData = new FormData();
-            formData.append("entry.11111111", shiftName); // Update Entry ID
-            formData.append("entry.22222222", taskName);  // Update Entry ID
-            formData.append("entry.33333333", amPm);      // Update Entry ID
-            formData.append("entry.44444444", new Date().toLocaleString());
-
-            if (GOOGLE_FORM_URL !== "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE") {
-                fetch(GOOGLE_FORM_URL, { method: "POST", mode: "no-cors", body: formData })
-                .catch(err => console.error("Form submission error:", err));
-            } else {
-                console.log(`[Mock Log] Shift: ${shiftName} | Task: ${taskName} | Session: ${amPm}`);
-            }
-        }
-
+        // Leader View
         function openLeaderView() {
             document.getElementById("leaderModal").classList.add("active");
             document.getElementById("pinInput").value = "";
@@ -776,7 +930,6 @@ Copy and save this into your `.html` file:
             if (document.getElementById("pinInput").value === LEADER_PIN) {
                 document.getElementById("leaderModalContent").innerHTML = `
                     <h3>Supervisor Dashboard</h3>
-                    <p>Live summary of checklist completions across concurrent users:</p>
                     <div style="background:#f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem;">
                         <p><strong>Status:</strong> Connected to live data stream.</p>
                         <p><strong>Active Session:</strong> ${currentAmPm}</p>
@@ -793,4 +946,3 @@ Copy and save this into your `.html` file:
     </script>
 </body>
 </html>
-
