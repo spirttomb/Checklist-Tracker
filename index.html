@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Checklist Dashboard</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #22c55e;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.6s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar & Controls */
+        header {
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .am-pm-toggle {
+            display: flex;
+            background: #e2e8f0;
+            border-radius: 9999px;
+            padding: 0.25rem;
+        }
+
+        .am-pm-btn {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .am-pm-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .leader-btn {
+            background: #0f172a;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .leader-btn:hover {
+            background: #334155;
+        }
+
+        /* Checklist Navigation Tabs */
+        .checklist-nav {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-tab {
+            background: #f1f5f9;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Viewport & Momentum/Swing Transition */
+        .viewport-container {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-wrapper {
+            display: flex;
+            width: 100%;
+            transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .checklist-panel {
+            min-width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Card Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 3D Card Flip Mechanics */
+        .task-card-container {
+            perspective: 1000px;
+            height: 220px;
+            cursor: pointer;
+        }
+
+        .task-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .task-card-container.flipped .task-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Post-Flip Bounce Animation */
+        .task-card-container.bounce .task-card-inner {
+            animation: postFlipBounce 0.4s ease;
+        }
+
+        @keyframes postFlipBounce {
+            0% { transform: rotateY(180deg) scale(1); }
+            40% { transform: rotateY(180deg) scale(1.18); }
+            70% { transform: rotateY(180deg) scale(0.96); }
+            100% { transform: rotateY(180deg) scale(1); }
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .card-front {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 2px solid #e2e8f0;
+        }
+
+        .card-front h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-front p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Stamp on Back Face */
+        .stamp {
+            border: 4px solid white;
+            padding: 0.5rem 1rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transform: rotate(-15deg);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border-radius: 0.5rem;
+        }
+
+        /* Confetti Particles */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #f59e0b;
+            animation: confettiBurst 0.85s forwards ease-out;
+            pointer-events: none;
+            z-index: 10;
+            border-radius: 50%;
+        }
+
+        @keyframes confettiBurst {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0.5) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Leader View Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-card input {
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .modal-card button {
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .close-modal {
+            background: #ef4444 !important;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            header { padding: 1rem; }
+            .viewport-container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="top-controls">
+            <div class="am-pm-toggle">
+                <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
+                <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
+            </div>
+            <button class="leader-btn" onclick="openLeaderView()">Leader Overview</button>
+        </div>
+        <div class="checklist-nav" id="checklistNav">
+            <!-- Dynamically populated checklist tabs 1 to 6 -->
+        </div>
+    </header>
+
+    <div class="viewport-container">
+        <div class="slide-wrapper" id="slideWrapper">
+            <!-- Dynamically populated checklist panels -->
+        </div>
+    </div>
+
+    <!-- Leader View PIN Modal -->
+    <div class="modal-overlay" id="leaderModal">
+        <div class="modal-card" id="leaderModalContent">
+            <h3>Enter Leader PIN</h3>
+            <p>Please enter your secure 4-digit PIN to access the supervisor dashboard.</p>
+            <input type="password" id="pinInput" placeholder="Enter PIN (e.g. 1234)" maxlength="4">
+            <button onclick="verifyPin()">Access Dashboard</button>
+            <button class="close-modal" onclick="closeLeaderView()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration & State ---
+        const checklistsData = [
+            { id: 1, title: "Checklist 1: Opening & Perimeter", tasks: ["Unlock Main Doors", "Inspect Security Cameras", "Check Perimeter Lighting", "Log Staff Attendance"] },
+            { id: 2, title: "Checklist 2: Equipment Setup", tasks: ["Power on Main Terminals", "Calibrate POS System", "Check Receipt Printers", "Verify Network Connection"] },
+            { id: 3, title: "Checklist 3: Inventory & Stock", tasks: ["Count Front Shelf Stock", "Check Cold Storage Temps", "Restock Display Units", "Log Waste/Spoilage"] },
+            { id: 4, title: "Checklist 4: Sanitation & Safety", tasks: ["Sanitize Countertops", "Check First Aid Kit", "Empty Trash Bins", "Inspect Fire Extinguishers"] },
+            { id: 5, title: "Checklist 5: Mid-Shift Review", tasks: ["Review Hourly Targets", "Rotate Floor Staff", "Check Restroom Cleanliness", "Process Register Drops"] },
+            { id: 6, title: "Checklist 6: Closing & Secure", tasks: ["Lock Cash Drawers", "Back Up Daily Sales", "Turn Off Equipment", "Arm Security System"] }
+        ];
+
+        let currentAmPm = 'AM';
+        let currentChecklistIndex = 0;
+        const LEADER_PIN = "1234"; // Change pin here as needed
+
+        // --- Initialization ---
+        document.addEventListener("DOMContentLoaded", () => {
+            buildUI();
+        });
+
+        function buildUI() {
+            const navContainer = document.getElementById("checklistNav");
+            const slideWrapper = document.getElementById("slideWrapper");
+            
+            navContainer.innerHTML = "";
+            slideWrapper.innerHTML = "";
+
+            checklistsData.forEach((cl, index) => {
+                // Build Navigation Tab
+                const tab = document.createElement("button");
+                tab.className = `nav-tab ${index === 0 ? 'active' : ''}`;
+                tab.innerText = `List ${cl.id}`;
+                tab.onclick = () => switchToChecklist(index);
+                navContainer.appendChild(tab);
+
+                // Build Checklist Panel
+                const panel = document.createElement("div");
+                panel.className = "checklist-panel";
+                
+                let cardsHtml = cl.tasks.map((task, tIndex) => `
+                    <div class="task-card-container" id="card-${cl.id}-${tIndex}" onclick="handleCardClick(this, '${cl.id}', '${task}')">
+                        <div class="task-card-inner">
+                            <div class="card-face card-front">
+                                <h3>Task ${tIndex + 1}</h3>
+                                <p>${task}</p>
+                            </div>
+                            <div class="card-face card-back">
+                                <div class="stamp">COMPLETED</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                panel.innerHTML = `
+                    <h2 class="panel-title">${cl.title} (${currentAmPm})</h2>
+                    <div class="cards-grid">${cardsHtml}</div>
+                `;
+                slideWrapper.appendChild(panel);
+            });
+        }
+
+        // --- Momentum Swing Transition ---
+        function switchToChecklist(index) {
+            // Calculate relative distance to simulate momentum build-up/smoothing
+            const distance = Math.abs(currentChecklistIndex - index);
+            const slideWrapper = document.getElementById("slideWrapper");
+            
+            // Adjust transition timing dynamically based on distance for momentum feel
+            const dynamicSpeed = Math.min(0.8, 0.4 + (distance * 0.08));
+            slideWrapper.style.transition = `transform ${dynamicSpeed}s cubic-bezier(0.175, 0.885, 0.32, 1.275)`;
+            
+            currentChecklistIndex = index;
+            slideWrapper.style.transform = `translateX(-${index * 100}%)`;
+
+            // Update Active Tabs
+            document.querySelectorAll(".nav-tab").forEach((tab, idx) => {
+                tab.classList.toggle("active", idx === index);
+            });
+        }
+
+        // --- AM / PM Toggle ---
+        function setAmPm(val) {
+            currentAmPm = val;
+            document.querySelectorAll(".am-pm-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.innerText === val);
+            });
+            buildUI(); // Rebuild panels with new AM/PM header state
+        }
+
+        // --- Web Audio API Chime Synthesizer ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime() {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const frequencies = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+            frequencies.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.09));
+                
+                gain.gain.setValueAtTime(0, audioCtx.currentTime + (i * 0.09));
+                gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + (i * 0.09) + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.09) + 0.35);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(audioCtx.currentTime + (i * 0.09));
+                osc.stop(audioCtx.currentTime + (i * 0.09) + 0.35);
+            });
+        }
+
+        // --- Confetti Particle Burst ---
+        function triggerConfetti(cardElement) {
+            const rect = cardElement.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 60 + Math.random() * 80;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 850);
+            }
+        }
+
+        // --- Card Interaction Handler ---
+        function handleCardClick(cardContainer, checklistId, taskName) {
+            if (cardContainer.classList.contains('flipped')) return; // Already completed
+
+            // 1. Flip card
+            cardContainer.classList.add('flipped');
+            
+            // 2. Play Audio & Confetti
+            playChime();
+            triggerConfetti(cardContainer);
+
+            // 3. Post-flip bounce timing (triggers at 0.55s)
+            setTimeout(() => {
+                cardContainer.classList.add('bounce');
+            }, 550);
+
+            // 4. Send asynchronous data to Google Form (No-CORS integration template)
+            submitToGoogleForm(checklistId, taskName, currentAmPm);
+        }
+
+        // --- Google Form & Sheet Integration Backend Hooks ---
+        function submitToGoogleForm(checklistId, taskName, amPm) {
+            /* 
+              REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL GOOGLE FORM ENDPOINT & ENTRY IDs:
+              Example Endpoint: https://docs.google.com/forms/u/0/d/e/1FAIpQLSc.../formResponse
+            */
+            const GOOGLE_FORM_URL = "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE";
+            
+            const formData = new FormData();
+            formData.append("entry.11111111", `List ${checklistId}`); // Replace with actual Entry ID for Checklist ID
+            formData.append("entry.22222222", taskName);             // Replace with actual Entry ID for Task Name
+            formData.append("entry.33333333", amPm);                 // Replace with actual Entry ID for AM/PM
+            formData.append("entry.44444444", new Date().toLocaleString()); // Timestamp
+
+            if (GOOGLE_FORM_URL !== "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE") {
+                fetch(GOOGLE_FORM_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    body: formData
+                }).catch(err => console.error("Form submission error:", err));
+            } else {
+                console.log(`[Mock Submission] Checklist: ${checklistId} | Task: ${taskName} | Session: ${amPm}`);
+            }
+        }
+
+        // Optional: Google Sheets Live Data Retrieval via GViz API function template
+        async function fetchGoogleSheetData(sheetName) {
+            const sheetId = "YOUR_GOOGLE_SHEET_ID_HERE";
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}&tqx=out:json`;
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                // Parse GViz JSON response structure safely
+                const jsonString = text.substring(47).slice(0, -2);
+                const json = JSON.parse(jsonString);
+                return json.table.rows.map(row => row.c.map(cell => cell ? cell.v : ""));
+            } catch (error) {
+                console.error("Error fetching sheet data:", error);
+                return [];
+            }
+        }
+
+        // --- Leader View & PIN Verification ---
+        function openLeaderView() {
+            document.getElementById("leaderModal").classList.add("active");
+            document.getElementById("pinInput").value = "";
+            document.getElementById("pinInput").focus();
+        }
+
+        function closeLeaderView() {
+            document.getElementById("leaderModal").classList.remove("active");
+        }
+
+        function verifyPin() {
+            const pin = document.getElementById("pinInput").value;
+            if (pin === LEADER_PIN) {
+                const modalContent = document.getElementById("leaderModalContent");
+                modalContent.innerHTML = `
+                    <h3>Supervisor Dashboard</h3>
+                    <p>Live summary of checklist completions across concurrent users:</p>
+                    <div style="background:#f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem;">
+                        <p><strong>Status:</strong> Connected to live data stream.</p>
+                        <p><strong>Active Session:</strong> ${currentAmPm}</p>
+                        <hr style="margin: 1rem 0; border:0; border-top:1px solid #cbd5e1;">
+                        <p style="color: var(--text-muted);">Leader dashboard overview loaded successfully. (Hook up <code>fetchGoogleSheetData</code> here to render submitted logs from your connected Google Sheet).</p>
+                    </div>
+                    <button class="close-modal" style="margin-top: 1rem;" onclick="closeLeaderView()">Close Dashboard</button>
+                `;
+            } else {
+                alert("Incorrect PIN. Access Denied.");
+                document.getElementById("pinInput").value = "";
+            }
+        }
+    </script>
+</body>
+</html>
