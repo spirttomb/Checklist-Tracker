@@ -1,3 +1,15 @@
+Here is the fully updated single-file codebase. I have taken all of your raw data and cleaned up the grammar, spelling, and consistency issues.
+
+More importantly, I updated the JavaScript data structure and CSS to perfectly map to your **4-level hierarchy**:
+
+1. **Tabs** are now your major shifts (e.g., *8:30 (9:30) Preclose*).
+2. **Sections** inside those tabs group the cards by **Zone** (e.g., *Front Counter*, *Dining Room*).
+3. **Cards** represent the **Primary Task** (e.g., *Break down lemonades*).
+4. **Card Faces** now feature a clean, left-aligned bulleted list for the **Sub-tasks** (e.g., *Turn lemonade dispenser off...*). I also added scrollbars to the front of the cards so longer tasks (like the Coffee Pots) fit perfectly without breaking the 3D flip.
+
+Copy and save this into your `.html` file:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +32,7 @@
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
-            --text-muted: #64748b;
+            --text-muted: #475569;
             --success: #22c55e;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
             --transition-speed: 0.6s;
@@ -43,7 +55,6 @@
             overflow-x: hidden;
         }
 
-        /* Force Inheritance on Form Elements & Buttons */
         input, select, textarea, button {
             font-family: inherit;
         }
@@ -135,7 +146,7 @@
         .viewport-container {
             flex: 1;
             padding: 2rem;
-            max-width: 1200px;
+            max-width: 1300px;
             width: 100%;
             margin: 0 auto;
             position: relative;
@@ -153,25 +164,42 @@
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .panel-title {
-            font-size: 1.75rem;
+            font-size: 1.85rem;
             font-weight: 700;
+            color: #0f172a;
+        }
+
+        .zone-section {
+            background: rgba(255, 255, 255, 0.5);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .zone-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
         }
 
         /* Card Grid */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 1.5rem;
         }
 
         /* 3D Card Flip Mechanics */
         .task-card-container {
             perspective: 1000px;
-            height: 220px;
+            height: 260px; /* Made slightly taller to accommodate sub-lists */
             cursor: pointer;
         }
 
@@ -179,7 +207,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            text-align: center;
+            text-align: left;
             transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
             border-radius: 1rem;
@@ -190,15 +218,14 @@
             transform: rotateY(180deg);
         }
 
-        /* Post-Flip Bounce Animation */
         .task-card-container.bounce .task-card-inner {
             animation: postFlipBounce 0.4s ease;
         }
 
         @keyframes postFlipBounce {
             0% { transform: rotateY(180deg) scale(1); }
-            40% { transform: rotateY(180deg) scale(1.18); }
-            70% { transform: rotateY(180deg) scale(0.96); }
+            40% { transform: rotateY(180deg) scale(1.15); }
+            70% { transform: rotateY(180deg) scale(0.97); }
             100% { transform: rotateY(180deg) scale(1); }
         }
 
@@ -208,40 +235,58 @@
             height: 100%;
             backface-visibility: hidden;
             border-radius: 1rem;
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
         }
 
         .card-front {
             background: var(--card-bg);
-            color: var(--text-main);
             border: 2px solid #e2e8f0;
+            justify-content: flex-start;
+            overflow-y: auto; /* Allows scrolling if steps are long */
         }
+
+        /* Custom Scrollbar for Card Front */
+        .card-front::-webkit-scrollbar { width: 6px; }
+        .card-front::-webkit-scrollbar-track { background: transparent; }
+        .card-front::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
         .card-front h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            flex-shrink: 0;
         }
 
-        .card-front p {
+        .card-front ul {
+            padding-left: 1.25rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .card-front ul li {
+            line-height: 1.35;
         }
 
         .card-back {
             background: linear-gradient(135deg, #4f46e5, #3b82f6);
             color: white;
             transform: rotateY(180deg);
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Stamp on Back Face */
         .stamp {
             border: 4px solid white;
             padding: 0.5rem 1rem;
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -250,7 +295,6 @@
             border-radius: 0.5rem;
         }
 
-        /* Confetti Particles */
         .confetti {
             position: absolute;
             width: 8px;
@@ -263,78 +307,48 @@
         }
 
         @keyframes confettiBurst {
-            0% {
-                transform: translate(0, 0) scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty)) scale(0.5) rotate(720deg);
-                opacity: 0;
-            }
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0.5) rotate(720deg); opacity: 0; }
         }
 
         /* Leader View Modal */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease;
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-card {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 1rem;
-            width: 100%;
-            max-width: 600px;
+            padding: 2rem; border-radius: 1rem;
+            width: 100%; max-width: 600px;
             box-shadow: var(--shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            max-height: 80vh;
-            overflow-y: auto;
+            display: flex; flex-direction: column; gap: 1rem;
+            max-height: 80vh; overflow-y: auto;
         }
 
         .modal-card input {
-            padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.5rem;
-            font-size: 1rem;
+            padding: 0.75rem; border: 1px solid #cbd5e1;
+            border-radius: 0.5rem; font-size: 1rem;
         }
 
         .modal-card button {
-            padding: 0.75rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            cursor: pointer;
+            padding: 0.75rem; background: var(--primary); color: white;
+            border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;
         }
 
-        .close-modal {
-            background: #ef4444 !important;
-        }
+        .close-modal { background: #ef4444 !important; }
 
-        /* Responsive Breakpoints */
         @media (max-width: 768px) {
             header { padding: 1rem; }
             .viewport-container { padding: 1rem; }
+            .zone-section { padding: 1rem; }
         }
     </style>
 </head>
@@ -349,13 +363,13 @@
             <button class="leader-btn" onclick="openLeaderView()">Leader Overview</button>
         </div>
         <div class="checklist-nav" id="checklistNav">
-            <!-- Dynamically populated checklist tabs 1 to 6 -->
+            <!-- Tabs injected here -->
         </div>
     </header>
 
     <div class="viewport-container">
         <div class="slide-wrapper" id="slideWrapper">
-            <!-- Dynamically populated checklist panels -->
+            <!-- Panels injected here -->
         </div>
     </div>
 
@@ -371,25 +385,229 @@
     </div>
 
     <script>
-        // --- Configuration & State ---
+        // --- 4-Level Data Hierarchy: Shift -> Zone -> Task -> Sub-Tasks ---
         const checklistsData = [
-            { id: 1, title: "Checklist 1: Opening & Perimeter", tasks: ["Unlock Main Doors", "Inspect Security Cameras", "Check Perimeter Lighting", "Log Staff Attendance"] },
-            { id: 2, title: "Checklist 2: Equipment Setup", tasks: ["Power on Main Terminals", "Calibrate POS System", "Check Receipt Printers", "Verify Network Connection"] },
-            { id: 3, title: "Checklist 3: Inventory & Stock", tasks: ["Count Front Shelf Stock", "Check Cold Storage Temps", "Restock Display Units", "Log Waste/Spoilage"] },
-            { id: 4, title: "Checklist 4: Sanitation & Safety", tasks: ["Sanitize Countertops", "Check First Aid Kit", "Empty Trash Bins", "Inspect Fire Extinguishers"] },
-            { id: 5, title: "Checklist 5: Mid-Shift Review", tasks: ["Review Hourly Targets", "Rotate Floor Staff", "Check Restroom Cleanliness", "Process Register Drops"] },
-            { id: 6, title: "Checklist 6: Closing & Secure", tasks: ["Lock Cash Drawers", "Back Up Daily Sales", "Turn Off Equipment", "Arm Security System"] }
+            {
+                id: "8-930",
+                title: "8:00 (9:30) Preclose",
+                zones: [
+                    {
+                        name: "Dining Room",
+                        tasks: [
+                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways."] },
+                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in."] },
+                            { title: "Blinds", steps: ["Close all blinds."] },
+                            { title: "Condiment Stand", steps: ["Stock condiment stand."] },
+                            { title: "Furniture", steps: ["Clean all tables, chairs, high chairs, and booths."] },
+                            { title: "Table Items", steps: ["Clean all trays, table toppers, and unused sauces."] },
+                            { title: "Return Items", steps: ["Line all clean trays.", "Return trays, table toppers, and unused sauces to the front counter."] },
+                            { title: "Sweep", steps: ["Sweep thoroughly, including under all tables, chairs, and booths."] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "830-930",
+                title: "8:30 (9:30) Preclose",
+                zones: [
+                    {
+                        name: "Front Counter",
+                        tasks: [
+                            { title: "Break down lemonades", steps: ["Turn lemonade dispenser off.", "Drain lemonade into empty pitchers.", "Remove the lid, metal plunger, container, gaskets, spinners, and drip tray.", "Bring all removed parts to dish."] },
+                            { title: "Transfer and clean tea", steps: ["Transfer remaining sweet/unsweet tea to Drive-Thru.", "Dump the remainder into pitchers.", "Remove tea nozzles, throw away liners.", "Bring tea urn, nozzles, and tea drip tray to dish."] },
+                            { title: "Bring back dishes", steps: ["Throw away strawberry shooter cup.", "Disassemble shooter.", "Bring back disassembled shooter to dish."] },
+                            { title: "Clean drink towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, fill with 10 quarts lukewarm water.", "Stir with a metal spoon to ensure mixture.", "Verify chlorine concentration (50-100 ppm).", "Remove 2 drink tower nozzles & diffusers and place into Kay-5.", "Wipe down those 2 metal splash guards with sanitizing wipe.", "Clean those 2 drip trays with hot water followed by sanitizing wipe."] },
+                            { title: "Clean swinging door", steps: ["Spray door (including window) with blue spray, wipe clean with paper towel on both sides.", "Spray only the metal part with stainless steel polish; polish in circular motions with paper towel."] },
+                            { title: "Clean lowboy", steps: ["Spray lowboy with blue spray, wipe clean with paper towel.", "Spray lowboy with stainless steel polish, polish in circular motions."] },
+                            { title: "Wipe down all counters", steps: ["Spray all white surfaces with blue spray, dry with paper towel.", "Follow up with a sanitizing wipe."] },
+                            { title: "Clean POS terminals", steps: ["Wipe down all card readers with a sanitizing wipe.", "Clean all terminals with blue spray, dry with paper towel."] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "930",
+                title: "9:30 Close",
+                zones: [
+                    {
+                        name: "Front Counter",
+                        tasks: [
+                            { title: "Break down lemonades", steps: ["Turn lemonade dispenser off.", "Drain lemonade into an empty bin.", "Print labels, apply to lemonade, bring to walk-in.", "Remove lid, plunger, container, gaskets, spinners, and drip tray.", "Bring all removed parts to dish."] },
+                            { title: "Transfer and clean tea", steps: ["Transfer remaining sweet/unsweet tea to Drive-Thru, dump remainder into dump sink.", "Remove tea nozzles, throw away liners.", "Bring tea urn, nozzles, and tea drip tray to dish."] },
+                            { title: "Bring back dishes", steps: ["Throw away strawberry shooter cup.", "Disassemble shooter.", "Bring back disassembled shooter."] },
+                            { title: "Clean drink towers", steps: ["Prepare Kay-5 Sanitizer solution (verify 50-100 ppm).", "Remove ALL nozzles & diffusers and place into Kay-5.", "Wipe down all metal splash guards with sanitizing wipe.", "Clean all drip trays with hot water followed by sanitizing wipe."] },
+                            { title: "Clean swinging door", steps: ["Clean window/door with blue spray on both sides.", "Polish metal parts with stainless steel polish."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
+                            { title: "Wipe down all counters", steps: ["Spray white surfaces with blue spray, follow with sanitizing wipe."] },
+                            { title: "Clean POS terminals", steps: ["Sanitize card readers, clean terminals with blue spray."] },
+                            { title: "Reassemble Towers", steps: ["Put drink towers back together."] },
+                            { title: "Reassemble items", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, and lemonade machine."] }
+                        ]
+                    },
+                    {
+                        name: "Dining Room",
+                        tasks: [
+                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store away from walkways."] },
+                            { title: "Sweep", steps: ["Sweep thoroughly, including under all tables, chairs, and booths."] },
+                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in."] },
+                            { title: "Furniture", steps: ["Clean all tables, chairs, high chairs, and booths."] },
+                            { title: "Put up chairs", steps: ["Put up all chairs (Only after 9:00 PM)."] },
+                            { title: "Blinds", steps: ["Close all blinds."] },
+                            { title: "Table Items", steps: ["Clean all trays, table toppers, and unused sauces."] },
+                            { title: "Return Items", steps: ["Line clean trays. Return trays, toppers, and unused sauces to front counter."] },
+                            { title: "Condiment Stand", steps: ["Stock condiment stand."] }
+                        ]
+                    },
+                    {
+                        name: "Bathrooms",
+                        tasks: [
+                            { title: "Mirrors & Sink", steps: ["Clean mirrors with blue spray, dry with paper towels.", "Clean hand sink with sanitizing wipes."] },
+                            { title: "Baby Changing Station", steps: ["Wipe down with a sanitizing wipe."] },
+                            { title: "Doors", steps: ["Clean main door and stall doors with blue spray and paper towels."] },
+                            { title: "Dispensers", steps: ["Clean soap, sanitizer, paper towel, and toilet paper dispensers."] },
+                            { title: "Metal Appliances", steps: ["Clean all metal appliances with blue spray, dry with paper towel."] },
+                            { title: "High-Touch Surfaces", steps: ["Wipe door handle, stall door handle, light switch, and toilet flusher with sanitizing wipe."] },
+                            { title: "Urinals & Toilets", steps: ["Spray entirety of urinals/toilets with restroom cleaner, dry with cloth towels."] },
+                            { title: "Stocking", steps: ["Stock paper towels, toilet paper, hand soap, sanitizer, and toilet seat covers."] },
+                            { title: "Repeat", steps: ["Repeat the above steps for the other bathroom."] },
+                            { title: "Floors", steps: ["Sweep both bathrooms.", "Prepare mop water in red mop bucket; mop both floors with red mop."] },
+                            { title: "Trash", steps: ["Replace trashes in both bathrooms."] }
+                        ]
+                    },
+                    {
+                        name: "Break Room & Tech",
+                        tasks: [
+                            { title: "Trash & Belongings", steps: ["Throw away all trash on the tables.", "Hang all coats, jackets, backpacks.", "Place all shoes onto the windowsill."] },
+                            { title: "Furniture", steps: ["Clean all tables and chairs, flip the chairs up."] },
+                            { title: "Tech Storage", steps: ["Unplug all TMS bags; place them on the top rack of the tech room."] },
+                            { title: "Floors", steps: ["Sweep floor, mop with the blue mop bucket and blue mop."] },
+                            { title: "Microwave & Trash", steps: ["Wipe inside microwave with sanitizing wipe.", "Replace and dispose of trash."] },
+                            { title: "Tech Forms", steps: ["Ensure all tech is plugged in.", "Scan the tech form QR code and fill it out."] }
+                        ]
+                    },
+                    {
+                        name: "Floors",
+                        tasks: [
+                            { title: "Floor Prep", steps: ["Ensure floor is swept, rugs vacuumed, and chairs put up."] },
+                            { title: "Mopping", steps: ["One person mops from lobby to back door; one person mops from back door to lobby. Meet in the middle."] },
+                            { title: "Chairs", steps: ["After mopping, ensure all chairs have been taken back down."] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "930-1030",
+                title: "9:30 (10:30) Preclose",
+                zones: [
+                    {
+                        name: "Desserts",
+                        tasks: [
+                            { title: "Taylor - Wash Cycle", steps: ["Put one side of Taylor on wash."] },
+                            { title: "Prepare Kay-5 Solution", steps: ["Prepare Kay-5 solution (1 packet to 10 quarts lukewarm water), verify 50-100 ppm."] },
+                            { title: "Dishes & Leftovers", steps: ["Take back machine arm, disassembled shooter, cherry/lemon holder, and all Taylor/shakebase drip trays.", "Save leftover oreo, chocolate syrup, cherries, and lemons in a labeled styrofoam cup.", "Wed/Sat: Bring back disassembled oreo dispenser.", "Sat: Bring back disassembled chocolate syrup dispenser."] },
+                            { title: "Taylor - Exterior", steps: ["Clean the outside of the machine including the spindles."] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out; clean wall behind and to the left, and any mess on the right."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                        ]
+                    },
+                    {
+                        name: "Drinks",
+                        tasks: [
+                            { title: "Break down lemonades", steps: ["Turn off, drain into pitchers, remove parts, bring to dish."] },
+                            { title: "Remaining Dishes", steps: ["Bring back disassembled shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts."] },
+                            { title: "Wipe Counters", steps: ["Wipe down all drinks area counters, tea/coffee brewing area, and team member drink rack with sanitizing wipe."] },
+                            { title: "DT Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels."] },
+                            { title: "Clean FC Coffee Pot", steps: ["Empty pot into dump sink, add clean filter/cleaning tab, run small brew.", "Discard filter/tab, scrub inside with white brush.", "Empty solution, run rinse cycle (no filter/tab), drain rinse water.", "Replace lid, return to station."] },
+                            { title: "Clean DT Coffee Pot", steps: ["Repeat the exact same cleaning process for the DT coffee pot."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                        ]
+                    },
+                    {
+                        name: "Chutes",
+                        tasks: [
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
+                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set aside.", "Empty them and wipe down thoroughly.", "Refill with bags when dry and place them back."] },
+                            { title: "Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe."] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "1030",
+                title: "10:30 Close",
+                zones: [
+                    {
+                        name: "Desserts",
+                        tasks: [
+                            { title: "Taylor - Wash Cycle", steps: ["Put Taylor on wash for 15 mins."] },
+                            { title: "Prepare Kay-5", steps: ["Prepare Kay-5 solution, verify 50-100 ppm."] },
+                            { title: "Dishes & Leftovers", steps: ["Bring back all parts & trays. Save/label leftovers.", "Wed/Sat: bring back disassembled oreo dispenser.", "Sat: bring back disassembled chocolate syrup dispenser.", "Sat: turn off shakebase, put boxes in walk-in (labeled), leave door open to defrost."] },
+                            { title: "Drain Icedream", steps: ["Drain all icedream into leftover tub, label with date, put in walk-in."] },
+                            { title: "Wash Taylor Inside", steps: ["Rinse with hot water, pour in Kay-5.", "Wipe inside with blue wipes using the Kay-5.", "Drain Kay-5 and rinse with water again."] },
+                            { title: "Clean Taylor Exterior", steps: ["Clean outside including spindles. Unplug Taylor."] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out, clean wall behind/left, and mess to the right."] },
+                            { title: "Wash & Reassemble", steps: ["Disassemble Taylor, wash pieces.", "Lay pieces on white board to ensure none missing.", "Return dishes and reassemble."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                        ]
+                    },
+                    {
+                        name: "Drinks",
+                        tasks: [
+                            { title: "Break down lemonades", steps: ["Turn off, drain into bin, label/walk-in, remove parts to dish."] },
+                            { title: "Transfer Tea", steps: ["Dump remaining tea into dump sink, remove nozzles/liners, bring to dish."] },
+                            { title: "Bring Back Dishes", steps: ["Shooter, scoop, whisks, spoons, brewing urns, dump sink insert, brewing inserts."] },
+                            { title: "Clean Drink Towers", steps: ["Prepare Kay-5, verify ppm. Remove ALL nozzles/diffusers into Kay-5.", "Wipe metal splash guards and clean drip trays."] },
+                            { title: "Counters & Door", steps: ["Wipe all drinks counters/racks. Spray DT window door with blue spray and wipe dry."] },
+                            { title: "Dumpsink", steps: ["Clean the dumpsink."] },
+                            { title: "Coffee Pots", steps: ["Clean both FC and DT coffee pots (dump, filter+tab, brew cycle, scrub, rinse cycle, drain)."] },
+                            { title: "Reassemble", steps: ["Put drink towers back together.", "Return clean utensils, reassemble shooter, tea urns, lemonade machine."] }
+                        ]
+                    },
+                    {
+                        name: "Chutes",
+                        tasks: [
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish."] },
+                            { title: "Faceplates & Dividers", steps: ["Unscrew faceplates, keep in secure area. Remove all dividers."] },
+                            { title: "Wipe Down", steps: ["Wipe chutes and all pieces down with a sanitizing wipe."] },
+                            { title: "Reassemble", steps: ["Put chutes back together.", "Return the clean fry bins."] },
+                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
+                            { title: "Bag Holders & Counter", steps: ["Pull out bag holders, empty/wipe down, refill when dry.", "Wipe counter area."] }
+                        ]
+                    },
+                    {
+                        name: "Stocking",
+                        tasks: [
+                            { title: "FC & DT Areas", steps: ["Stock FC/DT sauce walls including breakfast condiments.", "Stock FC/DT/Bagging/Desserts lowboys.", "Check dates in bagging lowboy, waste expired product.", "Stock cups, lids, straws, cup carriers, ice bins."] },
+                            { title: "Boxed Goods", steps: ["Stock boxed bags, napkins, straws, ketchup, cup carriers."] }
+                        ]
+                    },
+                    {
+                        name: "Trash",
+                        tasks: [
+                            { title: "Replace All Trash Bags", steps: ["Dispose and replace: outside back door, inside back door, 2 compacting dining room trashes, trash under TV, FC trash, and DT trash.", "Make lemonades if necessary."] }
+                        ]
+                    },
+                    {
+                        name: "Floors",
+                        tasks: [
+                            { title: "Sweep", steps: ["Sweep entire DT area, including under drink towers, lowboys, tables, Taylor, ice machine, etc."] },
+                            { title: "Mop", steps: ["Mop using blue mop from mobile drinks area to tea/coffee brewing area, including under equipment."] }
+                        ]
+                    }
+                ]
+            }
         ];
 
-        let currentAmPm = 'AM';
+        let currentAmPm = 'PM'; // Defaulting to PM given the shifts
         let currentChecklistIndex = 0;
         const LEADER_PIN = "1234";
 
-        // --- Initialization ---
         document.addEventListener("DOMContentLoaded", () => {
             buildUI();
         });
 
+        // --- Render UI mapping to 4-Levels ---
         function buildUI() {
             const navContainer = document.getElementById("checklistNav");
             const slideWrapper = document.getElementById("slideWrapper");
@@ -397,39 +615,57 @@
             navContainer.innerHTML = "";
             slideWrapper.innerHTML = "";
 
-            checklistsData.forEach((cl, index) => {
+            checklistsData.forEach((shift, index) => {
+                // Build Tab (Level 1)
                 const tab = document.createElement("button");
                 tab.className = `nav-tab ${index === 0 ? 'active' : ''}`;
-                tab.innerText = `List ${cl.id}`;
+                tab.innerText = shift.title.split(' ')[0]; // Use short title for tab (e.g. "8:00")
                 tab.onclick = () => switchToChecklist(index);
                 navContainer.appendChild(tab);
 
+                // Build Shift Panel
                 const panel = document.createElement("div");
                 panel.className = "checklist-panel";
                 
-                let cardsHtml = cl.tasks.map((task, tIndex) => `
-                    <div class="task-card-container" id="card-${cl.id}-${tIndex}" onclick="handleCardClick(this, '${cl.id}', '${task}')">
-                        <div class="task-card-inner">
-                            <div class="card-face card-front">
-                                <h3>Task ${tIndex + 1}</h3>
-                                <p>${task}</p>
-                            </div>
-                            <div class="card-face card-back">
-                                <div class="stamp">COMPLETED</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
+                let panelHtml = `<h2 class="panel-title">${shift.title} (${currentAmPm})</h2>`;
 
-                panel.innerHTML = `
-                    <h2 class="panel-title">${cl.title} (${currentAmPm})</h2>
-                    <div class="cards-grid">${cardsHtml}</div>
-                `;
+                // Build Zones (Level 2)
+                shift.zones.forEach((zone, zIndex) => {
+                    panelHtml += `
+                        <div class="zone-section">
+                            <h3 class="zone-title">${zone.name}</h3>
+                            <div class="cards-grid">
+                    `;
+                    
+                    // Build Tasks (Level 3 & 4)
+                    zone.tasks.forEach((task, tIndex) => {
+                        // Generate bullet points from sub-steps array
+                        let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+                        let cardId = `${shift.id}-${zIndex}-${tIndex}`;
+
+                        panelHtml += `
+                            <div class="task-card-container" id="card-${cardId}" onclick="handleCardClick(this, '${shift.title}', '${task.title}')">
+                                <div class="task-card-inner">
+                                    <div class="card-face card-front">
+                                        <h3>${task.title}</h3>
+                                        <ul>${stepsHtml}</ul>
+                                    </div>
+                                    <div class="card-face card-back">
+                                        <div class="stamp">COMPLETED</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    panelHtml += `</div></div>`; // Close grid and zone section
+                });
+
+                panel.innerHTML = panelHtml;
                 slideWrapper.appendChild(panel);
             });
         }
 
-        // --- Momentum Swing Transition ---
         function switchToChecklist(index) {
             const distance = Math.abs(currentChecklistIndex - index);
             const slideWrapper = document.getElementById("slideWrapper");
@@ -445,7 +681,6 @@
             });
         }
 
-        // --- AM / PM Toggle ---
         function setAmPm(val) {
             currentAmPm = val;
             document.querySelectorAll(".am-pm-btn").forEach(btn => {
@@ -454,33 +689,25 @@
             buildUI();
         }
 
-        // --- Web Audio API Chime Synthesizer ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             const frequencies = [523.25, 659.25, 783.99, 1046.5];
             frequencies.forEach((freq, i) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.09));
-                
                 gain.gain.setValueAtTime(0, audioCtx.currentTime + (i * 0.09));
                 gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + (i * 0.09) + 0.02);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.09) + 0.35);
-                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
                 osc.start(audioCtx.currentTime + (i * 0.09));
                 osc.stop(audioCtx.currentTime + (i * 0.09) + 0.35);
             });
         }
 
-        // --- Confetti Particle Burst ---
         function triggerConfetti(cardElement) {
             const rect = cardElement.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
@@ -496,19 +723,15 @@
 
                 const angle = Math.random() * Math.PI * 2;
                 const distance = 60 + Math.random() * 80;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-
-                particle.style.setProperty('--tx', `${tx}px`);
-                particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
 
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 850);
             }
         }
 
-        // --- Card Interaction Handler ---
-        function handleCardClick(cardContainer, checklistId, taskName) {
+        function handleCardClick(cardContainer, shiftName, taskName) {
             if (cardContainer.classList.contains('flipped')) return;
 
             cardContainer.classList.add('flipped');
@@ -519,31 +742,26 @@
                 cardContainer.classList.add('bounce');
             }, 550);
 
-            submitToGoogleForm(checklistId, taskName, currentAmPm);
+            submitToGoogleForm(shiftName, taskName, currentAmPm);
         }
 
-        // --- Google Form & Sheet Integration Backend Hooks ---
-        function submitToGoogleForm(checklistId, taskName, amPm) {
+        function submitToGoogleForm(shiftName, taskName, amPm) {
             const GOOGLE_FORM_URL = "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE";
             
             const formData = new FormData();
-            formData.append("entry.11111111", `List ${checklistId}`);
-            formData.append("entry.22222222", taskName);
-            formData.append("entry.33333333", amPm);
+            formData.append("entry.11111111", shiftName); // Update Entry ID
+            formData.append("entry.22222222", taskName);  // Update Entry ID
+            formData.append("entry.33333333", amPm);      // Update Entry ID
             formData.append("entry.44444444", new Date().toLocaleString());
 
             if (GOOGLE_FORM_URL !== "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE") {
-                fetch(GOOGLE_FORM_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    body: formData
-                }).catch(err => console.error("Form submission error:", err));
+                fetch(GOOGLE_FORM_URL, { method: "POST", mode: "no-cors", body: formData })
+                .catch(err => console.error("Form submission error:", err));
             } else {
-                console.log(`[Mock Submission] Checklist: ${checklistId} | Task: ${taskName} | Session: ${amPm}`);
+                console.log(`[Mock Log] Shift: ${shiftName} | Task: ${taskName} | Session: ${amPm}`);
             }
         }
 
-        // --- Leader View & PIN Verification ---
         function openLeaderView() {
             document.getElementById("leaderModal").classList.add("active");
             document.getElementById("pinInput").value = "";
@@ -555,10 +773,8 @@
         }
 
         function verifyPin() {
-            const pin = document.getElementById("pinInput").value;
-            if (pin === LEADER_PIN) {
-                const modalContent = document.getElementById("leaderModalContent");
-                modalContent.innerHTML = `
+            if (document.getElementById("pinInput").value === LEADER_PIN) {
+                document.getElementById("leaderModalContent").innerHTML = `
                     <h3>Supervisor Dashboard</h3>
                     <p>Live summary of checklist completions across concurrent users:</p>
                     <div style="background:#f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem;">
@@ -577,3 +793,4 @@
     </script>
 </body>
 </html>
+
