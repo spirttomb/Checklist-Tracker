@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Checklist Dashboard</title>
     <style>
+        /* Custom Local Font Definition */
+        @font-face {
+            font-family: 'Apercu Regular Pro';
+            src: url('apercu_regular_pro.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
         :root {
             --primary: #4f46e5;
             --primary-hover: #4338ca;
@@ -21,16 +30,22 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
+        /* Global Font Application */
         body {
+            font-family: 'Apercu Regular Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+        }
+
+        /* Force Inheritance on Form Elements & Buttons */
+        input, select, textarea, button {
+            font-family: inherit;
         }
 
         /* Top Bar & Controls */
@@ -368,7 +383,7 @@
 
         let currentAmPm = 'AM';
         let currentChecklistIndex = 0;
-        const LEADER_PIN = "1234"; // Change pin here as needed
+        const LEADER_PIN = "1234";
 
         // --- Initialization ---
         document.addEventListener("DOMContentLoaded", () => {
@@ -383,14 +398,12 @@
             slideWrapper.innerHTML = "";
 
             checklistsData.forEach((cl, index) => {
-                // Build Navigation Tab
                 const tab = document.createElement("button");
                 tab.className = `nav-tab ${index === 0 ? 'active' : ''}`;
                 tab.innerText = `List ${cl.id}`;
                 tab.onclick = () => switchToChecklist(index);
                 navContainer.appendChild(tab);
 
-                // Build Checklist Panel
                 const panel = document.createElement("div");
                 panel.className = "checklist-panel";
                 
@@ -418,18 +431,15 @@
 
         // --- Momentum Swing Transition ---
         function switchToChecklist(index) {
-            // Calculate relative distance to simulate momentum build-up/smoothing
             const distance = Math.abs(currentChecklistIndex - index);
             const slideWrapper = document.getElementById("slideWrapper");
             
-            // Adjust transition timing dynamically based on distance for momentum feel
             const dynamicSpeed = Math.min(0.8, 0.4 + (distance * 0.08));
             slideWrapper.style.transition = `transform ${dynamicSpeed}s cubic-bezier(0.175, 0.885, 0.32, 1.275)`;
             
             currentChecklistIndex = index;
             slideWrapper.style.transform = `translateX(-${index * 100}%)`;
 
-            // Update Active Tabs
             document.querySelectorAll(".nav-tab").forEach((tab, idx) => {
                 tab.classList.toggle("active", idx === index);
             });
@@ -441,7 +451,7 @@
             document.querySelectorAll(".am-pm-btn").forEach(btn => {
                 btn.classList.toggle("active", btn.innerText === val);
             });
-            buildUI(); // Rebuild panels with new AM/PM header state
+            buildUI();
         }
 
         // --- Web Audio API Chime Synthesizer ---
@@ -450,7 +460,7 @@
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
             }
-            const frequencies = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+            const frequencies = [523.25, 659.25, 783.99, 1046.5];
             frequencies.forEach((freq, i) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
@@ -499,37 +509,28 @@
 
         // --- Card Interaction Handler ---
         function handleCardClick(cardContainer, checklistId, taskName) {
-            if (cardContainer.classList.contains('flipped')) return; // Already completed
+            if (cardContainer.classList.contains('flipped')) return;
 
-            // 1. Flip card
             cardContainer.classList.add('flipped');
-            
-            // 2. Play Audio & Confetti
             playChime();
             triggerConfetti(cardContainer);
 
-            // 3. Post-flip bounce timing (triggers at 0.55s)
             setTimeout(() => {
                 cardContainer.classList.add('bounce');
             }, 550);
 
-            // 4. Send asynchronous data to Google Form (No-CORS integration template)
             submitToGoogleForm(checklistId, taskName, currentAmPm);
         }
 
         // --- Google Form & Sheet Integration Backend Hooks ---
         function submitToGoogleForm(checklistId, taskName, amPm) {
-            /* 
-              REPLACE THESE PLACEHOLDERS WITH YOUR ACTUAL GOOGLE FORM ENDPOINT & ENTRY IDs:
-              Example Endpoint: https://docs.google.com/forms/u/0/d/e/1FAIpQLSc.../formResponse
-            */
             const GOOGLE_FORM_URL = "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE";
             
             const formData = new FormData();
-            formData.append("entry.11111111", `List ${checklistId}`); // Replace with actual Entry ID for Checklist ID
-            formData.append("entry.22222222", taskName);             // Replace with actual Entry ID for Task Name
-            formData.append("entry.33333333", amPm);                 // Replace with actual Entry ID for AM/PM
-            formData.append("entry.44444444", new Date().toLocaleString()); // Timestamp
+            formData.append("entry.11111111", `List ${checklistId}`);
+            formData.append("entry.22222222", taskName);
+            formData.append("entry.33333333", amPm);
+            formData.append("entry.44444444", new Date().toLocaleString());
 
             if (GOOGLE_FORM_URL !== "YOUR_GOOGLE_FORM_ENDPOINT_URL_HERE") {
                 fetch(GOOGLE_FORM_URL, {
@@ -539,23 +540,6 @@
                 }).catch(err => console.error("Form submission error:", err));
             } else {
                 console.log(`[Mock Submission] Checklist: ${checklistId} | Task: ${taskName} | Session: ${amPm}`);
-            }
-        }
-
-        // Optional: Google Sheets Live Data Retrieval via GViz API function template
-        async function fetchGoogleSheetData(sheetName) {
-            const sheetId = "YOUR_GOOGLE_SHEET_ID_HERE";
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}&tqx=out:json`;
-            try {
-                const response = await fetch(url);
-                const text = await response.text();
-                // Parse GViz JSON response structure safely
-                const jsonString = text.substring(47).slice(0, -2);
-                const json = JSON.parse(jsonString);
-                return json.table.rows.map(row => row.c.map(cell => cell ? cell.v : ""));
-            } catch (error) {
-                console.error("Error fetching sheet data:", error);
-                return [];
             }
         }
 
@@ -581,7 +565,7 @@
                         <p><strong>Status:</strong> Connected to live data stream.</p>
                         <p><strong>Active Session:</strong> ${currentAmPm}</p>
                         <hr style="margin: 1rem 0; border:0; border-top:1px solid #cbd5e1;">
-                        <p style="color: var(--text-muted);">Leader dashboard overview loaded successfully. (Hook up <code>fetchGoogleSheetData</code> here to render submitted logs from your connected Google Sheet).</p>
+                        <p style="color: var(--text-muted);">Leader dashboard overview loaded successfully.</p>
                     </div>
                     <button class="close-modal" style="margin-top: 1rem;" onclick="closeLeaderView()">Close Dashboard</button>
                 `;
