@@ -321,35 +321,42 @@
             background-color: #f8fafc;
         }
 
+        .card-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-header-wrapper h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
         .preclosed-badge {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
             background: #2563eb;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            padding: 0.2rem 0.5rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 0.25rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            z-index: 5;
+            white-space: nowrap;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .card-front::-webkit-scrollbar { width: 6px; }
         .card-front::-webkit-scrollbar-track { background: transparent; }
         .card-front::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-
-        .card-front h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 0.75rem;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 0.5rem;
-            flex-shrink: 0;
-        }
 
         .card-front ul {
             padding-left: 1.25rem;
@@ -696,7 +703,8 @@
                     {
                         name: "Trash",
                         tasks: [
-                            { title: "Replace All Trash Bags", steps: ["Dispose and replace: outside back door, inside back door, 2 compacting dining room trashes, trash under TV, FC trash, and DT trash.", "Make lemonades if necessary."] }
+                            { title: "Replace All Trash Bags", steps: ["Dispose and replace: outside back door, inside back door, 2 compacting dining room trashes, trash under TV, FC trash, and DT trash."] },
+                            { title: "Make Lemonades", steps: ["Check lemonade levels and make a fresh batch if necessary for the upcoming shift."] }
                         ]
                     },
                     {
@@ -808,7 +816,7 @@
                     // Check if this task was preclosed (only applies to actual close lists)
                     const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
                     const preclosedClass = isPreclosed ? 'preclosed' : '';
-                    const preclosedBadgeHtml = isPreclosed ? '<div class="preclosed-badge">Preclosed!</div>' : '';
+                    const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
 
                     let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
                     
@@ -816,8 +824,10 @@
                         <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
                             <div class="task-card-inner">
                                 <div class="card-face card-front">
-                                    ${preclosedBadgeHtml}
-                                    <h3>${task.title}</h3>
+                                    <div class="card-header-wrapper">
+                                        <h3>${task.title}</h3>
+                                        ${preclosedBadgeHtml}
+                                    </div>
                                     <ul>${stepsHtml}</ul>
                                 </div>
                                 <div class="card-face card-back">
@@ -974,7 +984,6 @@
 
         function closeLeaderView() {
             document.getElementById("leaderModal").classList.remove("active");
-            // Reset modal layout back to PIN entry prompt for next time
             document.getElementById("leaderModalContent").innerHTML = `
                 <h3>Enter Leader PIN</h3>
                 <p>Please enter your secure 4-digit PIN to access the supervisor dashboard.</p>
@@ -982,12 +991,11 @@
                 <button onclick="verifyPin()">Access Dashboard</button>
                 <button class="close-modal" onclick="closeLeaderView()">Cancel</button>
             `;
-            renderApp(); // Refresh main screen in case data was cleared
+            renderApp();
         }
 
         function verifyPin() {
             if (document.getElementById("pinInput").value === LEADER_PIN) {
-                // Generate area testing clear buttons dynamically
                 const precloseShift = checklistsData.find(s => s.id === 'preclose');
                 let zoneButtonsHtml = '';
                 if (precloseShift) {
