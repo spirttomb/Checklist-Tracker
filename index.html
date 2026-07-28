@@ -312,6 +312,29 @@
             border: 2px solid #e2e8f0;
             justify-content: flex-start;
             overflow-y: auto;
+            position: relative;
+        }
+
+        /* Preclosed Styling Override */
+        .task-card-container.preclosed .card-front {
+            border: 3px solid #3b82f6 !important;
+            background-color: #f8fafc;
+        }
+
+        .preclosed-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: #2563eb;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .card-front::-webkit-scrollbar { width: 6px; }
@@ -481,7 +504,6 @@
 
     <script>
         // --- Restructured Data Hierarchy ---
-        // Preclose categorized into its own Tab, applying subtitles.
         const checklistsData = [
             {
                 id: "preclose",
@@ -695,6 +717,15 @@
         let completedTasks = new Set(); // Stores specific IDs of completed tasks to persist across navigation
         const LEADER_PIN = "1234";
 
+        // Helper to retrieve preclosed tracking data from localStorage
+        function getPreclosedMap() {
+            try {
+                return JSON.parse(localStorage.getItem('preclosedTasks')) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             renderTabs();
             renderApp();
@@ -750,6 +781,7 @@
             // View 2: Show Specific Tasks for Selected Area
             else {
                 const zone = shift.zones[activeZoneIndex];
+                const preclosedMap = getPreclosedMap();
                 
                 let html = `
                     <div class="fade-in">
@@ -772,12 +804,19 @@
                 zone.tasks.forEach((task, tIndex) => {
                     const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
                     const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
+                    
+                    // Check if this task was preclosed (only applies to actual close lists)
+                    const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
+                    const preclosedClass = isPreclosed ? 'preclosed' : '';
+                    const preclosedBadgeHtml = isPreclosed ? '<div class="preclosed-badge">Preclosed!</div>' : '';
+
                     let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
                     
                     html += `
-                        <div class="task-card-container ${isFlipped}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
                             <div class="task-card-inner">
                                 <div class="card-face card-front">
+                                    ${preclosedBadgeHtml}
                                     <h3>${task.title}</h3>
                                     <ul>${stepsHtml}</ul>
                                 </div>
@@ -789,10 +828,12 @@
                     `;
                 });
 
+                const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
+
                 html += `
                         </div>
                         <div class="submit-section">
-                            <button class="btn-submit-area" onclick="submitZoneChecklist()">Submit ${zone.name} Checklist</button>
+                            <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
                         </div>
                     </div>
                 `;
@@ -816,7 +857,6 @@
             document.querySelectorAll(".am-pm-btn").forEach(btn => {
                 btn.classList.toggle("active", btn.innerText === val);
             });
-            // Don't need to re-render if data is the same, but safe to do so
         }
 
         // Card Flip/Undo Mechanics
@@ -826,7 +866,7 @@
             if (isCurrentlyFlipped) {
                 // UNDO functionality
                 cardContainer.classList.remove('flipped');
-                cardContainer.classList.remove('bounce'); // Clean up bounce anim
+                cardContainer.classList.remove('bounce');
                 completedTasks.delete(taskId);
             } else {
                 // COMPLETE functionality
@@ -842,12 +882,11 @@
             }
         }
 
-        // Bulk Submit specific area
+        // Bulk Submit / Utility Preclose Handler
         function submitZoneChecklist() {
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[activeZoneIndex];
             
-            // Check if all are complete (optional validation)
             let totalTasks = zone.tasks.length;
             let completedCount = 0;
             
@@ -857,18 +896,29 @@
             });
 
             if (completedCount < totalTasks) {
-                const confirmSubmit = confirm(`You have only completed ${completedCount}/${totalTasks} tasks in the ${zone.name}. Submit anyway?`);
+                const confirmSubmit = confirm(`You have only completed ${completedCount}/${totalTasks} tasks in ${zone.name}. Submit anyway?`);
                 if (!confirmSubmit) return;
             }
 
-            // In reality, this is where you format your Google Form POST request
-            // You can append the data for this specific zone here.
-            console.log(`Submitting ${shift.title} - ${zone.name} [Session: ${currentAmPm}]`);
-            console.log(`Status: ${completedCount}/${totalTasks} completed.`);
+            // If it's the Preclose list, save checked items to local storage and clear form utility
+            if (shift.id === 'preclose') {
+                const preclosedMap = getPreclosedMap();
+                zone.tasks.forEach((task, tIndex) => {
+                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                    if (completedTasks.has(taskId)) {
+                        preclosedMap[`${zone.name}::${task.title}`] = true;
+                        completedTasks.delete(taskId); // Clear active check state so the utility form resets
+                    }
+                });
+                localStorage.setItem('preclosedTasks', JSON.stringify(preclosedMap));
+                alert(`${zone.name} preclose saved successfully! The preclose list has been cleared.`);
+                goBackToAreas();
+                return;
+            }
 
+            // Normal closing submission handling
+            console.log(`Submitting ${shift.title} - ${zone.name} [Session: ${currentAmPm}]`);
             alert(`${zone.name} checklist successfully submitted!`);
-            
-            // Return to areas view
             goBackToAreas();
         }
 
