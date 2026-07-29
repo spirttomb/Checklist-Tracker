@@ -998,34 +998,75 @@
 
         // Queries the Google Sheet via the visualization API to find the most recent submission date
         async function fetchSheetLatestStatus(sheetId) {
-            if (!sheetId) return null;
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=SELECT A, B ORDER BY A DESC LIMIT 1`;
-            try {
-                const res = await fetch(url);
-                const text = await res.text();
-                // Extract the JSON from Google's callback wrapper
-                const jsonString = text.match(/(?<=.*\().*(?=\);)/s)[0];
-                const data = JSON.parse(jsonString);
-                
-                if (data.table.rows.length > 0) {
-                    const timestampField = data.table.rows[0].c[0];
-                    if (!timestampField) return null;
-                    
-                    const dateStr = timestampField.f || timestampField.v; 
-                    const dateObj = new Date(dateStr);
-                    const today = new Date();
-                    
-                    // If the latest entry was submitted today, the area is locked
-                    if (dateObj.toDateString() === today.toDateString()) {
-                        const submitter = data.table.rows[0].c[1] ? data.table.rows[0].c[1].v : "Team Member";
-                        return { teamMember: submitter, leaderVerified: false, leaderName: null }; 
-                    }
-                }
-            } catch(e) {
-                console.error("Failed to read sheet data for sheet ID " + sheetId, e);
-            }
+    if (!sheetId) return null;
+    
+    // FIX 1: Safely URL-encode the SQL query so the browser doesn't choke on spaces
+    const query = encodeURIComponent("SELECT A, B ORDER BY A DESC LIMIT 1");
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
+    
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        
+        const text = await res.text();
+        
+        // FIX 2: Remove the dangerous Regex causing the infinite browser freeze.
+        // Google wraps the data in a function call. We will safely cut it out using string indexes.
+        const prefix = "setResponse(";
+        const startIndex = text.indexOf(prefix);
+        
+        if (startIndex === -1) {
+            console.error("Invalid response format from sheet:", sheetId);
             return null;
         }
+        
+        // Safely extract just the JSON string
+        const jsonStart = startIndex + prefix.length;
+        const jsonEnd = text.lastIndexOf(")");
+        const jsonString = text.substring(jsonStart, jsonEnd);
+        
+        const data = JSON.parse(jsonString);
+        
+        // FIX 3: Ensure the sheet actually has data rows to prevent crashes on empty sheets
+        if (data.table && data.table.rows && data.table.rows.length > 0) {
+            const timestampField = data.table.rows[0].c[0];
+            if (!timestampField) return null;
+            
+            // Google Viz API returns dates differently depending on formatting
+            const dateVal = timestampField.f || timestampField.v; 
+            if (!dateVal) return null;
+
+            let dateObj;
+            
+            // If Google returns its proprietary Date(YYYY, MM, DD, HH, mm, ss) format
+            if (typeof dateVal === 'string' && dateVal.startsWith('Date(')) {
+                const dateArgs = dateVal.match(/\d+/g);
+                if (dateArgs && dateArgs.length >= 3) {
+                    // JavaScript Date objects use 0-indexed months (0 = Jan), just like Google's API
+                    dateObj = new Date(dateArgs[0], dateArgs[1], dateArgs[2]);
+                } else {
+                    dateObj = new Date();
+                }
+            } else {
+                // Otherwise, standard date parse
+                dateObj = new Date(dateVal);
+            }
+            
+            const today = new Date();
+            
+            // If the latest entry was submitted today, lock the area globally
+            if (dateObj.toDateString() === today.toDateString()) {
+                const submitterField = data.table.rows[0].c[1];
+                const submitter = (submitterField && submitterField.v) ? submitterField.v : "Team Member";
+                return { teamMember: submitter, leaderVerified: false, leaderName: null }; 
+            }
+        }
+    } catch(e) {
+        console.error("Error processing sheet ID: " + sheetId, e);
+    }
+    
+    return null;
+}
 
         // Reaches out to all sheets for the current active tab concurrently
         async function loadShiftStatusFromCloud() {
