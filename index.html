@@ -480,7 +480,7 @@
 
     <header>
         <div class="top-controls">
-            <div></div> <!-- Spacer for grid centering -->
+            <div></div>
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
                 <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
@@ -489,16 +489,11 @@
                 <button class="leader-btn" onclick="openLeaderView()">Leader Overview</button>
             </div>
         </div>
-        <div class="checklist-nav" id="checklistNav">
-            <!-- Tabs injected here -->
-        </div>
+        <div class="checklist-nav" id="checklistNav"></div>
     </header>
 
-    <div class="viewport-container" id="appViewport">
-        <!-- Dynamic Content Injected Here -->
-    </div>
+    <div class="viewport-container" id="appViewport"></div>
 
-    <!-- Leader View PIN Modal -->
     <div class="modal-overlay" id="leaderModal">
         <div class="modal-card" id="leaderModalContent">
             <h3>Enter Leader PIN</h3>
@@ -510,452 +505,531 @@
     </div>
 
     <script>
-    // --- Leader Configuration ---
-    const LEADER_PINS = {
-        "1234": "Josh",
-        "5678": "Sarah",
-        "9999": "Admin"
-    };
-
-    // --- Mapped Data Structure ---
-    const checklistsData = [
-        {
-            id: "preclose",
-            title: "Preclose",
-            zones: [
-                {
-                    name: "Dining Room",
-                    tasks: [
-                        { title: "Vacuum Rugs", steps: ["Vacuum all rugs thoroughly."] },
-                        { title: "Sweep", steps: ["Sweep the area completely."] }
-                    ]
-                }
-            ]
-        },
-        {
-            id: "close-930",
-            title: "9:30 Close",
-            zones: [
-                {
-                    name: "Front Counter",
-                    formId: "1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8",
-                    tasks: [
-                        { title: "Break Down Lemonades", entryId: "entry.4296956", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
-                        { title: "Transfer And Clean Tea", entryId: "entry.413908059", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
-                        { title: "Bring Back Remaining Dishes", entryId: "entry.1761965454", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
-                        { title: "Clean Drink Towers", entryId: "entry.1888917489", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution (50-100 ppm)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
-                        { title: "Clean Swinging Door", entryId: "entry.871673908", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
-                        { title: "Clean Lowboy", entryId: "entry.286725968", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
-                        { title: "Wipe Down All Counters", entryId: "entry.1759044535", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
-                        { title: "Clean All POS Terminals And Card Readers", entryId: "entry.1142316488", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] }
-                    ]
-                },
-                {
-                    name: "Dining Room",
-                    formId: "1cqvIwDRY602h7UxHgDwlTSH4b6fYggnNQRC9XPasOrM",
-                    tasks: [
-                        { title: "Vacuum Rugs", entryId: "entry.626307994", steps: ["Vacuum all rugs..."] },
-                        { title: "Sweep", entryId: "entry.1240294498", steps: ["Sweep thoroughly..."] },
-                        { title: "Flowers", entryId: "entry.390885381", steps: ["Collect flowers..."] },
-                        { title: "Cleaning Furniture", entryId: "entry.276970683", steps: ["Clean all tables..."] },
-                        { title: "Put Up Chairs", entryId: "entry.958243505", steps: ["Put up all chairs..."] },
-                        { title: "Blinds", entryId: "entry.2038394362", steps: ["Close all blinds"] },
-                        { title: "Cleaning Table Items", entryId: "entry.1160699902", steps: ["Clean all trays..."] },
-                        { title: "Return Items", entryId: "entry.537812247", steps: ["Line all clean trays..."] },
-                        { title: "Condiment Stand", entryId: "entry.396870801", steps: ["Stock condiment stand"] }
-                    ]
-                },
-                {
-                    name: "Bathrooms",
-                    formId: "1lNas0TNyUt4mFkuu0tvkf7rqdgYbqCgaUTDVa4qxRVE",
-                    tasks: [
-                        { title: "Mirrors And Sink", entryId: "entry.1818462714", steps: ["Clean mirrors..."] },
-                        { title: "Baby Changing Station", entryId: "entry.1769411751", steps: ["Wipe down..."] },
-                        { title: "Doors", entryId: "entry.1213384330", steps: ["Clean door..."] },
-                        { title: "Dispensers", entryId: "entry.1667675873", steps: ["Clean soap..."] },
-                        { title: "Metal Appliances", entryId: "entry.893137986", steps: ["Clean all metal..."] },
-                        { title: "High-Touch Surfaces", entryId: "entry.1535583909", steps: ["Wipe down..."] },
-                        { title: "Urinals And Toilets", entryId: "entry.2118734279", steps: ["Spray entirety..."] },
-                        { title: "Stocking", entryId: "entry.1400133087", steps: ["Stock paper towels..."] },
-                        { title: "Repeat", entryId: "entry.1223569076", steps: ["Repeat with other bathroom"] },
-                        { title: "Floors", entryId: "entry.1712465686", steps: ["Sweep both..."] },
-                        { title: "Trash", entryId: "entry.2074825630", steps: ["Replace trashes..."] }
-                    ]
-                },
-                {
-                    name: "Break Room & Tech",
-                    formId: "13U0IhjGYdn9CqQNE46B0jjHQQ_1LB5i0mA_haQ1SUMk",
-                    tasks: [
-                        { title: "Personal Belongings", entryId: "entry.1585656959", steps: ["Throw away all trash..."] },
-                        { title: "Cleaning Furniture", entryId: "entry.1254873848", steps: ["Clean all tables..."] },
-                        { title: "Tms Bags", entryId: "entry.1840882147", steps: ["Unplug all TMS bags..."] },
-                        { title: "Floors", entryId: "entry.87698102", steps: ["Sweep floor..."] },
-                        { title: "Microwave", entryId: "entry.1475384836", steps: ["Wipe inside microwave..."] },
-                        { title: "Trash", entryId: "entry.1585656959", steps: ["Replace and dispose..."] },
-                        { title: "Tech", entryId: "entry.1530636489", steps: ["Ensure all tech is plugged in..."] }
-                    ]
-                },
-                {
-                    name: "Floors",
-                    formId: "1wH9ewa1DVMZhfCUgJN3PckwHHSQc0av6Ty-8WKbohK8",
-                    tasks: [
-                        { title: "Floor Prep", entryId: "entry.1904270649", steps: ["Ensure floor has been swept..."] },
-                        { title: "Mopping", entryId: "entry.727982962", steps: ["One person mops..."] },
-                        { title: "Chairs", entryId: "entry.1202343262", steps: ["Ensure all chairs..."] }
-                    ]
-                }
-            ]
-        },
-        {
-            id: "close-1030",
-            title: "10:30 Close",
-            zones: [
-                {
-                    name: "Front Counter",
-                    formId: "1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8",
-                    tasks: [
-                        { title: "Break Down Lemonades", entryId: "entry.4296956", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
-                        { title: "Transfer And Clean Tea", entryId: "entry.413908059", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
-                        { title: "Bring Back Remaining Dishes", entryId: "entry.1761965454", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
-                        { title: "Clean Drink Towers", entryId: "entry.1888917489", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution (50-100 ppm)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
-                        { title: "Clean Swinging Door", entryId: "entry.871673908", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
-                        { title: "Clean Lowboy", entryId: "entry.286725968", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
-                        { title: "Wipe Down All Counters", entryId: "entry.1759044535", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
-                        { title: "Clean All POS Terminals And Card Readers", entryId: "entry.1142316488", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] }
-                    ]
-                },
-                {
-                    name: "Desserts",
-                    formId: "1g815xRWfOvSS2dtFnYz4BXJLUENieCmb2Jad6w_EGUY",
-                    tasks: [
-                        { title: "Put One Side Of Taylor On Wash", entryId: "entry.771576326", steps: ["Put one side of Taylor on wash"] },
-                        { title: "Kay-5 Sanitizer Solution", entryId: "entry.1069087250", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution (50-100 ppm)"] },
-                        { title: "Dishes & Leftovers", entryId: "entry.498948150", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray)", "Save leftover oreo, chocolate syrup, cherries and lemons in a styrofoam cup, making sure to label them", "For Saturday, bring back disassembled chocolate syrup dispenser", "For Wednesday/Saturday, bring disassembled oreo dispenser back as well"] },
-                        { title: "Clean Exterior & Spindles", entryId: "entry.1683751067", steps: ["Clean the outside of the machine including the spindles"] },
-                        { title: "Pull Taylor Out & Clean Surrounding Walls", entryId: "entry.1253411718", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess to the right of the machine"] },
-                        { title: "Clean Lowboy", entryId: "entry.380188848", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
-                    ]
-                },
-                {
-                    name: "Drinks",
-                    formId: "1dkZq5NXKcw1GIEJZoLYY0pDPmkQUSnegK_RWK7Ps5nE",
-                    tasks: [
-                        { title: "Break Down Lemonades", entryId: "entry.880965357", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
-                        { title: "Bring Back Remaining Dishes", entryId: "entry.1093113017", steps: ["Bring back disassembled strawberry shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts"] },
-                        { title: "Wipe Down Drinks Area Counters", entryId: "entry.229081274", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
-                        { title: "Spray DT Window Door", entryId: "entry.229081274", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
-                        { title: "Clean Coffee Pots", entryId: "entry.1784850478", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle, remove and discard filter and tab", "Remove the coffee pot lid, use the white scrub brush to thoroughly clean the inside, rinse and return brush to dish", "Empty cleaning solution into dump sink, place pot back, run rinse cycle with no filter/tab, drain rinse water", "Place lid on coffee pot and return to station, repeat with DT coffee pot"] },
-                        { title: "Clean Lowboy", entryId: "entry.380188848", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
-                    ]
-                },
-                {
-                    name: "Chutes",
-                    formId: "1ejUJJdt7ObulnrhtW81f9bjZWJWhp-ORyMQYaX2hnS4",
-                    tasks: [
-                        { title: "Fry Bins", entryId: "entry.1831189851", steps: ["Bring fry bins back to dish"] },
-                        { title: "Clean Lowboy", entryId: "entry.2058407943", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
-                        { title: "Pull Out Metal Bag Holders", entryId: "entry.524565776", steps: ["Pull out metal bag holders and set them aside"] },
-                        { title: "Wipe Down Counter Area", entryId: "entry.1248822629", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
-                        { title: "Empty & Wipe Bag Holders", entryId: "entry.1163698153", steps: ["Empty the bag holders and wipe them down thoroughly"] },
-                        { title: "Refill Bag Holders", entryId: "entry.216194971", steps: ["After they dry, refill them with bags and place them back"] }
-                    ]
-                }
-            ]
-        }
-    ];
-
-    // --- State Management ---
-    let currentAmPm = 'PM'; 
-    let activeTabIndex = 0; 
-    let activeZoneIndex = null; 
-    let completedTasks = new Set();
-    let isLeaderMode = false;
-    let currentLeaderName = "";
-
-    function getPreclosedMap() {
-        try { return JSON.parse(localStorage.getItem('preclosedTasks')) || {}; } 
-        catch (e) { return {}; }
-    }
-
-    function getSubmittedAreas() {
-        try { return JSON.parse(localStorage.getItem('submittedAreas')) || []; }
-        catch(e) { return []; }
-    }
-    
-    function markAreaSubmitted(shiftId, zoneName) {
-        let submitted = getSubmittedAreas();
-        submitted.push(`${shiftId}::${zoneName}`);
-        localStorage.setItem('submittedAreas', JSON.stringify(submitted));
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        renderTabs();
-        renderApp();
-    });
-
-    function renderTabs() {
-        const navContainer = document.getElementById("checklistNav");
-        navContainer.innerHTML = "";
-        checklistsData.forEach((shift, index) => {
-            const tab = document.createElement("button");
-            tab.className = `nav-tab ${index === activeTabIndex ? 'active' : ''}`;
-            tab.innerText = shift.title;
-            tab.onclick = () => {
-                activeTabIndex = index;
-                activeZoneIndex = null; 
-                renderTabs();
-                renderApp();
-            };
-            navContainer.appendChild(tab);
-        });
-    }
-
-    function renderApp() {
-        const appViewport = document.getElementById("appViewport");
-        const shift = checklistsData[activeTabIndex];
-        const submittedAreas = getSubmittedAreas();
-        
-        if (activeZoneIndex === null) {
-            let html = `
-                <div class="fade-in">
-                    <div class="view-header">
-                        <h2 class="view-title">${isLeaderMode ? 'VERIFICATION: ' : ''}${shift.title} Areas</h2>
-                        <p style="color: var(--text-muted); margin-top: 0.5rem;">${isLeaderMode ? 'Select a completed area to verify.' : 'Select an area below to view its checklist.'}</p>
-                    </div>
-            `;
-
-            if (shift.id === 'preclose') {
-                html += `
-                    <div style="margin-bottom: 1.5rem;">
-                        <button class="btn-back" onclick="clearPrecloseData()" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Clear Preclose Data</button>
-                    </div>
-                `;
+        const checklistsData = [
+            {
+                id: "preclose",
+                title: "Preclose",
+                zones: [
+                    {
+                        name: "Dining Room",
+                        subtitle: "Start at 8:00 PM",
+                        tasks: [
+                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways"] },
+                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in"] },
+                            { title: "Blinds", steps: ["Close all blinds"] },
+                            { title: "Condiment Stand", steps: ["Stock condiment stand"] },
+                            { title: "Cleaning Furniture", steps: ["Clean all tables, chairs, high chairs, and booths"] },
+                            { title: "Cleaning Table Items", steps: ["Clean all trays, table toppers, and unused sauces"] },
+                            { title: "Return Items", steps: ["Line all clean trays, and return trys, table toppers, and unused sauces to front counter"] },
+                            { title: "Sweep", steps: ["Sweep thoroughly including under all table, chairs, booths"] }
+                        ]
+                    },
+                    {
+                        name: "Front Counter",
+                        subtitle: "Start at 8:30 PM",
+                        tasks: [
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Transfer And Clean Tea", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
+                            { title: "Clean Drink Towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
+                            { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                            { title: "Clean POS Terminals And Card Readers", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] }
+                        ]
+                    },
+                    {
+                        name: "Desserts",
+                        subtitle: "Start at 9:30 PM",
+                        tasks: [
+                            { title: "Taylor Wash", steps: ["Put one side of Taylor on wash"] },
+                            { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Dishes & Leftovers", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray), while saving leftover oreo (if appicable), choccolate syrup (if applicable), cherries and lemons in a styrofoam cup, making sure to label them. For Saturday, bring back disassembled chocolate syrup dispenser For Wendsday/saturday, bring disassembled oreo dispenser back as well"] },
+                            { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles"] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
+                        ]
+                    },
+                    {
+                        name: "Drinks",
+                        subtitle: "Start at 9:30 PM",
+                        tasks: [
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Bring back disassembled strawberry shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts"] },
+                            { title: "Wipe Down Counters", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
+                            { title: "Dt Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
+                            { title: "Clean Coffee Pots", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station", "Repeat with DT coffee pot"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
+                        ]
+                    },
+                    {
+                        name: "Chutes",
+                        subtitle: "Start at 9:30 PM",
+                        tasks: [
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set them aside"] },
+                            { title: "Wipe Down Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
+                            { title: "Clean Bag Holders", steps: ["Empty the bag holders and wipe them down thoroughly", "After they dry, refill them with bags and place them back"] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "close-930",
+                title: "9:30 Close",
+                zones: [
+                    {
+                        name: "Front Counter",
+                        tasks: [
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into an empty lemonade bin", "Print labels and apply them to the lemonade, bring them to the walk-in", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Transfer And Clean Tea", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into the dump sink", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
+                            { title: "Clean Drink Towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down all metal splash guards with a sanitizing wipe", "Clean all drip trays with hot water followed by a sanitizing wipe"] },
+                            { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                            { title: "Clean POS Terminals And Card Readers", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] },
+                            { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
+                            { title: "Bring Back Dishes", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, lemonade machine"] }
+                        ]
+                    },
+                    {
+                        name: "Dining Room",
+                        tasks: [
+                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways"] },
+                            { title: "Sweep", steps: ["Sweep thoroughly including under all table, chairs, booths"] },
+                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in"] },
+                            { title: "Cleaning Furniture", steps: ["Clean all tables, chairs, high chairs, and booths"] },
+                            { title: "Put Up Chairs", steps: ["Put up all chairs (Only after 9pm)"] },
+                            { title: "Blinds", steps: ["Close all blinds"] },
+                            { title: "Cleaning Table Items", steps: ["Clean all trays, table toppers, and unused sauces"] },
+                            { title: "Return Items", steps: ["Line all clean trays, and return trys, table toppers, and unused sauces to front counter"] },
+                            { title: "Condiment Stand", steps: ["Stock condiment stand"] }
+                        ]
+                    },
+                    {
+                        name: "Bathrooms",
+                        tasks: [
+                            { title: "Mirrors And Sink", steps: ["Clean mirrors with blue spray and dry with paper towels", "Clean hand sink with sanitizing wipes"] },
+                            { title: "Baby Changing Station", steps: ["Wipe down the baby changing station with a sanitizing wipe"] },
+                            { title: "Doors", steps: ["Clean door and stall doors with blue spray and paper towels"] },
+                            { title: "Dispensers", steps: ["Clean soap and sanitizing dispensers, paper towel dispenser, toilet paper dispenser"] },
+                            { title: "Metal Appliances", steps: ["Clean all metal appliances with blue spray, dry with paper towel"] },
+                            { title: "High-Touch Surfaces", steps: ["Wipe down everything commonly touched with a sanitizing wipe (door handle, stall door handle, light switch, toilet flusher)"] },
+                            { title: "Urinals And Toilets", steps: ["Spray entirety urinals/toilets with restroom cleaner, dry with cloth towels"] },
+                            { title: "Stocking", steps: ["Stock paper towels, toilet paper, hand soap, santizer, toilet seat covers"] },
+                            { title: "Repeat", steps: ["Repeat with other bathroom"] },
+                            { title: "Floors", steps: ["Sweep both bathrooms", "Prepare mop water in the red mop bucket, use red mop to mop both bathroom floors"] },
+                            { title: "Trash", steps: ["Replace trashes in both bathrooms"] }
+                        ]
+                    },
+                    {
+                        name: "Break Room & Tech",
+                        tasks: [
+                            { title: "Personal Belongings", steps: ["Throw away all trash on the tables", "Hang all coats, jackets, backbacks", "Place all shoes onto the windowsill"] },
+                            { title: "Cleaning Furniture", steps: ["Clean all tables and chairs, flip the chairs up"] },
+                            { title: "Tms Bags", steps: ["Unplug all TMS bags, and place them on the top rack of the tech room"] },
+                            { title: "Floors", steps: ["Sweep floor, mop with the blue mop bucket and blue mop"] },
+                            { title: "Microwave", steps: ["Wipe inside microwave with a sanitizing wipe"] },
+                            { title: "Trash", steps: ["Replace and dispose of trash"] },
+                            { title: "Tech", steps: ["Ensure all tech is plugged in", "Scan the tech form qr code and fill it out"] }
+                        ]
+                    },
+                    {
+                        name: "Floors",
+                        tasks: [
+                            { title: "Floor Prep", steps: ["Ensure floor has been swept, rugs have been vaccumed, and chair put up"] },
+                            { title: "Mopping", steps: ["One person mops from the lobby to the back door, one person mops from the back door to the lobby, meet in the middle"] },
+                            { title: "Chairs", steps: ["After moping, ensure all chairs have been taken back down"] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "close-1030",
+                title: "10:30 Close",
+                zones: [
+                    {
+                        name: "Desserts",
+                        tasks: [
+                            { title: "Taylor Wash", steps: ["Put Taylor on wash for 15 mins"] },
+                            { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Dishes & Leftovers", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray), while saving leftover oreo (if appicable), choccolate syrup (if applicable), cherries and lemons in a styrofoam cup, making sure to label them. For Saturday, bring back disassembled chocolate syrup dispenser For Wendsday/saturday, bring disassembled oreo dispenser back as well For Saturday, turn off shakebase machine, place used boxes in the walk-in with a date label, and leave the door open to defrost"] },
+                            { title: "Drain Icedream", steps: ["Drain all icedream into the leftover icedream tub, sticker it with a date label, put it in the walk-in"] },
+                            { title: "Wash Taylor Inside", steps: ["Rinse Taylor with hot water", "Pour the prepared Kay-5 solution into Taylor", "Wipe down the inside with blue wipes, using the kay-5 to clean the inside", "Drain the Kay-5 and rinse with water again"] },
+                            { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles", "Unplug Taylor"] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
+                            { title: "Wash & Reassemble", steps: ["Disaasemble Taylor, and wash the pieces", "Lay the pieces out on the white board and ensure you aren't missing any pieces", "Return your dishes and reassemble them"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
+                        ]
+                    },
+                    {
+                        name: "Drinks",
+                        tasks: [
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into an empty lemonade bin", "Print labels and apply them to the lemonade, bring them to the walk-in", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Transfer Tea", steps: ["Dump the remaining tea into the dump sink", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Bring back disassembled strawberry shooter, sugar scoop, whisks, spoons, tea brewing urns, dump sink insert, tea and coffee brewing inserts"] },
+                            { title: "Clean Drink Tower", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down the metal splash guard with a sanitizing wipe", "Clean the drip tray with hot water followed by a sanitizing wipe"] },
+                            { title: "Wipe Down Counters", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Dt Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
+                            { title: "Clean Dumpsink", steps: ["Clean the dumpsink"] },
+                            { title: "Clean Coffee Pots", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station", "Repeat with DT coffee pot"] },
+                            { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
+                            { title: "Bring Back Dishes", steps: ["Return sugar scoop, whisk, spoon, tea brewing urns, dump sink insert, tea and coffee brewing inserts, tea drip tray and reassemble strawberry shooter, tea urns, lemonade machine"] }
+                        ]
+                    },
+                    {
+                        name: "Chutes",
+                        tasks: [
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish"] },
+                            { title: "Faceplates & Dividers", steps: ["Unscrew the faceplates and keep them in a secured area", "Remove all dividers"] },
+                            { title: "Wipe Down", steps: ["Wipe chutes down with a sanitizing wipe", "Wipe down all pieces with a santizing wipe"] },
+                            { title: "Reassemble", steps: ["Put the chutes back together"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set them aside"] },
+                            { title: "Wipe Down Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
+                            { title: "Clean Bag Holders", steps: ["Empty the bag holders and wipe them down thoroughly", "After they dry, refill them with bags and place them back"] },
+                            { title: "Return Fry Bins", steps: ["Return the clean fry bins"] }
+                        ]
+                    },
+                    {
+                        name: "Stocking",
+                        tasks: [
+                            { title: "Sauce Wall", steps: ["Stocks FC and DT sauce walls, including breakfast condiments"] },
+                            { title: "Lowboy", steps: ["Stocks FC, DT, Bagging, and Desserts lowboys", "Checks dates in bagging lowboy, wastes expired product"] },
+                            { title: "Cups Lids Straws Cup Carriers Icebins", steps: ["Stocks FC and DT cups, lids, straws, cup carriers", "Stocks FC and DT ice bins"] },
+                            { title: "Boxed Goods", steps: ["Stocks boxed bags, boxed napkins, boxed straws, boxed ketchup, boxed cup carriers"] }
+                        ]
+                    },
+                    {
+                        name: "Trash",
+                        tasks: [
+                            { title: "Trash Removal", steps: ["Dispose of and replace all trash bags, including the one outside of the building by the back door, the one inside of the building by the back door, the two compacting dining room trashes, the trash under the TV, the FC trash, and the DT trash"] },
+                            { title: "Make Lemonades", steps: ["Check with a leader once trash is complete to see if lemonade needs to be made for the morning"] }
+                        ]
+                    },
+                    {
+                        name: "Floors",
+                        tasks: [
+                            { title: "Sweep", steps: ["Sweep entire DT area, including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] },
+                            { title: "Mop", steps: ["Mop using the blue mop from the mobile drinks area to the tea/coffee brewing area, including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] }
+                        ]
+                    }
+                ]
             }
+        ];
 
-            html += `<div class="areas-grid">`;
+        let currentAmPm = 'PM'; 
+        let activeTabIndex = 0; 
+        let activeZoneIndex = null; 
+        let completedTasks = new Set(); 
+        const LEADER_PIN = "1234";
+
+        function getPreclosedMap() {
+            try {
+                return JSON.parse(localStorage.getItem('preclosedTasks')) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTabs();
+            renderApp();
+        });
+
+        function renderTabs() {
+            const navContainer = document.getElementById("checklistNav");
+            navContainer.innerHTML = "";
             
-            shift.zones.forEach((zone, zIndex) => {
-                const isSubmitted = submittedAreas.includes(`${shift.id}::${zone.name}`);
-                
-                if (isLeaderMode && !isSubmitted && shift.id !== 'preclose') return;
-
-                html += `
-                    <div class="area-card" onclick="selectZone(${zIndex})" style="${isLeaderMode ? 'border-color: #22c55e;' : ''}">
-                        <h3>${zone.name}</h3>
-                        ${isSubmitted ? '<p class="area-subtitle" style="background:#dcfce7; color:#166534;">Ready for Verification</p>' : (zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : '')}
-                    </div>
-                `;
+            checklistsData.forEach((shift, index) => {
+                const tab = document.createElement("button");
+                tab.className = `nav-tab ${index === activeTabIndex ? 'active' : ''}`;
+                tab.innerText = shift.title;
+                tab.onclick = () => {
+                    activeTabIndex = index;
+                    activeZoneIndex = null; 
+                    renderTabs();
+                    renderApp();
+                };
+                navContainer.appendChild(tab);
             });
+        }
 
-            html += `</div></div>`;
-            appViewport.innerHTML = html;
-        } 
-        else {
-            const zone = shift.zones[activeZoneIndex];
-            const preclosedMap = getPreclosedMap();
+        function renderApp() {
+            const appViewport = document.getElementById("appViewport");
+            const shift = checklistsData[activeTabIndex];
             
-            let html = `
-                <div class="fade-in">
-                    <div class="task-view-header">
-                        <div>
-                            <h2 class="task-zone-title">${zone.name}</h2>
-                            <p style="color: var(--text-muted); margin-top: 0.25rem;">${isLeaderMode ? `Leader Verification Mode (${currentLeaderName})` : `${shift.title} Tasks`}</p>
+            if (activeZoneIndex === null) {
+                let html = `
+                    <div class="fade-in">
+                        <div class="view-header">
+                            <h2 class="view-title">${shift.title} Areas</h2>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
                         </div>
-                        <button class="btn-back" onclick="goBackToAreas()">Back to Areas</button>
-                    </div>
-                    <div class="cards-grid">
-            `;
-
-            zone.tasks.forEach((task, tIndex) => {
-                const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-                const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
-                const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
-                const preclosedClass = isPreclosed ? 'preclosed' : '';
-                const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
-                const stampText = isLeaderMode ? 'VERIFIED' : 'COMPLETED';
-
-                let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+                        <div class="areas-grid">
+                `;
                 
-                html += `
-                    <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
-                        <div class="task-card-inner">
-                            <div class="card-front card-face">
-                                <div class="card-header-wrapper">
-                                    <h3>${task.title}</h3>
-                                    ${preclosedBadgeHtml}
+                shift.zones.forEach((zone, zIndex) => {
+                    html += `
+                        <div class="area-card" onclick="selectZone(${zIndex})">
+                            <h3>${zone.name}</h3>
+                            ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+                appViewport.innerHTML = html;
+            } else {
+                const zone = shift.zones[activeZoneIndex];
+                const preclosedMap = getPreclosedMap();
+                
+                let html = `
+                    <div class="fade-in">
+                        <div class="task-view-header">
+                            <div>
+                                <h2 class="task-zone-title">
+                                    ${zone.name}
+                                    ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
+                                </h2>
+                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
+                            </div>
+                            <button class="btn-back" onclick="goBackToAreas()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back to Areas
+                            </button>
+                        </div>
+                        <div class="cards-grid">
+                `;
+
+                zone.tasks.forEach((task, tIndex) => {
+                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                    const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
+                    
+                    const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
+                    const preclosedClass = isPreclosed ? 'preclosed' : '';
+                    const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
+
+                    let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+                    
+                    html += `
+                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                            <div class="task-card-inner">
+                                <div class="card-face card-front">
+                                    <div class="card-header-wrapper">
+                                        <h3>${task.title}</h3>
+                                        ${preclosedBadgeHtml}
+                                    </div>
+                                    <ul>${stepsHtml}</ul>
                                 </div>
-                                <ul>${stepsHtml}</ul>
+                                <div class="card-face card-back">
+                                    <div class="stamp">COMPLETED</div>
+                                </div>
                             </div>
-                            <div class="card-back card-face" style="${isLeaderMode ? 'background: linear-gradient(135deg, #0f172a, #334155); border-color: #0f172a;' : ''}">
-                                <div class="stamp">${stampText}</div>
-                            </div>
+                        </div>
+                    `;
+                });
+
+                const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
+
+                html += `
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
                         </div>
                     </div>
                 `;
-            });
-
-            const submitBtnText = isLeaderMode ? `Submit Verification` : `Submit ${zone.name} Checklist`;
-
-            html += `
-                    </div>
-                    <div class="submit-section">
-                        <button class="btn-submit-area" onclick="submitZoneChecklist()" style="${isLeaderMode ? 'background: #0f172a;' : ''}">${submitBtnText}</button>
-                    </div>
-                </div>
-            `;
-            appViewport.innerHTML = html;
+                appViewport.innerHTML = html;
+            }
         }
-    }
 
-    function selectZone(index) {
-        activeZoneIndex = index;
-        renderApp();
-    }
-
-    function goBackToAreas() {
-        activeZoneIndex = null;
-        renderApp();
-    }
-
-    function setAmPm(val) {
-        currentAmPm = val;
-        document.querySelectorAll(".am-pm-btn").forEach(btn => btn.classList.toggle("active", btn.innerText === val));
-    }
-
-    function toggleCard(cardContainer, taskId) {
-        const isCurrentlyFlipped = cardContainer.classList.contains('flipped');
-        if (isCurrentlyFlipped) {
-            cardContainer.classList.remove('flipped', 'bounce');
-            completedTasks.delete(taskId);
-        } else {
-            cardContainer.classList.add('flipped');
-            completedTasks.add(taskId);
-            setTimeout(() => cardContainer.classList.add('bounce'), 550);
-        }
-    }
-
-    function clearPrecloseData() {
-        if (confirm("Are you sure you want to clear all preclosed progress?")) {
-            localStorage.removeItem('preclosedTasks');
-            localStorage.removeItem('submittedAreas');
-            alert("Preclose data has been cleared.");
+        function selectZone(index) {
+            activeZoneIndex = index;
             renderApp();
         }
-    }
 
-    async function postToGoogleForm(formId, formDataObj) {
-        const url = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
-        const params = new URLSearchParams();
-        for (const [key, value] of Object.entries(formDataObj)) {
-            params.append(key, value);
+        function goBackToAreas() {
+            activeZoneIndex = null;
+            renderApp();
         }
-        
-        try {
-            await fetch(url, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params.toString()
+
+        function setAmPm(val) {
+            currentAmPm = val;
+            document.querySelectorAll(".am-pm-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.innerText === val);
             });
-            console.log(`Successfully submitted to Form ID: ${formId}`);
-        } catch (error) {
-            console.error("Submission failed: ", error);
-        }
-    }
-
-    function submitZoneChecklist() {
-        const shift = checklistsData[activeTabIndex];
-        const zone = shift.zones[activeZoneIndex];
-        const totalTasks = zone.tasks.length;
-        let completedCount = 0;
-        
-        zone.tasks.forEach((task, tIndex) => {
-            const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-            if (completedTasks.has(taskId)) completedCount++;
-        });
-
-        if (completedCount < totalTasks) {
-            if (!confirm(`You have only checked off ${completedCount}/${totalTasks} tasks. Submit anyway?`)) return;
         }
 
-        if (shift.id === 'preclose') {
-            const preclosedMap = getPreclosedMap();
+        function toggleCard(cardContainer, taskId) {
+            const isCurrentlyFlipped = cardContainer.classList.contains('flipped');
+
+            if (isCurrentlyFlipped) {
+                cardContainer.classList.remove('flipped');
+                cardContainer.classList.remove('bounce');
+                completedTasks.delete(taskId);
+            } else {
+                cardContainer.classList.add('flipped');
+                completedTasks.add(taskId);
+                
+                playChime();
+                triggerConfetti(cardContainer);
+
+                setTimeout(() => {
+                    cardContainer.classList.add('bounce');
+                }, 550);
+            }
+        }
+
+        function submitZoneChecklist() {
+            const shift = checklistsData[activeTabIndex];
+            const zone = shift.zones[activeZoneIndex];
+            
+            let totalTasks = zone.tasks.length;
+            let completedCount = 0;
+            
             zone.tasks.forEach((task, tIndex) => {
                 const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-                if (completedTasks.has(taskId)) {
-                    preclosedMap[`${zone.name}::${task.title}`] = true;
-                    completedTasks.delete(taskId); 
+                if (completedTasks.has(taskId)) completedCount++;
+            });
+
+            if (completedCount < totalTasks) {
+                const confirmSubmit = confirm(`You have only completed ${completedCount}/${totalTasks} tasks in ${zone.name}. Submit anyway?`);
+                if (!confirmSubmit) return;
+            }
+
+            if (shift.id === 'preclose') {
+                const preclosedMap = getPreclosedMap();
+                zone.tasks.forEach((task, tIndex) => {
+                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                    if (completedTasks.has(taskId)) {
+                        preclosedMap[`${zone.name}::${task.title}`] = true;
+                        completedTasks.delete(taskId); 
+                    }
+                });
+                localStorage.setItem('preclosedTasks', JSON.stringify(preclosedMap));
+                alert(`${zone.name} preclose saved successfully! The preclose list has been cleared.`);
+                goBackToAreas();
+                return;
+            }
+
+            alert(`${zone.name} checklist successfully submitted!`);
+            goBackToAreas();
+        }
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const frequencies = [523.25, 659.25, 783.99, 1046.5];
+            frequencies.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (i * 0.09));
+                gain.gain.setValueAtTime(0, audioCtx.currentTime + (i * 0.09));
+                gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + (i * 0.09) + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (i * 0.09) + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + (i * 0.09));
+                osc.stop(audioCtx.currentTime + (i * 0.09) + 0.35);
+            });
+        }
+
+        function triggerConfetti(cardElement) {
+            const rect = cardElement.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6'];
+
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 60 + Math.random() * 80;
+                particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 850);
+            }
+        }
+
+        function openLeaderView() {
+            document.getElementById("leaderModal").classList.add("active");
+            document.getElementById("pinInput").value = "";
+            document.getElementById("pinInput").focus();
+        }
+
+        function closeLeaderView() {
+            document.getElementById("leaderModal").classList.remove("active");
+            document.getElementById("leaderModalContent").innerHTML = `
+                <h3>Enter Leader PIN</h3>
+                <p>Please enter your secure 4-digit PIN to access the supervisor dashboard.</p>
+                <input type="password" id="pinInput" placeholder="Enter PIN (e.g. 1234)" maxlength="4">
+                <button onclick="verifyPin()">Access Dashboard</button>
+                <button class="close-modal" onclick="closeLeaderView()">Cancel</button>
+            `;
+            renderApp();
+        }
+
+        function verifyPin() {
+            if (document.getElementById("pinInput").value === LEADER_PIN) {
+                const precloseShift = checklistsData.find(s => s.id === 'preclose');
+                let zoneButtonsHtml = '';
+                if (precloseShift) {
+                    precloseShift.zones.forEach(zone => {
+                        zoneButtonsHtml += `
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; background: white; padding: 0.5rem 0.75rem; border-radius: 0.4rem; border: 1px solid #cbd5e1;">
+                                <span style="font-weight: 500;">${zone.name}</span>
+                                <button onclick="clearAreaPreclose('${zone.name}')" style="background: #ef4444; padding: 0.3rem 0.6rem; font-size: 0.85rem; border-radius: 0.3rem; width: auto;">Clear Preclose</button>
+                            </div>
+                        `;
+                    });
+                }
+
+                document.getElementById("leaderModalContent").innerHTML = `
+                    <h3>Supervisor Dashboard</h3>
+                    <div style="background:#f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem;">
+                        <p><strong>Status:</strong> Connected to live data stream.</p>
+                        <p><strong>Active Session:</strong> ${currentAmPm}</p>
+                        <hr style="margin: 1rem 0; border:0; border-top:1px solid #cbd5e1;">
+                        <p style="font-weight: 700; margin-bottom: 0.75rem; color: #0f172a;">Testing Tools: Clear Preclose Data</p>
+                        ${zoneButtonsHtml}
+                        <button onclick="clearAllPreclose()" style="background: #dc2626; margin-top: 0.75rem; width: 100%;">Clear All Preclosed Data</button>
+                    </div>
+                    <button class="close-modal" style="margin-top: 1rem;" onclick="closeLeaderView()">Close Dashboard</button>
+                `;
+            } else {
+                alert("Incorrect PIN. Access Denied.");
+                document.getElementById("pinInput").value = "";
+            }
+        }
+
+        function clearAreaPreclose(zoneName) {
+            let preclosedMap = getPreclosedMap();
+            let keys = Object.keys(preclosedMap);
+            let clearedCount = 0;
+            keys.forEach(key => {
+                if (key.startsWith(zoneName + '::')) {
+                    delete preclosedMap[key];
+                    clearedCount++;
                 }
             });
             localStorage.setItem('preclosedTasks', JSON.stringify(preclosedMap));
-            alert(`${zone.name} preclose saved successfully!`);
-            goBackToAreas();
-            return;
+            alert(`Cleared ${clearedCount} preclosed task(s) for ${zoneName}!`);
         }
 
-        if (zone.formId) {
-            const preclosedMap = getPreclosedMap();
-            let submissionData = {};
-            
-            zone.tasks.forEach((task, tIndex) => {
-                const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-                const isPreclosed = preclosedMap[`${zone.name}::${task.title}`];
-
-                if (completedTasks.has(taskId) && task.entryId) {
-                    if (isLeaderMode) {
-                        submissionData[task.entryId] = `${currentLeaderName} - verified`;
-                    } else {
-                        submissionData[task.entryId] = isPreclosed ? "preclosed and completed" : "completed";
-                    }
-                }
-            });
-
-            postToGoogleForm(zone.formId, submissionData);
+        function clearAllPreclose() {
+            localStorage.removeItem('preclosedTasks');
+            alert('All preclosed data cleared completely!');
         }
-
-        if (isLeaderMode) {
-            alert(`${zone.name} verified by ${currentLeaderName}!`);
-        } else {
-            markAreaSubmitted(shift.id, zone.name);
-            alert(`${zone.name} checklist successfully submitted!`);
-        }
-        
-        completedTasks.clear();
-        goBackToAreas();
-    }
-
-    function openLeaderView() {
-        document.getElementById("leaderModal").classList.add("active");
-        document.getElementById("pinInput").value = "";
-    }
-
-    function closeLeaderView() {
-        document.getElementById("leaderModal").classList.remove("active");
-        isLeaderMode = false; 
-        currentLeaderName = "";
-        document.querySelector(".leader-btn").innerText = "Leader Overview";
-        document.querySelector(".leader-btn").style.background = "#0f172a";
-        activeZoneIndex = null;
-        renderApp();
-    }
-
-    function verifyPin() {
-        const enteredPin = document.getElementById("pinInput").value;
-        if (LEADER_PINS[enteredPin]) {
-            isLeaderMode = true;
-            currentLeaderName = LEADER_PINS[enteredPin];
-            document.querySelector(".leader-btn").innerText = `Exit Leader Mode (${currentLeaderName})`;
-            document.querySelector(".leader-btn").style.background = "#16a34a";
-            
-            document.getElementById("leaderModal").classList.remove("active");
-            activeZoneIndex = null;
-            renderApp();
-            alert(`Welcome, ${currentLeaderName}. Switch to a Shift tab to verify submitted areas.`);
-        } else {
-            alert("Incorrect PIN. Access Denied.");
-            document.getElementById("pinInput").value = "";
-        }
-    }
-</script>
+    </script>
 </body>
 </html>
