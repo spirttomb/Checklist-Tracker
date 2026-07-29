@@ -518,22 +518,18 @@
     };
 
     // --- Mapped Data Structure ---
-    // Includes Form IDs and Entry IDs for submission mapping
     const checklistsData = [
         {
             id: "preclose",
             title: "Preclose",
             zones: [
-                // Preclose tasks don't typically submit to forms directly until the final close,
-                // but their state is saved to local storage for the final submission.
                 {
                     name: "Dining Room",
                     tasks: [
-                        { title: "Vacuum Rugs", steps: ["Vacuum all rugs..."] },
-                        { title: "Sweep", steps: ["Sweep thoroughly..."] }
+                        { title: "Vacuum Rugs", steps: ["Vacuum all rugs thoroughly."] },
+                        { title: "Sweep", steps: ["Sweep the area completely."] }
                     ]
                 }
-                // (Keep your other preclose zones here as they were)
             ]
         },
         {
@@ -544,16 +540,14 @@
                     name: "Front Counter",
                     formId: "1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8",
                     tasks: [
-                        { title: "Break Down Lemonades", entryId: "entry.4296956", steps: ["Turn lemonade dispenser off..."] },
-                        { title: "Transfer And Clean Tea", entryId: "entry.413908059", steps: ["Transfer remaining tea..."] },
-                        { title: "Bring Back Remaining Dishes", entryId: "entry.1761965454", steps: ["Throw away strawberry shooter..."] },
-                        { title: "Clean Drink Towers", entryId: "entry.1888917489", steps: ["Pour Kay-5..."] },
-                        { title: "Clean Swinging Door", entryId: "entry.871673908", steps: ["Spray door..."] },
-                        { title: "Clean Lowboy", entryId: "entry.286725968", steps: ["Spray lowboy..."] },
-                        { title: "Wipe Down All Counters", entryId: "entry.1759044535", steps: ["Spray all white surfaces..."] },
-                        { title: "Clean POS Terminals And Card Readers", entryId: "entry.1142316488", steps: ["Wipe down..."] },
-                        { title: "Reassemble Towers", entryId: "entry.834524323", steps: ["Put drink towers back together"] },
-                        { title: "Bring Back Dishes", entryId: "entry.1863485176", steps: ["Retrieve clean dishes..."] }
+                        { title: "Break Down Lemonades", entryId: "entry.4296956", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                        { title: "Transfer And Clean Tea", entryId: "entry.413908059", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                        { title: "Bring Back Remaining Dishes", entryId: "entry.1761965454", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
+                        { title: "Clean Drink Towers", entryId: "entry.1888917489", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution (50-100 ppm)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
+                        { title: "Clean Swinging Door", entryId: "entry.871673908", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
+                        { title: "Clean Lowboy", entryId: "entry.286725968", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                        { title: "Wipe Down All Counters", entryId: "entry.1759044535", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                        { title: "Clean All POS Terminals And Card Readers", entryId: "entry.1142316488", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] }
                     ]
                 },
                 {
@@ -597,7 +591,7 @@
                         { title: "Tms Bags", entryId: "entry.1840882147", steps: ["Unplug all TMS bags..."] },
                         { title: "Floors", entryId: "entry.87698102", steps: ["Sweep floor..."] },
                         { title: "Microwave", entryId: "entry.1475384836", steps: ["Wipe inside microwave..."] },
-                        { title: "Trash", entryId: "entry.1585656959", steps: ["Replace and dispose..."] }, // Reused entry from prompt, verify if needed
+                        { title: "Trash", entryId: "entry.1585656959", steps: ["Replace and dispose..."] },
                         { title: "Tech", entryId: "entry.1530636489", steps: ["Ensure all tech is plugged in..."] }
                     ]
                 },
@@ -617,72 +611,53 @@
             title: "10:30 Close",
             zones: [
                 {
+                    name: "Front Counter",
+                    formId: "1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8",
+                    tasks: [
+                        { title: "Break Down Lemonades", entryId: "entry.4296956", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                        { title: "Transfer And Clean Tea", entryId: "entry.413908059", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                        { title: "Bring Back Remaining Dishes", entryId: "entry.1761965454", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
+                        { title: "Clean Drink Towers", entryId: "entry.1888917489", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution (50-100 ppm)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
+                        { title: "Clean Swinging Door", entryId: "entry.871673908", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
+                        { title: "Clean Lowboy", entryId: "entry.286725968", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                        { title: "Wipe Down All Counters", entryId: "entry.1759044535", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                        { title: "Clean All POS Terminals And Card Readers", entryId: "entry.1142316488", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] }
+                    ]
+                },
+                {
                     name: "Desserts",
                     formId: "1g815xRWfOvSS2dtFnYz4BXJLUENieCmb2Jad6w_EGUY",
                     tasks: [
-                        { title: "Taylor Wash", entryId: "entry.771576326", steps: ["Put Taylor on wash..."] },
-                        { title: "Kay-5 Sanitizer", entryId: "entry.1069087250", steps: ["Pour 1 packet..."] },
-                        { title: "Dishes & Leftovers", entryId: "entry.498948150", steps: ["Take back all dishes..."] },
-                        { title: "Drain Icedream", entryId: "entry.984065864", steps: ["Drain all icedream..."] },
-                        { title: "Wash Taylor Inside", entryId: "entry.1683751067", steps: ["Rinse Taylor..."] },
-                        { title: "Clean Exterior", entryId: "entry.1969771539", steps: ["Clean the outside..."] },
-                        { title: "Wall & Surroundings", entryId: "entry.1253411718", steps: ["Pull Taylor out..."] },
-                        { title: "Wash & Reassemble", entryId: "entry.1491997898", steps: ["Disaasemble Taylor..."] },
-                        { title: "Clean Lowboy", entryId: "entry.380188848", steps: ["Spray lowboy..."] }
+                        { title: "Put One Side Of Taylor On Wash", entryId: "entry.771576326", steps: ["Put one side of Taylor on wash"] },
+                        { title: "Kay-5 Sanitizer Solution", entryId: "entry.1069087250", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution (50-100 ppm)"] },
+                        { title: "Dishes & Leftovers", entryId: "entry.498948150", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray)", "Save leftover oreo, chocolate syrup, cherries and lemons in a styrofoam cup, making sure to label them", "For Saturday, bring back disassembled chocolate syrup dispenser", "For Wednesday/Saturday, bring disassembled oreo dispenser back as well"] },
+                        { title: "Clean Exterior & Spindles", entryId: "entry.1683751067", steps: ["Clean the outside of the machine including the spindles"] },
+                        { title: "Pull Taylor Out & Clean Surrounding Walls", entryId: "entry.1253411718", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess to the right of the machine"] },
+                        { title: "Clean Lowboy", entryId: "entry.380188848", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                     ]
                 },
                 {
                     name: "Drinks",
                     formId: "1dkZq5NXKcw1GIEJZoLYY0pDPmkQUSnegK_RWK7Ps5nE",
                     tasks: [
-                        { title: "Break Down Lemonades", entryId: "entry.880965357", steps: ["Turn lemonade dispenser off..."] },
-                        { title: "Transfer Tea", entryId: "entry.707970743", steps: ["Dump the remaining tea..."] },
-                        { title: "Bring Back Remaining Dishes", entryId: "entry.1093113017", steps: ["Bring back disassembled..."] },
-                        { title: "Clean Drink Tower", entryId: "entry.1480788207", steps: ["Pour 1 packet of Kay-5..."] },
-                        { title: "Wipe Down Counters", entryId: "entry.229081274", steps: ["Wipe down all drinks area..."] },
-                        { title: "Clean Lowboy", entryId: "entry.380188848", steps: ["Spray lowboy..."] }, // Reused ID for now based on context
-                        { title: "Dt Window Door", entryId: "entry.229081274", steps: ["Spray DT Window door..."] },
-                        { title: "Clean Dumpsink", entryId: "entry.1487542935", steps: ["Clean the dumpsink"] },
-                        { title: "Clean Coffee Pots", entryId: "entry.1784850478", steps: ["Starting with the FC..."] },
-                        { title: "Reassemble Towers", entryId: "entry.992710073", steps: ["Put drink towers..."] }
+                        { title: "Break Down Lemonades", entryId: "entry.880965357", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                        { title: "Bring Back Remaining Dishes", entryId: "entry.1093113017", steps: ["Bring back disassembled strawberry shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts"] },
+                        { title: "Wipe Down Drinks Area Counters", entryId: "entry.229081274", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
+                        { title: "Spray DT Window Door", entryId: "entry.229081274", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
+                        { title: "Clean Coffee Pots", entryId: "entry.1784850478", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle, remove and discard filter and tab", "Remove the coffee pot lid, use the white scrub brush to thoroughly clean the inside, rinse and return brush to dish", "Empty cleaning solution into dump sink, place pot back, run rinse cycle with no filter/tab, drain rinse water", "Place lid on coffee pot and return to station, repeat with DT coffee pot"] },
+                        { title: "Clean Lowboy", entryId: "entry.380188848", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                     ]
                 },
                 {
                     name: "Chutes",
                     formId: "1ejUJJdt7ObulnrhtW81f9bjZWJWhp-ORyMQYaX2hnS4",
                     tasks: [
-                        { title: "Fry Bins", entryId: "entry.1831189851", steps: ["Bring fry bins back..."] },
-                        { title: "Faceplates & Dividers", entryId: "entry.1163698153", steps: ["Unscrew the faceplates..."] },
-                        { title: "Wipe Down", entryId: "entry.1248822629", steps: ["Wipe chutes down..."] },
-                        { title: "Reassemble", entryId: "entry.216194971", steps: ["Put the chutes back..."] },
-                        { title: "Clean Lowboy", entryId: "entry.2058407943", steps: ["Spray lowboy..."] },
-                        { title: "Bag Holders", entryId: "entry.524565776", steps: ["Pull out metal bag holders..."] }
-                    ]
-                },
-                {
-                    name: "Stocking",
-                    formId: "10yiHbVuqlOpecFhvKBHngRCWlouyt110yUTdbQ5IlnQ",
-                    tasks: [
-                        { title: "Sauce Wall", entryId: "entry.496068327", steps: ["Stocks FC and DT sauce walls..."] },
-                        { title: "Lowboy", entryId: "entry.1277215098", steps: ["Stocks FC, DT..."] },
-                        { title: "Drink Stations", entryId: "entry.688684061", steps: ["Stocks FC and DT cups..."] },
-                        { title: "Boxed Goods", entryId: "entry.2053686261", steps: ["Stocks boxed bags..."] }
-                    ]
-                },
-                {
-                    name: "Trash",
-                    formId: "1ftcJJTdfWm7Uxb4M8fDlAirWgwa3k1aGVRIiq5ihKig",
-                    tasks: [
-                        { title: "Trash Removal", entryId: "entry.707148952", steps: ["Dispose of and replace all trash..."] },
-                        { title: "Make Lemonades", entryId: "entry.734813260", steps: ["Check with a leader..."] }
-                    ]
-                },
-                {
-                    name: "Floors",
-                    formId: "1pUr3j1pMnwcguvQWqP5a27iQYsZmYaR13ovmYUY5fQs",
-                    tasks: [
-                        { title: "Sweep", entryId: "entry.1846248131", steps: ["Sweep entire DT area..."] },
-                        { title: "Mop", entryId: "entry.329042300", steps: ["Mop using the blue mop..."] }
+                        { title: "Fry Bins", entryId: "entry.1831189851", steps: ["Bring fry bins back to dish"] },
+                        { title: "Clean Lowboy", entryId: "entry.2058407943", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                        { title: "Pull Out Metal Bag Holders", entryId: "entry.524565776", steps: ["Pull out metal bag holders and set them aside"] },
+                        { title: "Wipe Down Counter Area", entryId: "entry.1248822629", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
+                        { title: "Empty & Wipe Bag Holders", entryId: "entry.1163698153", steps: ["Empty the bag holders and wipe them down thoroughly"] },
+                        { title: "Refill Bag Holders", entryId: "entry.216194971", steps: ["After they dry, refill them with bags and place them back"] }
                     ]
                 }
             ]
@@ -747,13 +722,21 @@
                         <h2 class="view-title">${isLeaderMode ? 'VERIFICATION: ' : ''}${shift.title} Areas</h2>
                         <p style="color: var(--text-muted); margin-top: 0.5rem;">${isLeaderMode ? 'Select a completed area to verify.' : 'Select an area below to view its checklist.'}</p>
                     </div>
-                    <div class="areas-grid">
             `;
+
+            if (shift.id === 'preclose') {
+                html += `
+                    <div style="margin-bottom: 1.5rem;">
+                        <button class="btn-back" onclick="clearPrecloseData()" style="background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Clear Preclose Data</button>
+                    </div>
+                `;
+            }
+
+            html += `<div class="areas-grid">`;
             
             shift.zones.forEach((zone, zIndex) => {
                 const isSubmitted = submittedAreas.includes(`${shift.id}::${zone.name}`);
                 
-                // In leader mode, only show areas that the team has submitted
                 if (isLeaderMode && !isSubmitted && shift.id !== 'preclose') return;
 
                 html += `
@@ -785,7 +768,6 @@
 
             zone.tasks.forEach((task, tIndex) => {
                 const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-                // If in leader mode, pre-flip them since they are completed, or let leader verify each
                 const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
                 const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
                 const preclosedClass = isPreclosed ? 'preclosed' : '';
@@ -848,13 +830,19 @@
         } else {
             cardContainer.classList.add('flipped');
             completedTasks.add(taskId);
-            
-            // Optional: Audio/Visuals
             setTimeout(() => cardContainer.classList.add('bounce'), 550);
         }
     }
 
-    // Google Forms Webhook Simulation
+    function clearPrecloseData() {
+        if (confirm("Are you sure you want to clear all preclosed progress?")) {
+            localStorage.removeItem('preclosedTasks');
+            localStorage.removeItem('submittedAreas');
+            alert("Preclose data has been cleared.");
+            renderApp();
+        }
+    }
+
     async function postToGoogleForm(formId, formDataObj) {
         const url = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
         const params = new URLSearchParams();
@@ -905,7 +893,6 @@
             return;
         }
 
-        // Standard Closing Submissions (Forms)
         if (zone.formId) {
             const preclosedMap = getPreclosedMap();
             let submissionData = {};
@@ -923,7 +910,6 @@
                 }
             });
 
-            // Trigger fetch request to Forms
             postToGoogleForm(zone.formId, submissionData);
         }
 
@@ -934,12 +920,10 @@
             alert(`${zone.name} checklist successfully submitted!`);
         }
         
-        // Reset checklist checkmarks and go back
         completedTasks.clear();
         goBackToAreas();
     }
 
-    // --- Leader Modal Overrides ---
     function openLeaderView() {
         document.getElementById("leaderModal").classList.add("active");
         document.getElementById("pinInput").value = "";
