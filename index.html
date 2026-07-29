@@ -104,6 +104,34 @@
             align-items: center;
             width: 100%;
         }
+        .control-box {
+  background-color: #002a4f;
+  border: 1px solid #003d73;
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+/* Left Box */
+.left-box {
+  justify-content: flex-start;
+}
+
+/* Center Box (Groups AM/PM and time buttons together nicely) */
+.time-box {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Right Box (Centers Leadership Overview button inside its box on the right) */
+.right-box {
+  justify-content: center;
+  text-align: center;
+}
 
         .user-info-badge {
             display: flex;
@@ -697,22 +725,34 @@
 
     <div id="statusMessageBar"></div>
 
-    <header>
-        <div class="top-controls">
+<header>
+    <div class="top-controls">
+        
+        <!-- Left Box: Switch PIN (Pin number text removed) -->
+        <div class="control-box left-box">
             <div class="user-info-badge" id="userInfoDisplay">
-                PIN: <span id="activeUserPin">None</span>
                 <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
             </div>
+        </div>
+
+        <!-- Center Box: AM/PM Toggle & Time Selecting Buttons Combined -->
+        <div class="control-box time-box">
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
                 <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
             </div>
+            <div class="checklist-nav" id="checklistNav"></div>
+        </div>
+
+        <!-- Right Box: Leadership Overview (Centered inside its box) -->
+        <div class="control-box right-box">
             <div class="leader-controls">
-                <button class="leader-btn" id="leaderOverviewToggle" style="display: none;" onclick="toggleLeaderMode()">Leader Overview</button>
+                <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
             </div>
         </div>
-        <div class="checklist-nav" id="checklistNav"></div>
-    </header>
+
+    </div>
+</header>
 
     <div class="viewport-container" id="appViewport"></div>
 
