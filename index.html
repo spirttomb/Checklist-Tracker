@@ -1442,10 +1442,11 @@
                 if (completedTasks.has(taskId)) completedCount++;
             });
 
-            if (completedCount < totalTasks) {
-                showStatusMessage(`You must review every card before submitting. (${completedCount}/${totalTasks} completed)`, 'error');
-                return;
-            }
+           // UPDATE TO ONLY REQUIRE FULL COMPLETION FOR NON-PRECLOSE SHIFTS:
+if (shift.id !== 'preclose' && completedCount < totalTasks) {
+    showStatusMessage(`You must review every card before submitting. (${completedCount}/${totalTasks} completed)`, 'error');
+    return;
+}
 
             const areaKey = `${shift.id}::${zone.name}`;
             const statePayload = { teamMember: currentUser.name, leaderVerified: false, leaderName: null };
