@@ -48,16 +48,20 @@ sheet ids:
 
 form entry ids:
 1030 floors
+entry.213267544 name
 entry.1846248131 sweep
 entry.329042300 mop
 1030 trash
+entry.1435966399 name
 entry.707148952 trash removal
 entry.734813260 make lemonades
 930 floors
+entry.436027180 name
 entry.1904270649 floor prep
 entry.727982962 mopping
 entry.1202343262 chairs
 930 front counter
+entry.21633315 name
 entry.4296956 break down lemonades
 entry.413908059 transfer and clean tea
 entry.1761965454 bring back dishes
@@ -69,6 +73,7 @@ entry.1142316488 clean pos terminals
 entry.834524323 reassemble towers
 entry.1863485176 reassemble items
 930 dining room
+entry.1462016451 name
 entry.626307994 vacuum rugs
 entry.1240294498 sweep
 entry.390885381 flowers
@@ -79,6 +84,7 @@ entry.1160699902 table items
 entry.537812247 return items
 entry.396870801 condiment stand
 930 bathrooms
+entry.1666408577 name
 entry.1818462714 mirrors & sink
 entry.1769411751 baby changing station
 entry.1213384330 doors
@@ -91,6 +97,7 @@ entry.1223569076 repeat
 entry.1712465686 floors
 entry.2074825630 trash
 930 break room & tech
+entry.748608307 name
 entry.1585656959 trash & belongings
 entry.1254873848 furniture
 entry.1840882147 tech storage
@@ -98,6 +105,7 @@ entry.87698102 floors
 entry.1475384836 microwave & trash
 entry.1530636489 tech
 1030 desserts
+entry.609807457 desserts
 entry.771576326 taylor - wash cycle
 entry.1069087250 prepare kay-5
 entry.498948150 dishes & leftovers
@@ -108,6 +116,7 @@ entry.1253411718 walls & surroundings
 entry.1491997898 wash & reassemble
 entry.380188848 clean lowboy
 1030 drinks
+entry.1769544915 name
 entry.880965357 break down lemonades
 entry.707970743 transfer tea
 entry.1093113017 bring back dishes
@@ -117,6 +126,7 @@ entry.1487542935 dumpsink
 entry.1784850478 coffee pots
 entry.992710073 reassemble
 1030 chutes
+entry.693251095 name
 entry.1831189851 fry bin
 entry.1163698153 faceplate & dividers
 entry.1248822629 wipe down
@@ -124,6 +134,7 @@ entry.216194971 reassemble
 entry.2058407943 clean lowboy
 entry.524565776 bag holders & counter
 1030 stocking
+entry.2144443666 name
 entry.496068327 sauce wall
 entry.1277215098 lowboy
 entry.688684061 drink station

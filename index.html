@@ -22,6 +22,7 @@
             --text-main: #1e293b;
             --text-muted: #475569;
             --success: #22c55e;
+            --leader-gold: #d97706;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
             --transition-speed: 0.3s;
         }
@@ -66,6 +67,31 @@
             width: 100%;
         }
 
+        .user-info-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .user-info-badge span {
+            background: #e2e8f0;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.4rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .btn-switch-user {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
         .am-pm-toggle {
             grid-column: 2;
             display: flex;
@@ -93,6 +119,8 @@
         .leader-controls {
             grid-column: 3;
             justify-self: end;
+            display: flex;
+            gap: 0.5rem;
         }
 
         .leader-btn {
@@ -107,6 +135,11 @@
         }
 
         .leader-btn:hover { background: #334155; }
+
+        .leader-btn.active-mode {
+            background: var(--leader-gold);
+            box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
+        }
 
         /* Checklist Navigation Tabs */
         .checklist-nav {
@@ -166,6 +199,17 @@
             color: #0f172a;
         }
 
+        .leader-banner {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            color: #92400e;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
         .areas-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -186,12 +230,31 @@
             justify-content: center;
             align-items: center;
             min-height: 160px;
+            position: relative;
         }
 
         .area-card:hover {
             border-color: var(--primary);
             transform: translateY(-4px);
             box-shadow: var(--shadow);
+        }
+
+        .area-card.submitted-card {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .submitted-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            text-transform: uppercase;
         }
 
         .area-card h3 {
@@ -376,6 +439,11 @@
             border: 2px solid #16a34a;
         }
 
+        .leader-mode-active .card-back {
+            background: linear-gradient(135deg, var(--leader-gold), #b45309);
+            border-color: #b45309;
+        }
+
         .stamp {
             border: 4px solid white;
             padding: 0.5rem 1rem;
@@ -431,12 +499,12 @@
             box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.5);
         }
 
-        /* Leader Modal */
+        /* Mandatory Initial Login & Modal Overlay */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
             display: flex; justify-content: center; align-items: center;
             z-index: 1000; opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease;
@@ -446,28 +514,32 @@
 
         .modal-card {
             background: var(--card-bg);
-            padding: 2rem; border-radius: 1rem;
-            width: 100%; max-width: 600px;
+            padding: 2.5rem 2rem; border-radius: 1rem;
+            width: 90%; max-width: 450px;
             box-shadow: var(--shadow);
-            display: flex; flex-direction: column; gap: 1rem;
-            max-height: 80vh; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 1.25rem;
+            text-align: center;
         }
 
+        .modal-card h3 { font-size: 1.5rem; color: #0f172a; }
+
         .modal-card input {
-            padding: 0.75rem; border: 1px solid #cbd5e1;
-            border-radius: 0.5rem; font-size: 1rem;
+            padding: 0.85rem; border: 2px solid #cbd5e1;
+            border-radius: 0.5rem; font-size: 1.2rem;
+            text-align: center; letter-spacing: 4px;
         }
 
         .modal-card button {
-            padding: 0.75rem; background: var(--primary); color: white;
-            border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;
+            padding: 0.85rem; background: var(--primary); color: white;
+            border: none; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; cursor: pointer;
         }
 
-        .close-modal { background: #ef4444 !important; }
+        .modal-card button:hover { background: var(--primary-hover); }
 
         @media (max-width: 768px) {
             header { padding: 1rem; }
             .top-controls { grid-template-columns: 1fr; gap: 1rem; }
+            .user-info-badge { grid-column: 1; justify-self: center; }
             .am-pm-toggle { grid-column: 1; justify-self: center; }
             .leader-controls { grid-column: 1; justify-self: center; }
             .viewport-container { padding: 1rem; }
@@ -480,13 +552,16 @@
 
     <header>
         <div class="top-controls">
-            <div></div>
+            <div class="user-info-badge" id="userInfoDisplay">
+                PIN: <span id="activeUserPin">None</span>
+                <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
+            </div>
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
                 <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
             </div>
             <div class="leader-controls">
-                <button class="leader-btn" onclick="openLeaderView()">Leader Overview</button>
+                <button class="leader-btn" id="leaderOverviewToggle" style="display: none;" onclick="toggleLeaderMode()">Leader Overview</button>
             </div>
         </div>
         <div class="checklist-nav" id="checklistNav"></div>
@@ -494,17 +569,171 @@
 
     <div class="viewport-container" id="appViewport"></div>
 
-    <div class="modal-overlay" id="leaderModal">
-        <div class="modal-card" id="leaderModalContent">
-            <h3>Enter Leader PIN</h3>
-            <p>Please enter your secure 4-digit PIN to access the supervisor dashboard.</p>
-            <input type="password" id="pinInput" placeholder="Enter PIN (e.g. 1234)" maxlength="4">
-            <button onclick="verifyPin()">Access Dashboard</button>
-            <button class="close-modal" onclick="closeLeaderView()">Cancel</button>
+    <!-- mandatory initial pin auth overlay -->
+    <div class="modal-overlay" id="authOverlay">
+        <div class="modal-card">
+            <h3>Enter Team Member PIN</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter your PIN to access the checklist dashboard and record submissions.</p>
+            <input type="password" id="authPinInput" placeholder="PIN" maxlength="10">
+            <button onclick="handleLogin()">Access Dashboard</button>
         </div>
     </div>
 
     <script>
+        // Host list of team member and manager PINs
+        const PIN_DATABASE = {
+            "1234": { name: "1234", role: "leader" },
+            "5678": { name: "5678", role: "leader" },
+            "1111": { name: "1111", role: "member" },
+            "2222": { name: "2222", role: "member" }
+        };
+
+        // Form mapping matrix
+        const FORM_MAPPINGS = {
+            "close-930::Front Counter": {
+                formId: "1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8",
+                nameEntry: "entry.21633315",
+                tasks: {
+                    "Break Down Lemonades": "entry.4296956",
+                    "Transfer And Clean Tea": "entry.413908059",
+                    "Bring Back Remaining Dishes": "entry.1761965454",
+                    "Clean Drink Towers": "entry.1888917489",
+                    "Clean Swinging Door": "entry.871673908",
+                    "Clean Lowboy": "entry.286725968",
+                    "Wipe Down All Counters": "entry.1759044535",
+                    "Clean POS Terminals And Card Readers": "entry.1142316488",
+                    "Reassemble Towers": "entry.834524323",
+                    "Bring Back Dishes": "entry.1863485176"
+                }
+            },
+            "close-930::Dining Room": {
+                formId: "1cqvIwDRY602h7UxHgDwlTSH4b6fYggnNQRC9XPasOrM",
+                nameEntry: "entry.1462016451",
+                tasks: {
+                    "Vacuum Rugs": "entry.626307994",
+                    "Sweep": "entry.1240294498",
+                    "Flowers": "entry.390885381",
+                    "Cleaning Furniture": "entry.276970683",
+                    "Put Up Chairs": "entry.958243505",
+                    "Blinds": "entry.2038394362",
+                    "Cleaning Table Items": "entry.1160699902",
+                    "Return Items": "entry.537812247",
+                    "Condiment Stand": "entry.396870801"
+                }
+            },
+            "close-930::Bathrooms": {
+                formId: "1lNas0TNyUt4mFkuu0tvkf7rqdgYbqCgaUTDVa4qxRVE",
+                nameEntry: "entry.1666408577",
+                tasks: {
+                    "Mirrors And Sink": "entry.1818462714",
+                    "Baby Changing Station": "entry.1769411751",
+                    "Doors": "entry.1213384330",
+                    "Dispensers": "entry.1667675873",
+                    "Metal Appliances": "entry.893137986",
+                    "High-Touch Surfaces": "entry.1535583909",
+                    "Urinals And Toilets": "entry.2118734279",
+                    "Stocking": "entry.1400133087",
+                    "Repeat": "entry.1223569076",
+                    "Floors": "entry.1712465686",
+                    "Trash": "entry.2074825630"
+                }
+            },
+            "close-930::Break Room & Tech": {
+                formId: "13U0IhjGYdn9CqQNE46B0jjHQQ_1LB5i0mA_haQ1SUMk",
+                nameEntry: "entry.748608307",
+                tasks: {
+                    "Personal Belongings": "entry.1585656959",
+                    "Cleaning Furniture": "entry.1254873848",
+                    "Tms Bags": "entry.1840882147",
+                    "Floors": "entry.87698102",
+                    "Microwave": "entry.1475384836",
+                    "Tech": "entry.1530636489"
+                }
+            },
+            "close-930::Floors": {
+                formId: "1wH9ewa1DVMZhfCUgJN3PckwHHSQc0av6Ty-8WKbohK8",
+                nameEntry: "entry.436027180",
+                tasks: {
+                    "Floor Prep": "entry.1904270649",
+                    "Mopping": "entry.727982962",
+                    "Chairs": "entry.1202343262"
+                }
+            },
+            "close-1030::Desserts": {
+                formId: "1g815xRWfOvSS2dtFnYz4BXJLUENieCmb2Jad6w_EGUY",
+                nameEntry: "entry.609807457",
+                tasks: {
+                    "Taylor Wash": "entry.771576326",
+                    "Kay-5 Sanitizer": "entry.1069087250",
+                    "Dishes & Leftovers": "entry.498948150",
+                    "Drain Icedream": "entry.984065864",
+                    "Wash Taylor Inside": "entry.1683751067",
+                    "Clean Exterior": "entry.1969771539",
+                    "Wall & Surroundings": "entry.1253411718",
+                    "Wash & Reassemble": "entry.1491997898",
+                    "Clean Lowboy": "entry.380188848"
+                }
+            },
+            "close-1030::Drinks": {
+                formId: "1dkZq5NXKcw1GIEJZoLYY0pDPmkQUSnegK_RWK7Ps5nE",
+                nameEntry: "entry.1769544915",
+                tasks: {
+                    "Break Down Lemonades": "entry.880965357",
+                    "Transfer Tea": "entry.707970743",
+                    "Bring Back Remaining Dishes": "entry.1093113017",
+                    "Clean Drink Tower": "entry.1480788207",
+                    "Wipe Down Counters": "entry.229081274",
+                    "Clean Lowboy": "entry.229081274",
+                    "Dt Window Door": "entry.229081274",
+                    "Clean Dumpsink": "entry.1487542935",
+                    "Clean Coffee Pots": "entry.1784850478",
+                    "Reassemble Towers": "entry.992710073",
+                    "Bring Back Dishes": "entry.992710073"
+                }
+            },
+            "close-1030::Chutes": {
+                formId: "1ejUJJdt7ObulnrhtW81f9bjZWJWhp-ORyMQYaX2hnS4",
+                nameEntry: "entry.693251095",
+                tasks: {
+                    "Fry Bins": "entry.1831189851",
+                    "Faceplates & Dividers": "entry.1163698153",
+                    "Wipe Down": "entry.1248822629",
+                    "Reassemble": "entry.216194971",
+                    "Clean Lowboy": "entry.2058407943",
+                    "Bag Holders": "entry.524565776",
+                    "Wipe Down Counter": "entry.524565776",
+                    "Clean Bag Holders": "entry.524565776",
+                    "Return Fry Bins": "entry.1831189851"
+                }
+            },
+            "close-1030::Stocking": {
+                formId: "10yiHbVuqlOpecFhvKBHngRCWlouyt110yUTdbQ5IlnQ",
+                nameEntry: "entry.2144443666",
+                tasks: {
+                    "Sauce Wall": "entry.496068327",
+                    "Lowboy": "entry.1277215098",
+                    "Cups Lids Straws Cup Carriers Icebins": "entry.688684061",
+                    "Boxed Goods": "entry.2053686261"
+                }
+            },
+            "close-1030::Trash": {
+                formId: "1ftcJJTdfWm7Uxb4M8fDlAirWgwa3k1aGVRIiq5ihKig",
+                nameEntry: "entry.1435966399",
+                tasks: {
+                    "Trash Removal": "entry.707148952",
+                    "Make Lemonades": "entry.734813260"
+                }
+            },
+            "close-1030::Floors": {
+                formId: "1pUr3j1pMnwcguvQWqP5a27iQYsZmYaR13ovmYUY5fQs",
+                nameEntry: "entry.213267544",
+                tasks: {
+                    "Sweep": "entry.1846248131",
+                    "Mop": "entry.329042300"
+                }
+            }
+        };
+
         const checklistsData = [
             {
                 id: "preclose",
@@ -724,21 +953,70 @@
         let currentAmPm = 'PM'; 
         let activeTabIndex = 0; 
         let activeZoneIndex = null; 
-        let completedTasks = new Set(); 
-        const LEADER_PIN = "1234";
+        let completedTasks = new Set();
+        let currentUser = null; 
+        let isLeaderOverviewMode = false;
 
         function getPreclosedMap() {
-            try {
-                return JSON.parse(localStorage.getItem('preclosedTasks')) || {};
-            } catch (e) {
-                return {};
-            }
+            try { return JSON.parse(localStorage.getItem('preclosedTasks')) || {}; } catch (e) { return {}; }
+        }
+
+        function getSubmittedAreas() {
+            try { return JSON.parse(localStorage.getItem('submittedAreas')) || {}; } catch (e) { return {}; }
         }
 
         document.addEventListener("DOMContentLoaded", () => {
+            promptLogin();
+        });
+
+        function promptLogin() {
+            document.getElementById("authOverlay").classList.add("active");
+            document.getElementById("authPinInput").value = "";
+            document.getElementById("authPinInput").focus();
+        }
+
+        function handleLogin() {
+            const pin = document.getElementById("authPinInput").value.trim();
+            if (!pin) {
+                alert("Please enter a valid PIN.");
+                return;
+            }
+
+            if (PIN_DATABASE[pin]) {
+                currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
+            } else {
+                currentUser = { pin: pin, name: pin, role: "member" };
+            }
+
+            document.getElementById("activeUserPin").innerText = currentUser.pin;
+            const leaderBtn = document.getElementById("leaderOverviewToggle");
+            
+            if (currentUser.role === 'leader') {
+                leaderBtn.style.display = "block";
+            } else {
+                leaderBtn.style.display = "none";
+                isLeaderOverviewMode = false;
+                leaderBtn.classList.remove("active-mode");
+            }
+
+            document.getElementById("authOverlay").classList.remove("active");
             renderTabs();
             renderApp();
-        });
+        }
+
+        function toggleLeaderMode() {
+            isLeaderOverviewMode = !isLeaderOverviewMode;
+            const btn = document.getElementById("leaderOverviewToggle");
+            if (isLeaderOverviewMode) {
+                btn.classList.add("active-mode");
+                btn.innerText = "Exit Leader View";
+            } else {
+                btn.classList.remove("active-mode");
+                btn.innerText = "Leader Overview";
+            }
+            activeZoneIndex = null;
+            renderApp();
+        }
 
         function renderTabs() {
             const navContainer = document.getElementById("checklistNav");
@@ -761,10 +1039,18 @@
         function renderApp() {
             const appViewport = document.getElementById("appViewport");
             const shift = checklistsData[activeTabIndex];
+            const submittedAreas = getSubmittedAreas();
+
+            if (isLeaderOverviewMode) {
+                document.body.classList.add("leader-mode-active");
+            } else {
+                document.body.classList.remove("leader-mode-active");
+            }
             
             if (activeZoneIndex === null) {
                 let html = `
                     <div class="fade-in">
+                        ${isLeaderOverviewMode ? `<div class="leader-banner">LEADER OVERVIEW MODE ACTIVE — ONLY COMPLETED/SUBMITTED AREAS SHOWN</div>` : ''}
                         <div class="view-header">
                             <h2 class="view-title">${shift.title} Areas</h2>
                             <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
@@ -772,14 +1058,28 @@
                         <div class="areas-grid">
                 `;
                 
+                let count = 0;
                 shift.zones.forEach((zone, zIndex) => {
+                    const areaKey = `${shift.id}::${zone.name}`;
+                    const isSubmitted = submittedAreas[areaKey] === true;
+
+                    if (isLeaderOverviewMode && !isSubmitted) {
+                        return; // Skip unsubmitted areas in Leader Overview
+                    }
+
+                    count++;
                     html += `
-                        <div class="area-card" onclick="selectZone(${zIndex})">
+                        <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
+                            ${isSubmitted ? `<div class="submitted-badge">Completed</div>` : ''}
                             <h3>${zone.name}</h3>
                             ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
                         </div>
                     `;
                 });
+
+                if (isLeaderOverviewMode && count === 0) {
+                    html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
+                }
 
                 html += `</div></div>`;
                 appViewport.innerHTML = html;
@@ -814,7 +1114,8 @@
                     const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
 
                     let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
-                    
+                    const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
+
                     html += `
                         <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
                             <div class="task-card-inner">
@@ -826,7 +1127,7 @@
                                     <ul>${stepsHtml}</ul>
                                 </div>
                                 <div class="card-face card-back">
-                                    <div class="stamp">COMPLETED</div>
+                                    <div class="stamp">${stampText}</div>
                                 </div>
                             </div>
                         </div>
@@ -837,9 +1138,10 @@
 
                 html += `
                         </div>
+                        ${!isLeaderOverviewMode ? `
                         <div class="submit-section">
                             <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
-                        </div>
+                        </div>` : ''}
                     </div>
                 `;
                 appViewport.innerHTML = html;
@@ -883,6 +1185,34 @@
             }
         }
 
+        function submitToGoogleForm(formId, formData) {
+            let iframe = document.getElementById('hidden_iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.name = 'hidden_iframe';
+                iframe.id = 'hidden_iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
+
+            const form = document.createElement('form');
+            form.action = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
+            form.method = 'POST';
+            form.target = 'hidden_iframe';
+
+            for (const [key, value] of Object.entries(formData)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                form.appendChild(input);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+            setTimeout(() => { document.body.removeChild(form); }, 1000);
+        }
+
         function submitZoneChecklist() {
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[activeZoneIndex];
@@ -910,10 +1240,37 @@
                     }
                 });
                 localStorage.setItem('preclosedTasks', JSON.stringify(preclosedMap));
-                alert(`${zone.name} preclose saved successfully! The preclose list has been cleared.`);
+                alert(`${zone.name} preclose saved successfully!`);
                 goBackToAreas();
                 return;
             }
+
+            // Google Form Payload Assembly
+            const areaKey = `${shift.id}::${zone.name}`;
+            const formConfig = FORM_MAPPINGS[areaKey];
+
+            if (formConfig) {
+                const formData = {};
+                // Uses the user's PIN to answer the name input field
+                formData[formConfig.nameEntry] = currentUser.pin;
+
+                const preclosedMap = getPreclosedMap();
+
+                zone.tasks.forEach((task) => {
+                    const entryId = formConfig.tasks[task.title];
+                    if (entryId) {
+                        const isPreclosed = preclosedMap[`${zone.name}::${task.title}`] === true;
+                        formData[entryId] = isPreclosed ? "preclosed and completed" : "completed";
+                    }
+                });
+
+                submitToGoogleForm(formConfig.formId, formData);
+            }
+
+            // Mark area as submitted
+            const submittedAreas = getSubmittedAreas();
+            submittedAreas[areaKey] = true;
+            localStorage.setItem('submittedAreas', JSON.stringify(submittedAreas));
 
             alert(`${zone.name} checklist successfully submitted!`);
             goBackToAreas();
@@ -959,76 +1316,6 @@
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 850);
             }
-        }
-
-        function openLeaderView() {
-            document.getElementById("leaderModal").classList.add("active");
-            document.getElementById("pinInput").value = "";
-            document.getElementById("pinInput").focus();
-        }
-
-        function closeLeaderView() {
-            document.getElementById("leaderModal").classList.remove("active");
-            document.getElementById("leaderModalContent").innerHTML = `
-                <h3>Enter Leader PIN</h3>
-                <p>Please enter your secure 4-digit PIN to access the supervisor dashboard.</p>
-                <input type="password" id="pinInput" placeholder="Enter PIN (e.g. 1234)" maxlength="4">
-                <button onclick="verifyPin()">Access Dashboard</button>
-                <button class="close-modal" onclick="closeLeaderView()">Cancel</button>
-            `;
-            renderApp();
-        }
-
-        function verifyPin() {
-            if (document.getElementById("pinInput").value === LEADER_PIN) {
-                const precloseShift = checklistsData.find(s => s.id === 'preclose');
-                let zoneButtonsHtml = '';
-                if (precloseShift) {
-                    precloseShift.zones.forEach(zone => {
-                        zoneButtonsHtml += `
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; background: white; padding: 0.5rem 0.75rem; border-radius: 0.4rem; border: 1px solid #cbd5e1;">
-                                <span style="font-weight: 500;">${zone.name}</span>
-                                <button onclick="clearAreaPreclose('${zone.name}')" style="background: #ef4444; padding: 0.3rem 0.6rem; font-size: 0.85rem; border-radius: 0.3rem; width: auto;">Clear Preclose</button>
-                            </div>
-                        `;
-                    });
-                }
-
-                document.getElementById("leaderModalContent").innerHTML = `
-                    <h3>Supervisor Dashboard</h3>
-                    <div style="background:#f1f5f9; padding: 1rem; border-radius: 0.5rem; margin-top: 0.5rem;">
-                        <p><strong>Status:</strong> Connected to live data stream.</p>
-                        <p><strong>Active Session:</strong> ${currentAmPm}</p>
-                        <hr style="margin: 1rem 0; border:0; border-top:1px solid #cbd5e1;">
-                        <p style="font-weight: 700; margin-bottom: 0.75rem; color: #0f172a;">Testing Tools: Clear Preclose Data</p>
-                        ${zoneButtonsHtml}
-                        <button onclick="clearAllPreclose()" style="background: #dc2626; margin-top: 0.75rem; width: 100%;">Clear All Preclosed Data</button>
-                    </div>
-                    <button class="close-modal" style="margin-top: 1rem;" onclick="closeLeaderView()">Close Dashboard</button>
-                `;
-            } else {
-                alert("Incorrect PIN. Access Denied.");
-                document.getElementById("pinInput").value = "";
-            }
-        }
-
-        function clearAreaPreclose(zoneName) {
-            let preclosedMap = getPreclosedMap();
-            let keys = Object.keys(preclosedMap);
-            let clearedCount = 0;
-            keys.forEach(key => {
-                if (key.startsWith(zoneName + '::')) {
-                    delete preclosedMap[key];
-                    clearedCount++;
-                }
-            });
-            localStorage.setItem('preclosedTasks', JSON.stringify(preclosedMap));
-            alert(`Cleared ${clearedCount} preclosed task(s) for ${zoneName}!`);
-        }
-
-        function clearAllPreclose() {
-            localStorage.removeItem('preclosedTasks');
-            alert('All preclosed data cleared completely!');
         }
     </script>
 </body>
