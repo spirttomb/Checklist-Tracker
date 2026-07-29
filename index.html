@@ -545,6 +545,26 @@
             .task-view-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
             .task-subtitle-badge { margin-left: 0; margin-top: 0.5rem; display: inline-block; }
         }
+        .cloud-sync-loader {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .spinner {
+            border: 4px solid #e2e8f0;
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
     </style>
 </head>
 <body>
@@ -591,6 +611,7 @@
         const FORM_MAPPINGS = {
             "close-930::Front Counter": {
                 formId: "1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8",
+                sheetId: "1hxT_6-JM24NISG2m5jFQ9EreGq7dHS1yIcFLH9TAIoY",
                 nameEntry: "entry.21633315",
                 tasks: {
                     "Break Down Lemonades": "entry.4296956",
@@ -607,6 +628,7 @@
             },
             "close-930::Dining Room": {
                 formId: "1cqvIwDRY602h7UxHgDwlTSH4b6fYggnNQRC9XPasOrM",
+                sheetId: "1it44hckl9Gk10v8AMNduJVDgvMGb_LZVVaFtQKd0PlU",
                 nameEntry: "entry.1462016451",
                 tasks: {
                     "Vacuum Rugs": "entry.626307994",
@@ -622,6 +644,7 @@
             },
             "close-930::Bathrooms": {
                 formId: "1lNas0TNyUt4mFkuu0tvkf7rqdgYbqCgaUTDVa4qxRVE",
+                sheetId: "1xb6aTuekQUOzqNFDvqgjACPoRxAviu2nWdnu-CoGoKU",
                 nameEntry: "entry.1666408577",
                 tasks: {
                     "Mirrors And Sink": "entry.1818462714",
@@ -639,6 +662,7 @@
             },
             "close-930::Break Room & Tech": {
                 formId: "13U0IhjGYdn9CqQNE46B0jjHQQ_1LB5i0mA_haQ1SUMk",
+                sheetId: "18RQv-N4sLQt4xJpJnjuO_oJ4ma9gn0rQBR1wj1Cub4g",
                 nameEntry: "entry.748608307",
                 tasks: {
                     "Personal Belongings": "entry.1585656959",
@@ -651,6 +675,7 @@
             },
             "close-930::Floors": {
                 formId: "1wH9ewa1DVMZhfCUgJN3PckwHHSQc0av6Ty-8WKbohK8",
+                sheetId: "1vX4c23rAG-3HLQ45jx6K3H8PCsoiFOAPhdV02uZcXk4",
                 nameEntry: "entry.436027180",
                 tasks: {
                     "Floor Prep": "entry.1904270649",
@@ -660,6 +685,7 @@
             },
             "close-1030::Desserts": {
                 formId: "1g815xRWfOvSS2dtFnYz4BXJLUENieCmb2Jad6w_EGUY",
+                sheetId: "1xHKuHMyI0peZHEDb33uKT0EFw1tYrjVplTrDFEDkTNo",
                 nameEntry: "entry.609807457",
                 tasks: {
                     "Taylor Wash": "entry.771576326",
@@ -675,6 +701,7 @@
             },
             "close-1030::Drinks": {
                 formId: "1dkZq5NXKcw1GIEJZoLYY0pDPmkQUSnegK_RWK7Ps5nE",
+                sheetId: "1GQd1t2i2I73ZBvmyUFai-qVQM_pfFugEFGd4AtZS8Xo",
                 nameEntry: "entry.1769544915",
                 tasks: {
                     "Break Down Lemonades": "entry.880965357",
@@ -692,6 +719,7 @@
             },
             "close-1030::Chutes": {
                 formId: "1ejUJJdt7ObulnrhtW81f9bjZWJWhp-ORyMQYaX2hnS4",
+                sheetId: "1AO7f2_pmhbvNsirzfVltyj1EMBf6fHJn0xaeeTfv3gk",
                 nameEntry: "entry.693251095",
                 tasks: {
                     "Fry Bins": "entry.1831189851",
@@ -707,6 +735,7 @@
             },
             "close-1030::Stocking": {
                 formId: "10yiHbVuqlOpecFhvKBHngRCWlouyt110yUTdbQ5IlnQ",
+                sheetId: "12H3yHFteW3ZjfPMnwrTe9ulGQCrOQWQcrCOeaU2sQ4g",
                 nameEntry: "entry.2144443666",
                 tasks: {
                     "Sauce Wall": "entry.496068327",
@@ -717,6 +746,7 @@
             },
             "close-1030::Trash": {
                 formId: "1ftcJJTdfWm7Uxb4M8fDlAirWgwa3k1aGVRIiq5ihKig",
+                sheetId: "181faxVl7nbEmz25apadsO8FBIBVK_2x1FhhwTxifu4c",
                 nameEntry: "entry.1435966399",
                 tasks: {
                     "Trash Removal": "entry.707148952",
@@ -725,6 +755,7 @@
             },
             "close-1030::Floors": {
                 formId: "1pUr3j1pMnwcguvQWqP5a27iQYsZmYaR13ovmYUY5fQs",
+                sheetId: "1wTN-i6FbtXl1APWxDW8_aFrm9RS13ApYcdM_Tgn3YSg",
                 nameEntry: "entry.213267544",
                 tasks: {
                     "Sweep": "entry.1846248131",
@@ -955,15 +986,95 @@
         let completedTasks = new Set();
         let currentUser = null; 
         let isLeaderOverviewMode = false;
+        
+        // New: Global object holding live cloud statuses
+        let cloudSyncedAreas = {}; 
 
         function getPreclosedMap() {
             try { return JSON.parse(localStorage.getItem('preclosedTasks')) || {}; } catch (e) { return {}; }
         }
 
-        // Updated State format: { teamMember: "PIN", leaderVerified: false, leaderName: "Name" }
-        function getSubmittedAreas() {
-            try { return JSON.parse(localStorage.getItem('submittedAreas')) || {}; } catch (e) { return {}; }
+        // --- NEW CLOUD SYNC FUNCTIONS ---
+
+        // Queries the Google Sheet via the visualization API to find the most recent submission date
+        async function fetchSheetLatestStatus(sheetId) {
+            if (!sheetId) return null;
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=SELECT A, B ORDER BY A DESC LIMIT 1`;
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                // Extract the JSON from Google's callback wrapper
+                const jsonString = text.match(/(?<=.*\().*(?=\);)/s)[0];
+                const data = JSON.parse(jsonString);
+                
+                if (data.table.rows.length > 0) {
+                    const timestampField = data.table.rows[0].c[0];
+                    if (!timestampField) return null;
+                    
+                    const dateStr = timestampField.f || timestampField.v; 
+                    const dateObj = new Date(dateStr);
+                    const today = new Date();
+                    
+                    // If the latest entry was submitted today, the area is locked
+                    if (dateObj.toDateString() === today.toDateString()) {
+                        const submitter = data.table.rows[0].c[1] ? data.table.rows[0].c[1].v : "Team Member";
+                        return { teamMember: submitter, leaderVerified: false, leaderName: null }; 
+                    }
+                }
+            } catch(e) {
+                console.error("Failed to read sheet data for sheet ID " + sheetId, e);
+            }
+            return null;
         }
+
+        // Reaches out to all sheets for the current active tab concurrently
+        async function loadShiftStatusFromCloud() {
+    const appViewport = document.getElementById("appViewport");
+    appViewport.innerHTML = `
+        <div class="cloud-sync-loader">
+            <div class="spinner"></div>
+            <h2>Syncing with Cloud...</h2>
+            <p>Checking live device network to secure locked areas.</p>
+        </div>
+    `;
+
+    const shift = checklistsData[activeTabIndex];
+    cloudSyncedAreas = {}; 
+
+    if (shift.id !== 'preclose') {
+        const fetchPromises = shift.zones.map(async (zone) => {
+            const areaKey = `${shift.id}::${zone.name}`;
+            const config = FORM_MAPPINGS[areaKey];
+            
+            if (config && config.sheetId) {
+                const status = await fetchSheetLatestStatus(config.sheetId);
+                if (status) {
+                    // Check local cache first, then verify against cloud sync state
+                    try {
+                        const localVerification = JSON.parse(localStorage.getItem('leaderVerifications')) || {};
+                        if (localVerification[areaKey] && localVerification[areaKey].date === new Date().toDateString()) {
+                            status.leaderVerified = true;
+                            status.leaderName = localVerification[areaKey].leaderName;
+                        }
+                    } catch(e) {}
+                    
+                    cloudSyncedAreas[areaKey] = status;
+                }
+            }
+        });
+        await Promise.all(fetchPromises); 
+    } else {
+        try {
+            const localPrecloseLocks = JSON.parse(localStorage.getItem('precloseLocks')) || {};
+            const today = new Date().toDateString();
+            for (const [key, data] of Object.entries(localPrecloseLocks)) {
+                if (data.date === today) cloudSyncedAreas[key] = data.state;
+            }
+        } catch(e) {}
+    }
+    
+    renderApp();
+}
 
         document.addEventListener("DOMContentLoaded", () => {
             promptLogin();
@@ -1001,7 +1112,7 @@
 
             document.getElementById("authOverlay").classList.remove("active");
             renderTabs();
-            renderApp();
+            loadShiftStatusFromCloud();
         }
 
         function toggleLeaderMode() {
@@ -1030,7 +1141,8 @@
                     activeTabIndex = index;
                     activeZoneIndex = null; 
                     renderTabs();
-                    renderApp();
+                    // NEW: Trigger cloud fetch instead of rendering instantly
+                    loadShiftStatusFromCloud(); 
                 };
                 navContainer.appendChild(tab);
             });
@@ -1172,21 +1284,24 @@
             }
         }
 
-        // Fixed logic blocking locked areas to non-leaders
-        function selectZone(index) {
+ function selectZone(index) {
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[index];
             const areaKey = `${shift.id}::${zone.name}`;
-            const submittedAreas = getSubmittedAreas();
-            const areaState = submittedAreas[areaKey];
+            
+            const areaState = cloudSyncedAreas[areaKey];
 
-            if (areaState && currentUser.role !== 'leader') {
-                alert("This area has been completed and is currently locked. Only leaders can view or verify it.");
+            if (areaState && !isLeaderOverviewMode) {
+                if (currentUser.role === 'leader') {
+                    alert("This area is completed and locked. Please toggle 'Leader Overview' to view or verify it.");
+                } else {
+                    alert(`This area was completed today by ${areaState.teamMember} and is locked.`);
+                }
                 return;
             }
 
             activeZoneIndex = index;
-            renderApp();
+            renderApp(); // This can stay synchronous since we already fetched the status
         }
 
         function goBackToAreas() {
@@ -1261,6 +1376,9 @@
                 if (!confirmSubmit) return;
             }
 
+            const areaKey = `${shift.id}::${zone.name}`;
+            const statePayload = { teamMember: currentUser.name, leaderVerified: false, leaderName: null };
+
             if (shift.id === 'preclose') {
                 const preclosedMap = getPreclosedMap();
                 zone.tasks.forEach((task, tIndex) => {
@@ -1271,21 +1389,27 @@
                     }
                 });
                 localStorage.setItem('preclosedTasks', JSON.stringify(preclosedMap));
+
+                const allDone = zone.tasks.every(t => preclosedMap[`${zone.name}::${t.title}`]);
+                if (allDone) {
+                    cloudSyncedAreas[areaKey] = statePayload;
+                    let precloseLocks = JSON.parse(localStorage.getItem('precloseLocks')) || {};
+                    precloseLocks[areaKey] = { date: new Date().toDateString(), state: statePayload };
+                    localStorage.setItem('precloseLocks', JSON.stringify(precloseLocks));
+                }
+
                 alert(`${zone.name} preclose saved successfully!`);
                 goBackToAreas();
                 return;
             }
 
-            // Google Form Payload Assembly
-            const areaKey = `${shift.id}::${zone.name}`;
+            // Google Form Submission
             const formConfig = FORM_MAPPINGS[areaKey];
-
             if (formConfig) {
                 const formData = {};
                 formData[formConfig.nameEntry] = currentUser.pin;
 
                 const preclosedMap = getPreclosedMap();
-
                 zone.tasks.forEach((task) => {
                     const entryId = formConfig.tasks[task.title];
                     if (entryId) {
@@ -1297,35 +1421,43 @@
                 await submitToGoogleForm(formConfig.formId, formData);
             }
 
-            // Mark area as submitted State Object Structure
-            const submittedAreas = getSubmittedAreas();
-            submittedAreas[areaKey] = {
-                teamMember: currentUser.name,
-                leaderVerified: false,
-                leaderName: null
-            };
-            localStorage.setItem('submittedAreas', JSON.stringify(submittedAreas));
+            // Update live memory state so it locks instantly without a refresh
+            cloudSyncedAreas[areaKey] = statePayload;
 
             alert(`${zone.name} checklist successfully submitted!`);
             goBackToAreas();
         }
 
-        function verifyArea() {
-            const shift = checklistsData[activeTabIndex];
-            const zone = shift.zones[activeZoneIndex];
-            const areaKey = `${shift.id}::${zone.name}`;
-            
-            const submittedAreas = getSubmittedAreas();
-            if (!submittedAreas[areaKey]) return;
+        async function verifyArea() {
+    const shift = checklistsData[activeTabIndex];
+    const zone = shift.zones[activeZoneIndex];
+    const areaKey = `${shift.id}::${zone.name}`;
+    
+    if (!cloudSyncedAreas[areaKey]) return;
 
-            submittedAreas[areaKey].leaderVerified = true;
-            submittedAreas[areaKey].leaderName = currentUser.name;
-            localStorage.setItem('submittedAreas', JSON.stringify(submittedAreas));
+    cloudSyncedAreas[areaKey].leaderVerified = true;
+    cloudSyncedAreas[areaKey].leaderName = currentUser.name;
 
-            alert(`${zone.name} verified successfully!`);
-            checkDayCompletion();
-            goBackToAreas();
-        }
+    // Submit verification log to the Master Form/Log to sync across devices
+    const masterFormId = '1eMVNlMFqdiWt6TWbk7nP8ZqxqGtipDza_5eEOeEwGks';
+    const verificationPayload = {
+        'entry.629425722': `[VERIFIED] ${zone.name} (${shift.title}) verified by Leader: ${currentUser.name}`
+    };
+
+    await submitToGoogleForm(masterFormId, verificationPayload);
+
+    // Also cache locally for immediate UI response on the current device
+    let localVerifications = JSON.parse(localStorage.getItem('leaderVerifications')) || {};
+    localVerifications[areaKey] = {
+        date: new Date().toDateString(),
+        leaderName: currentUser.name
+    };
+    localStorage.setItem('leaderVerifications', JSON.stringify(localVerifications));
+
+    alert(`${zone.name} verified successfully!`);
+    checkDayCompletion();
+    goBackToAreas();
+}
 
         // Master Summary Log Fix Applied
         async function checkDayCompletion() {
