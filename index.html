@@ -101,39 +101,27 @@
   display: none;
 }
 
-        .top-controls {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-            width: 100%;
-        }
-        .control-box {
-  background-color: var(--bg-color);
+        /* The single master container box */
+.single-control-box {
+  background-color: var(--signin);
   border: 1px solid var(--header);
   border-radius: 8px;
   padding: 12px 16px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Left Box */
-.left-box {
-  justify-content: flex-start;
-}
-
-/* Center Box (Groups AM/PM and time buttons together nicely) */
-.time-box {
+/* Groups the AM/PM toggle and time buttons together in the center */
+.center-group {
   display: flex;
+  align-items: center;
   gap: 16px;
   justify-content: center;
-  align-items: center;
-}
-
-/* Right Box (Centers Leadership Overview button inside its box on the right) */
-.right-box {
-  justify-content: center;
-  text-align: center;
 }
 
         .user-info-badge {
@@ -729,18 +717,17 @@
     <div id="statusMessageBar"></div>
 
 <header>
-    <div class="top-controls">
+    <!-- One single box wrapping all controls together -->
+    <div class="single-control-box">
         
-        <!-- Left Box: Switch PIN (Pin element kept for JS, but hidden via CSS) -->
-        <div class="control-box left-box">
-            <div class="user-info-badge" id="userInfoDisplay">
-                <span id="activeUserPin" style="display: none;">None</span>
-                <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
-            </div>
+        <!-- Left: Switch PIN (Pin text hidden for JS safety) -->
+        <div class="user-info-badge" id="userInfoDisplay">
+            <span id="activeUserPin" style="display: none;">None</span>
+            <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
         </div>
 
-        <!-- Center Box: AM/PM Toggle & Time Selecting Buttons -->
-        <div class="control-box time-box">
+        <!-- Center: AM/PM Toggle & Time Selecting Buttons -->
+        <div class="center-group">
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
                 <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
@@ -748,11 +735,9 @@
             <div class="checklist-nav" id="checklistNav"></div>
         </div>
 
-        <!-- Right Box: Leadership Overview -->
-        <div class="control-box right-box">
-            <div class="leader-controls">
-                <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
-            </div>
+        <!-- Right: Leadership Overview -->
+        <div class="leader-controls">
+            <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
 
     </div>
