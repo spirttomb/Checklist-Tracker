@@ -97,6 +97,9 @@
         body.leader-mode-active header {
             border-bottom: 1px solid #1e3a5f;
         }
+        #activeUserPin {
+  display: none;
+}
 
         .top-controls {
             display: grid;
@@ -728,14 +731,15 @@
 <header>
     <div class="top-controls">
         
-        <!-- Left Box: Switch PIN (Pin number text removed) -->
+        <!-- Left Box: Switch PIN (Pin element kept for JS, but hidden via CSS) -->
         <div class="control-box left-box">
             <div class="user-info-badge" id="userInfoDisplay">
+                <span id="activeUserPin" style="display: none;">None</span>
                 <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
             </div>
         </div>
 
-        <!-- Center Box: AM/PM Toggle & Time Selecting Buttons Combined -->
+        <!-- Center Box: AM/PM Toggle & Time Selecting Buttons -->
         <div class="control-box time-box">
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
@@ -744,7 +748,7 @@
             <div class="checklist-nav" id="checklistNav"></div>
         </div>
 
-        <!-- Right Box: Leadership Overview (Centered inside its box) -->
+        <!-- Right Box: Leadership Overview -->
         <div class="control-box right-box">
             <div class="leader-controls">
                 <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
