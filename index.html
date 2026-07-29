@@ -79,7 +79,7 @@
 
         /* Top Bar & Controls */
         header {
-            background: var(--header);
+            background: var(--primary);
             padding: 1.25rem 2rem;
             box-shadow: var(--shadow);
             display: flex;
@@ -89,7 +89,9 @@
             top: 0;
             z-index: 100;
             transition: background-color 0.3s ease;
+            border: 12px solid var(--header); 
         }
+    
 
         body.leader-mode-active header {
             border-bottom: 1px solid #1e3a5f;
