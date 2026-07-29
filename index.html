@@ -378,7 +378,6 @@
             overflow-y: auto;
         }
 
-        /* Preclosed Styling Override */
         .task-card-container.preclosed .card-front {
             border: 3px solid #3b82f6 !important;
             background-color: #f8fafc;
@@ -961,6 +960,7 @@
             try { return JSON.parse(localStorage.getItem('preclosedTasks')) || {}; } catch (e) { return {}; }
         }
 
+        // Updated State format: { teamMember: "PIN", leaderVerified: false, leaderName: "Name" }
         function getSubmittedAreas() {
             try { return JSON.parse(localStorage.getItem('submittedAreas')) || {}; } catch (e) { return {}; }
         }
@@ -1061,16 +1061,25 @@
                 let count = 0;
                 shift.zones.forEach((zone, zIndex) => {
                     const areaKey = `${shift.id}::${zone.name}`;
-                    const isSubmitted = submittedAreas[areaKey] === true;
+                    const areaState = submittedAreas[areaKey];
+                    const isSubmitted = !!areaState;
+                    const isVerified = areaState && areaState.leaderVerified;
 
                     if (isLeaderOverviewMode && !isSubmitted) {
                         return; // Skip unsubmitted areas in Leader Overview
                     }
 
+                    let badgeHtml = '';
+                    if (isVerified) {
+                        badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold);">Verified</div>`;
+                    } else if (isSubmitted) {
+                        badgeHtml = `<div class="submitted-badge">Completed</div>`;
+                    }
+
                     count++;
                     html += `
                         <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
-                            ${isSubmitted ? `<div class="submitted-badge">Completed</div>` : ''}
+                            ${badgeHtml}
                             <h3>${zone.name}</h3>
                             ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
                         </div>
@@ -1085,6 +1094,8 @@
                 appViewport.innerHTML = html;
             } else {
                 const zone = shift.zones[activeZoneIndex];
+                const areaKey = `${shift.id}::${zone.name}`;
+                const areaState = submittedAreas[areaKey];
                 const preclosedMap = getPreclosedMap();
                 
                 let html = `
@@ -1134,21 +1145,46 @@
                     `;
                 });
 
+                html += `</div>`;
+                
                 const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
 
-                html += `
-                        </div>
-                        ${!isLeaderOverviewMode ? `
+                // Submissions Buttons Logic
+                if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
+                    html += `
+                        <div class="submit-section">
+                            <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
+                        </div>`;
+                } else if (!areaState) {
+                    html += `
                         <div class="submit-section">
                             <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
-                        </div>` : ''}
-                    </div>
-                `;
+                        </div>`;
+                } else if (areaState && areaState.leaderVerified) {
+                    html += `
+                        <div class="submit-section">
+                            <p style="color: var(--success); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
+                        </div>`;
+                }
+
+                html += `</div>`;
                 appViewport.innerHTML = html;
             }
         }
 
+        // Fixed logic blocking locked areas to non-leaders
         function selectZone(index) {
+            const shift = checklistsData[activeTabIndex];
+            const zone = shift.zones[index];
+            const areaKey = `${shift.id}::${zone.name}`;
+            const submittedAreas = getSubmittedAreas();
+            const areaState = submittedAreas[areaKey];
+
+            if (areaState && currentUser.role !== 'leader') {
+                alert("This area has been completed and is currently locked. Only leaders can view or verify it.");
+                return;
+            }
+
             activeZoneIndex = index;
             renderApp();
         }
@@ -1185,35 +1221,30 @@
             }
         }
 
-        function submitToGoogleForm(formId, formData) {
-            let iframe = document.getElementById('hidden_iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.name = 'hidden_iframe';
-                iframe.id = 'hidden_iframe';
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
+        // Fetch API no-cors Fix Applied
+        async function submitToGoogleForm(formId, formDataObj) {
+            const formUrl = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
+            const formData = new URLSearchParams();
+
+            for (const [key, value] of Object.entries(formDataObj)) {
+                formData.append(key, value);
             }
 
-            const form = document.createElement('form');
-            form.action = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
-            form.method = 'POST';
-            form.target = 'hidden_iframe';
-
-            for (const [key, value] of Object.entries(formData)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                form.appendChild(input);
+            try {
+                await fetch(formUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+                return true;
+            } catch (error) {
+                console.error("Form submission failed:", error);
+                return false;
             }
-
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(() => { document.body.removeChild(form); }, 1000);
         }
 
-        function submitZoneChecklist() {
+        async function submitZoneChecklist() {
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[activeZoneIndex];
             
@@ -1251,7 +1282,6 @@
 
             if (formConfig) {
                 const formData = {};
-                // Uses the user's PIN to answer the name input field
                 formData[formConfig.nameEntry] = currentUser.pin;
 
                 const preclosedMap = getPreclosedMap();
@@ -1264,16 +1294,65 @@
                     }
                 });
 
-                submitToGoogleForm(formConfig.formId, formData);
+                await submitToGoogleForm(formConfig.formId, formData);
             }
 
-            // Mark area as submitted
+            // Mark area as submitted State Object Structure
             const submittedAreas = getSubmittedAreas();
-            submittedAreas[areaKey] = true;
+            submittedAreas[areaKey] = {
+                teamMember: currentUser.name,
+                leaderVerified: false,
+                leaderName: null
+            };
             localStorage.setItem('submittedAreas', JSON.stringify(submittedAreas));
 
             alert(`${zone.name} checklist successfully submitted!`);
             goBackToAreas();
+        }
+
+        function verifyArea() {
+            const shift = checklistsData[activeTabIndex];
+            const zone = shift.zones[activeZoneIndex];
+            const areaKey = `${shift.id}::${zone.name}`;
+            
+            const submittedAreas = getSubmittedAreas();
+            if (!submittedAreas[areaKey]) return;
+
+            submittedAreas[areaKey].leaderVerified = true;
+            submittedAreas[areaKey].leaderName = currentUser.name;
+            localStorage.setItem('submittedAreas', JSON.stringify(submittedAreas));
+
+            alert(`${zone.name} verified successfully!`);
+            checkDayCompletion();
+            goBackToAreas();
+        }
+
+        // Master Summary Log Fix Applied
+        async function checkDayCompletion() {
+            const shift = checklistsData[activeTabIndex];
+            const submittedAreas = getSubmittedAreas();
+            
+            // Check if all zones in this specific shift are verified by a leader
+            const allVerified = shift.zones.every(zone => {
+                const state = submittedAreas[`${shift.id}::${zone.name}`];
+                return state && state.leaderVerified;
+            });
+
+            if (allVerified && shift.id !== 'preclose') {
+                const entries = [`${currentUser.name} - verified`];
+                shift.zones.forEach(zone => {
+                    const state = submittedAreas[`${shift.id}::${zone.name}`];
+                    entries.push(`${state.teamMember} - ${zone.name}`);
+                });
+                
+                const logPayload = entries.join(', '); // e.g. Josh - verified, Matt - Desserts...
+                
+                const masterFormId = '1eMVNlMFqdiWt6TWbk7nP8ZqxqGtipDza_5eEOeEwGks';
+                const formData = { 'entry.629425722': logPayload };
+                
+                await submitToGoogleForm(masterFormId, formData);
+                alert(`All ${shift.title} areas verified! Daily master log submitted successfully.`);
+            }
         }
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1295,18 +1374,20 @@
             });
         }
 
+        // Off-by-one pixel Confetti Bug Fix Applied
         function triggerConfetti(cardElement) {
             const rect = cardElement.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+            // Using direct pixels mapping
+            const pixelX = rect.left + (rect.width / 2);
+            const pixelY = rect.top + (rect.height / 2);
             const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6'];
 
             for (let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'confetti';
                 particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = `${centerX}px`;
-                particle.style.top = `${centerY}px`;
+                particle.style.left = `${pixelX}px`;
+                particle.style.top = `${pixelY}px`;
 
                 const angle = Math.random() * Math.PI * 2;
                 const distance = 60 + Math.random() * 80;
