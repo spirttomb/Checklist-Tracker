@@ -698,6 +698,10 @@
 
     <header>
         <div class="top-controls">
+            <div class="user-info-badge" id="userInfoDisplay">
+                PIN: <span id="activeUserPin">None</span>
+                <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
+            </div>
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
                 <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
@@ -1270,7 +1274,7 @@
                 currentUser = { pin: pin, name: pin, role: "member" };
             }
 
-            document.getElementById("activeUserPin").innerText = currentUser.pin;
+            document.getElementById("activeUserPin").innerText = "****";
             const leaderBtn = document.getElementById("leaderOverviewToggle");
             
             if (currentUser.role === 'leader') {
