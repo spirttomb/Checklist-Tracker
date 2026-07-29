@@ -1,26 +1,26 @@
 form ids:
 1030 floors
-1pUr3j1pMnwcguvQWqP5a27iQYsZmYaR13ovmYUY5fQs
+1FAIpQLSeNJK_ew4twj0sXS_lGQBg_QVIiFe3j6U0s-qg6IJnoDCOHyQ
 930 floors
-1wH9ewa1DVMZhfCUgJN3PckwHHSQc0av6Ty-8WKbohK8
+1FAIpQLSdtBCEktlFYTu2hxJHh8IgpLTGAcetyg0--S81igGSm8qShnQ
 930 front counter
-1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8
+1FAIpQLSct_5hXLVUObY92qrFwfB5XR71tT2_he7-3vpyCs-lPSKJTtA
 930 dining room
-1cqvIwDRY602h7UxHgDwlTSH4b6fYggnNQRC9XPasOrM
+1FAIpQLSfmtZ3LfhYBpzrPVuRTvgn128c1InljnVfX9O3ffPpF81Ojmw
 930 bathrooms
-1lNas0TNyUt4mFkuu0tvkf7rqdgYbqCgaUTDVa4qxRVE
+1FAIpQLSdvNTA4ihQuZuyBdoWfDkzZxTD1iOZU_njwfiasLFk8SbAe3Q
 930 Break Room & Tech
-13U0IhjGYdn9CqQNE46B0jjHQQ_1LB5i0mA_haQ1SUMk
+1FAIpQLSd9T0WdnGnno-Wtpoom2jXieA96aE5WePcOs99u4Udq49dHpQ
 1030 Desserts
-1g815xRWfOvSS2dtFnYz4BXJLUENieCmb2Jad6w_EGUY
+1FAIpQLSdxxnFJIEmDB9xeQOm1d67P4w0ksoZOEXv96M5-96S9vWp-NA
 1030 Drinks
-1dkZq5NXKcw1GIEJZoLYY0pDPmkQUSnegK_RWK7Ps5nE
+1FAIpQLSctUcHm0WNShrDxJaUE9wkBNGUgJOVBN60Z6cCvQozqgVnajQ
 1030 Chutes
-1ejUJJdt7ObulnrhtW81f9bjZWJWhp-ORyMQYaX2hnS4
+1FAIpQLSd-Psqg5HVLoHAjawblhotXPFIJkE-8ia-ky8UM6r7fRXDQkA
 1030 Stocking
-10yiHbVuqlOpecFhvKBHngRCWlouyt110yUTdbQ5IlnQ
+1FAIpQLSelkRBBGsL9x5onhovWQ-mhpXHiKE1TvqqQZ6apViKO4fxeVw
 1030 Trash
-1ftcJJTdfWm7Uxb4M8fDlAirWgwa3k1aGVRIiq5ihKig
+1FAIpQLSes4Ah5yVY1_WNXlflEbzq0_abYsVhccAPjqJ88PUZ5lIUEBQ
 
 sheet ids:
 1030 Stocking
@@ -102,7 +102,8 @@ entry.1585656959 trash & belongings
 entry.1254873848 furniture
 entry.1840882147 tech storage
 entry.87698102 floors
-entry.1475384836 microwave & trash
+entry.1475384836 microwave
+entry.336478269 trash
 entry.1530636489 tech
 1030 desserts
 entry.609807457 desserts
@@ -121,10 +122,13 @@ entry.880965357 break down lemonades
 entry.707970743 transfer tea
 entry.1093113017 bring back dishes
 entry.1480788207 clean drink towers
-entry.229081274 counters & doors
+entry.229081274 counters
+entry.206701927 lowboy
+entry.1435983399 dt window door
 entry.1487542935 dumpsink
 entry.1784850478 coffee pots
 entry.992710073 reassemble
+entry.437073424 bring back dishes
 1030 chutes
 entry.693251095 name
 entry.1831189851 fry bin
@@ -132,7 +136,10 @@ entry.1163698153 faceplate & dividers
 entry.1248822629 wipe down
 entry.216194971 reassemble
 entry.2058407943 clean lowboy
-entry.524565776 bag holders & counter
+entry.524565776 bag holders
+entry.1240876433 wipe down counters
+entry.1002537616 clean bag holders
+entry.1934980171 return fry bins
 1030 stocking
 entry.2144443666 name
 entry.496068327 sauce wall
