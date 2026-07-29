@@ -1,0 +1,131 @@
+form ids:
+1030 floors
+1pUr3j1pMnwcguvQWqP5a27iQYsZmYaR13ovmYUY5fQs
+930 floors
+1wH9ewa1DVMZhfCUgJN3PckwHHSQc0av6Ty-8WKbohK8
+930 front counter
+1MBX6ELubWPqTY620RB566LsaSELxaoFvYEUfBB5iUL8
+930 dining room
+1cqvIwDRY602h7UxHgDwlTSH4b6fYggnNQRC9XPasOrM
+930 bathrooms
+1lNas0TNyUt4mFkuu0tvkf7rqdgYbqCgaUTDVa4qxRVE
+930 Break Room & Tech
+13U0IhjGYdn9CqQNE46B0jjHQQ_1LB5i0mA_haQ1SUMk
+1030 Desserts
+1g815xRWfOvSS2dtFnYz4BXJLUENieCmb2Jad6w_EGUY
+1030 Drinks
+1dkZq5NXKcw1GIEJZoLYY0pDPmkQUSnegK_RWK7Ps5nE
+1030 Chutes
+1ejUJJdt7ObulnrhtW81f9bjZWJWhp-ORyMQYaX2hnS4
+1030 Stocking
+10yiHbVuqlOpecFhvKBHngRCWlouyt110yUTdbQ5IlnQ
+1030 Trash
+1ftcJJTdfWm7Uxb4M8fDlAirWgwa3k1aGVRIiq5ihKig
+
+sheet ids:
+1030 Stocking
+12H3yHFteW3ZjfPMnwrTe9ulGQCrOQWQcrCOeaU2sQ4g
+1030 chutes
+1AO7f2_pmhbvNsirzfVltyj1EMBf6fHJn0xaeeTfv3gk
+1030 drinks
+1GQd1t2i2I73ZBvmyUFai-qVQM_pfFugEFGd4AtZS8Xo
+1030 desserts
+1xHKuHMyI0peZHEDb33uKT0EFw1tYrjVplTrDFEDkTNo
+930 breakroom & tech
+18RQv-N4sLQt4xJpJnjuO_oJ4ma9gn0rQBR1wj1Cub4g
+930 bathrooms
+1xb6aTuekQUOzqNFDvqgjACPoRxAviu2nWdnu-CoGoKU
+930 dining room
+1it44hckl9Gk10v8AMNduJVDgvMGb_LZVVaFtQKd0PlU
+930 front counter
+1hxT_6-JM24NISG2m5jFQ9EreGq7dHS1yIcFLH9TAIoY
+930 floors
+1vX4c23rAG-3HLQ45jx6K3H8PCsoiFOAPhdV02uZcXk4
+1030 floors
+1wTN-i6FbtXl1APWxDW8_aFrm9RS13ApYcdM_Tgn3YSg
+1030 trash
+181faxVl7nbEmz25apadsO8FBIBVK_2x1FhhwTxifu4c
+
+form entry ids:
+1030 floors
+entry.1846248131 sweep
+entry.329042300 mop
+1030 trash
+entry.707148952 trash removal
+entry.734813260 make lemonades
+930 floors
+entry.1904270649 floor prep
+entry.727982962 mopping
+entry.1202343262 chairs
+930 front counter
+entry.4296956 break down lemonades
+entry.413908059 transfer and clean tea
+entry.1761965454 bring back dishes
+entry.1888917489 clean drink towers
+entry.871673908 clean swinging door
+entry.286725968 clean lowboy
+entry.1759044535 wipe down all counters
+entry.1142316488 clean pos terminals
+entry.834524323 reassemble towers
+entry.1863485176 reassemble items
+930 dining room
+entry.626307994 vacuum rugs
+entry.1240294498 sweep
+entry.390885381 flowers
+entry.276970683 furniture
+entry.958243505 put up chairs
+entry.2038394362 blinds
+entry.1160699902 table items
+entry.537812247 return items
+entry.396870801 condiment stand
+930 bathrooms
+entry.1818462714 mirrors & sink
+entry.1769411751 baby changing station
+entry.1213384330 doors
+entry.1667675873 dispensers
+entry.893137986 metal appliances
+entry.1535583909 high-touch surfaces
+entry.2118734279 urinals & toilets
+entry.1400133087 stocking
+entry.1223569076 repeat
+entry.1712465686 floors
+entry.2074825630 trash
+930 break room & tech
+entry.1585656959 trash & belongings
+entry.1254873848 furniture
+entry.1840882147 tech storage
+entry.87698102 floors
+entry.1475384836 microwave & trash
+entry.1530636489 tech
+1030 desserts
+entry.771576326 taylor - wash cycle
+entry.1069087250 prepare kay-5
+entry.498948150 dishes & leftovers
+entry.984065864 drain icedream
+entry.1683751067 wash taylor inside
+entry.1969771539 clean taylor exterior
+entry.1253411718 walls & surroundings
+entry.1491997898 wash & reassemble
+entry.380188848 clean lowboy
+1030 drinks
+entry.880965357 break down lemonades
+entry.707970743 transfer tea
+entry.1093113017 bring back dishes
+entry.1480788207 clean drink towers
+entry.229081274 counters & doors
+entry.1487542935 dumpsink
+entry.1784850478 coffee pots
+entry.992710073 reassemble
+1030 chutes
+entry.1831189851 fry bin
+entry.1163698153 faceplate & dividers
+entry.1248822629 wipe down
+entry.216194971 reassemble
+entry.2058407943 clean lowboy
+entry.524565776 bag holders & counter
+1030 stocking
+entry.496068327 sauce wall
+entry.1277215098 lowboy
+entry.688684061 drink station
+entry.2053686261 boxed goods
+
