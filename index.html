@@ -999,62 +999,49 @@
         // Queries the Google Sheet via the visualization API to find the most recent submission date
         async function fetchSheetLatestStatus(sheetId) {
     if (!sheetId) return null;
-    
-    // FIX 1: Safely URL-encode the SQL query so the browser doesn't choke on spaces
     const query = encodeURIComponent("SELECT A, B ORDER BY A DESC LIMIT 1");
     const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
     
+    // 5-second hard timeout so the app never freezes if the network hangs
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
     try {
-        const res = await fetch(url);
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId);
         if (!res.ok) return null;
         
         const text = await res.text();
-        
-        // FIX 2: Remove the dangerous Regex causing the infinite browser freeze.
-        // Google wraps the data in a function call. We will safely cut it out using string indexes.
         const prefix = "setResponse(";
         const startIndex = text.indexOf(prefix);
+        if (startIndex === -1) return null;
         
-        if (startIndex === -1) {
-            console.error("Invalid response format from sheet:", sheetId);
-            return null;
-        }
-        
-        // Safely extract just the JSON string
         const jsonStart = startIndex + prefix.length;
         const jsonEnd = text.lastIndexOf(")");
         const jsonString = text.substring(jsonStart, jsonEnd);
         
         const data = JSON.parse(jsonString);
         
-        // FIX 3: Ensure the sheet actually has data rows to prevent crashes on empty sheets
         if (data.table && data.table.rows && data.table.rows.length > 0) {
             const timestampField = data.table.rows[0].c[0];
             if (!timestampField) return null;
             
-            // Google Viz API returns dates differently depending on formatting
             const dateVal = timestampField.f || timestampField.v; 
             if (!dateVal) return null;
 
             let dateObj;
-            
-            // If Google returns its proprietary Date(YYYY, MM, DD, HH, mm, ss) format
             if (typeof dateVal === 'string' && dateVal.startsWith('Date(')) {
                 const dateArgs = dateVal.match(/\d+/g);
                 if (dateArgs && dateArgs.length >= 3) {
-                    // JavaScript Date objects use 0-indexed months (0 = Jan), just like Google's API
                     dateObj = new Date(dateArgs[0], dateArgs[1], dateArgs[2]);
                 } else {
                     dateObj = new Date();
                 }
             } else {
-                // Otherwise, standard date parse
                 dateObj = new Date(dateVal);
             }
             
             const today = new Date();
-            
-            // If the latest entry was submitted today, lock the area globally
             if (dateObj.toDateString() === today.toDateString()) {
                 const submitterField = data.table.rows[0].c[1];
                 const submitter = (submitterField && submitterField.v) ? submitterField.v : "Team Member";
@@ -1062,9 +1049,9 @@
             }
         }
     } catch(e) {
-        console.error("Error processing sheet ID: " + sheetId, e);
+        clearTimeout(timeoutId);
+        console.warn("Sheet fetch skipped or timed out:", sheetId);
     }
-    
     return null;
 }
 
@@ -1082,38 +1069,41 @@
     const shift = checklistsData[activeTabIndex];
     cloudSyncedAreas = {}; 
 
-    if (shift.id !== 'preclose') {
-        const fetchPromises = shift.zones.map(async (zone) => {
-            const areaKey = `${shift.id}::${zone.name}`;
-            const config = FORM_MAPPINGS[areaKey];
-            
-            if (config && config.sheetId) {
-                const status = await fetchSheetLatestStatus(config.sheetId);
-                if (status) {
-                    // Check local cache first, then verify against cloud sync state
-                    try {
-                        const localVerification = JSON.parse(localStorage.getItem('leaderVerifications')) || {};
-                        if (localVerification[areaKey] && localVerification[areaKey].date === new Date().toDateString()) {
-                            status.leaderVerified = true;
-                            status.leaderName = localVerification[areaKey].leaderName;
-                        }
-                    } catch(e) {}
-                    
-                    cloudSyncedAreas[areaKey] = status;
+    try {
+        if (shift.id !== 'preclose') {
+            const fetchPromises = shift.zones.map(async (zone) => {
+                const areaKey = `${shift.id}::${zone.name}`;
+                const config = FORM_MAPPINGS[areaKey];
+                
+                if (config && config.sheetId) {
+                    const status = await fetchSheetLatestStatus(config.sheetId);
+                    if (status) {
+                        try {
+                            const localVerification = JSON.parse(localStorage.getItem('leaderVerifications')) || {};
+                            if (localVerification[areaKey] && localVerification[areaKey].date === new Date().toDateString()) {
+                                status.leaderVerified = true;
+                                status.leaderName = localVerification[areaKey].leaderName;
+                            }
+                        } catch(e) {}
+                        cloudSyncedAreas[areaKey] = status;
+                    }
                 }
-            }
-        });
-        await Promise.all(fetchPromises); 
-    } else {
-        try {
-            const localPrecloseLocks = JSON.parse(localStorage.getItem('precloseLocks')) || {};
-            const today = new Date().toDateString();
-            for (const [key, data] of Object.entries(localPrecloseLocks)) {
-                if (data.date === today) cloudSyncedAreas[key] = data.state;
-            }
-        } catch(e) {}
+            });
+            await Promise.all(fetchPromises); 
+        } else {
+            try {
+                const localPrecloseLocks = JSON.parse(localStorage.getItem('precloseLocks')) || {};
+                const today = new Date().toDateString();
+                for (const [key, data] of Object.entries(localPrecloseLocks)) {
+                    if (data.date === today) cloudSyncedAreas[key] = data.state;
+                }
+            } catch(e) {}
+        }
+    } catch (error) {
+        console.error("Critical error during cloud sync:", error);
     }
     
+    // This strictly ensures that even if something breaks, the spinner is removed
     renderApp();
 }
 
@@ -1190,140 +1180,141 @@
         }
 
         function renderApp() {
-            const appViewport = document.getElementById("appViewport");
-            const shift = checklistsData[activeTabIndex];
-            const submittedAreas = getSubmittedAreas();
+    const appViewport = document.getElementById("appViewport");
+    const shift = checklistsData[activeTabIndex];
+    
+    // FIX: Strictly map submittedAreas to the new cloud dictionary
+    const submittedAreas = cloudSyncedAreas;
 
-            if (isLeaderOverviewMode) {
-                document.body.classList.add("leader-mode-active");
-            } else {
-                document.body.classList.remove("leader-mode-active");
+    if (isLeaderOverviewMode) {
+        document.body.classList.add("leader-mode-active");
+    } else {
+        document.body.classList.remove("leader-mode-active");
+    }
+    
+    if (activeZoneIndex === null) {
+        let html = `
+            <div class="fade-in">
+                ${isLeaderOverviewMode ? `<div class="leader-banner">LEADER OVERVIEW MODE ACTIVE — ONLY COMPLETED/SUBMITTED AREAS SHOWN</div>` : ''}
+                <div class="view-header">
+                    <h2 class="view-title">${shift.title} Areas</h2>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
+                </div>
+                <div class="areas-grid">
+        `;
+        
+        let count = 0;
+        shift.zones.forEach((zone, zIndex) => {
+            const areaKey = `${shift.id}::${zone.name}`;
+            const areaState = submittedAreas[areaKey];
+            const isSubmitted = !!areaState;
+            const isVerified = areaState && areaState.leaderVerified;
+
+            if (isLeaderOverviewMode && !isSubmitted) {
+                return; // Skip unsubmitted areas in Leader Overview
             }
-            
-            if (activeZoneIndex === null) {
-                let html = `
-                    <div class="fade-in">
-                        ${isLeaderOverviewMode ? `<div class="leader-banner">LEADER OVERVIEW MODE ACTIVE — ONLY COMPLETED/SUBMITTED AREAS SHOWN</div>` : ''}
-                        <div class="view-header">
-                            <h2 class="view-title">${shift.title} Areas</h2>
-                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
-                        </div>
-                        <div class="areas-grid">
-                `;
-                
-                let count = 0;
-                shift.zones.forEach((zone, zIndex) => {
-                    const areaKey = `${shift.id}::${zone.name}`;
-                    const areaState = submittedAreas[areaKey];
-                    const isSubmitted = !!areaState;
-                    const isVerified = areaState && areaState.leaderVerified;
 
-                    if (isLeaderOverviewMode && !isSubmitted) {
-                        return; // Skip unsubmitted areas in Leader Overview
-                    }
-
-                    let badgeHtml = '';
-                    if (isVerified) {
-                        badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold);">Verified</div>`;
-                    } else if (isSubmitted) {
-                        badgeHtml = `<div class="submitted-badge">Completed</div>`;
-                    }
-
-                    count++;
-                    html += `
-                        <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
-                            ${badgeHtml}
-                            <h3>${zone.name}</h3>
-                            ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
-                        </div>
-                    `;
-                });
-
-                if (isLeaderOverviewMode && count === 0) {
-                    html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
-                }
-
-                html += `</div></div>`;
-                appViewport.innerHTML = html;
-            } else {
-                const zone = shift.zones[activeZoneIndex];
-                const areaKey = `${shift.id}::${zone.name}`;
-                const areaState = submittedAreas[areaKey];
-                const preclosedMap = getPreclosedMap();
-                
-                let html = `
-                    <div class="fade-in">
-                        <div class="task-view-header">
-                            <div>
-                                <h2 class="task-zone-title">
-                                    ${zone.name}
-                                    ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
-                                </h2>
-                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
-                            </div>
-                            <button class="btn-back" onclick="goBackToAreas()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                                Back to Areas
-                            </button>
-                        </div>
-                        <div class="cards-grid">
-                `;
-
-                zone.tasks.forEach((task, tIndex) => {
-                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-                    const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
-                    
-                    const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
-                    const preclosedClass = isPreclosed ? 'preclosed' : '';
-                    const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
-
-                    let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
-                    const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
-
-                    html += `
-                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
-                            <div class="task-card-inner">
-                                <div class="card-face card-front">
-                                    <div class="card-header-wrapper">
-                                        <h3>${task.title}</h3>
-                                        ${preclosedBadgeHtml}
-                                    </div>
-                                    <ul>${stepsHtml}</ul>
-                                </div>
-                                <div class="card-face card-back">
-                                    <div class="stamp">${stampText}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                html += `</div>`;
-                
-                const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
-
-                // Submissions Buttons Logic
-                if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
-                    html += `
-                        <div class="submit-section">
-                            <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
-                        </div>`;
-                } else if (!areaState) {
-                    html += `
-                        <div class="submit-section">
-                            <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
-                        </div>`;
-                } else if (areaState && areaState.leaderVerified) {
-                    html += `
-                        <div class="submit-section">
-                            <p style="color: var(--success); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
-                        </div>`;
-                }
-
-                html += `</div>`;
-                appViewport.innerHTML = html;
+            let badgeHtml = '';
+            if (isVerified) {
+                badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold);">Verified</div>`;
+            } else if (isSubmitted) {
+                badgeHtml = `<div class="submitted-badge">Completed</div>`;
             }
+
+            count++;
+            html += `
+                <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
+                    ${badgeHtml}
+                    <h3>${zone.name}</h3>
+                    ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                </div>
+            `;
+        });
+
+        if (isLeaderOverviewMode && count === 0) {
+            html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
         }
+
+        html += `</div></div>`;
+        appViewport.innerHTML = html;
+    } else {
+        const zone = shift.zones[activeZoneIndex];
+        const areaKey = `${shift.id}::${zone.name}`;
+        const areaState = submittedAreas[areaKey];
+        const preclosedMap = getPreclosedMap();
+        
+        let html = `
+            <div class="fade-in">
+                <div class="task-view-header">
+                    <div>
+                        <h2 class="task-zone-title">
+                            ${zone.name}
+                            ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
+                        </h2>
+                        <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
+                    </div>
+                    <button class="btn-back" onclick="goBackToAreas()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Back to Areas
+                    </button>
+                </div>
+                <div class="cards-grid">
+        `;
+
+        zone.tasks.forEach((task, tIndex) => {
+            const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+            const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
+            
+            const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
+            const preclosedClass = isPreclosed ? 'preclosed' : '';
+            const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
+
+            let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+            const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
+
+            html += `
+                <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                    <div class="task-card-inner">
+                        <div class="card-face card-front">
+                            <div class="card-header-wrapper">
+                                <h3>${task.title}</h3>
+                                ${preclosedBadgeHtml}
+                            </div>
+                            <ul>${stepsHtml}</ul>
+                        </div>
+                        <div class="card-face card-back">
+                            <div class="stamp">${stampText}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+        
+        const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
+
+        if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
+            html += `
+                <div class="submit-section">
+                    <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
+                </div>`;
+        } else if (!areaState) {
+            html += `
+                <div class="submit-section">
+                    <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
+                </div>`;
+        } else if (areaState && areaState.leaderVerified) {
+            html += `
+                <div class="submit-section">
+                    <p style="color: var(--success); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
+                </div>`;
+        }
+
+        html += `</div>`;
+        appViewport.innerHTML = html;
+    }
+}
 
  function selectZone(index) {
             const shift = checklistsData[activeTabIndex];
@@ -1502,31 +1493,32 @@
 
         // Master Summary Log Fix Applied
         async function checkDayCompletion() {
-            const shift = checklistsData[activeTabIndex];
-            const submittedAreas = getSubmittedAreas();
-            
-            // Check if all zones in this specific shift are verified by a leader
-            const allVerified = shift.zones.every(zone => {
-                const state = submittedAreas[`${shift.id}::${zone.name}`];
-                return state && state.leaderVerified;
-            });
+    const shift = checklistsData[activeTabIndex];
+    
+    // FIX: Strictly map submittedAreas to the new cloud dictionary
+    const submittedAreas = cloudSyncedAreas;
+    
+    const allVerified = shift.zones.every(zone => {
+        const state = submittedAreas[`${shift.id}::${zone.name}`];
+        return state && state.leaderVerified;
+    });
 
-            if (allVerified && shift.id !== 'preclose') {
-                const entries = [`${currentUser.name} - verified`];
-                shift.zones.forEach(zone => {
-                    const state = submittedAreas[`${shift.id}::${zone.name}`];
-                    entries.push(`${state.teamMember} - ${zone.name}`);
-                });
-                
-                const logPayload = entries.join(', '); // e.g. Josh - verified, Matt - Desserts...
-                
-                const masterFormId = '1eMVNlMFqdiWt6TWbk7nP8ZqxqGtipDza_5eEOeEwGks';
-                const formData = { 'entry.629425722': logPayload };
-                
-                await submitToGoogleForm(masterFormId, formData);
-                alert(`All ${shift.title} areas verified! Daily master log submitted successfully.`);
-            }
-        }
+    if (allVerified && shift.id !== 'preclose') {
+        const entries = [`${currentUser.name} - verified`];
+        shift.zones.forEach(zone => {
+            const state = submittedAreas[`${shift.id}::${zone.name}`];
+            entries.push(`${state.teamMember} - ${zone.name}`);
+        });
+        
+        const logPayload = entries.join(', ');
+        
+        const masterFormId = '1eMVNlMFqdiWt6TWbk7nP8ZqxqGtipDza_5eEOeEwGks';
+        const formData = { 'entry.629425722': logPayload };
+        
+        await submitToGoogleForm(masterFormId, formData);
+        alert(`All ${shift.title} areas verified! Daily master log submitted successfully.`);
+    }
+}
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
