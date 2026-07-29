@@ -510,7 +510,7 @@
     </div>
 
     <script>
-        // --- Restructured Data Hierarchy ---
+        // --- Restructured Data Hierarchy with Title Case & Full Data Preservation ---
         const checklistsData = [
             {
                 id: "preclose",
@@ -520,63 +520,63 @@
                         name: "Dining Room",
                         subtitle: "Start at 8:00 PM",
                         tasks: [
-                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways."] },
-                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in."] },
-                            { title: "Blinds", steps: ["Close all blinds."] },
-                            { title: "Condiment Stand", steps: ["Stock condiment stand."] },
-                            { title: "Furniture", steps: ["Clean all tables, chairs, high chairs, and booths."] },
-                            { title: "Table Items", steps: ["Clean all trays, table toppers, and unused sauces."] },
-                            { title: "Return Items", steps: ["Line all clean trays.", "Return trays, table toppers, and unused sauces to the front counter."] },
-                            { title: "Sweep", steps: ["Sweep thoroughly, including under all tables, chairs, and booths."] }
+                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways"] },
+                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in"] },
+                            { title: "Blinds", steps: ["Close all blinds"] },
+                            { title: "Condiment Stand", steps: ["Stock condiment stand"] },
+                            { title: "Cleaning Furniture", steps: ["Clean all tables, chairs, high chairs, and booths"] },
+                            { title: "Cleaning Table Items", steps: ["Clean all trays, table toppers, and unused sauces"] },
+                            { title: "Return Items", steps: ["Line all clean trays, and return trys, table toppers, and unused sauces to front counter"] },
+                            { title: "Sweep", steps: ["Sweep thoroughly including under all table, chairs, booths"] }
                         ]
                     },
                     {
                         name: "Front Counter",
                         subtitle: "Start at 8:30 PM",
                         tasks: [
-                            { title: "Break down lemonades", steps: ["Turn lemonade dispenser off.", "Drain lemonade into empty pitchers.", "Remove the lid, metal plunger, container, gaskets, spinners, and drip tray.", "Bring all removed parts to dish."] },
-                            { title: "Transfer and clean tea", steps: ["Transfer remaining sweet/unsweet tea to Drive-Thru.", "Dump the remainder into pitchers.", "Remove tea nozzles, throw away liners.", "Bring tea urn, nozzles, and tea drip tray to dish."] },
-                            { title: "Bring back dishes", steps: ["Throw away strawberry shooter cup.", "Disassemble shooter.", "Bring back disassembled shooter to dish."] },
-                            { title: "Clean drink towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, fill with 10 quarts lukewarm water.", "Stir with a metal spoon to ensure mixture.", "Verify chlorine concentration (50-100 ppm).", "Remove 2 drink tower nozzles & diffusers and place into Kay-5.", "Wipe down those 2 metal splash guards with sanitizing wipe.", "Clean those 2 drip trays with hot water followed by sanitizing wipe."] },
-                            { title: "Clean swinging door", steps: ["Spray door (including window) with blue spray, wipe clean with paper towel on both sides.", "Spray only the metal part with stainless steel polish; polish in circular motions with paper towel."] },
-                            { title: "Clean lowboy", steps: ["Spray lowboy with blue spray, wipe clean with paper towel.", "Spray lowboy with stainless steel polish, polish in circular motions."] },
-                            { title: "Wipe down all counters", steps: ["Spray all white surfaces with blue spray, dry with paper towel.", "Follow up with a sanitizing wipe."] },
-                            { title: "Clean POS terminals", steps: ["Wipe down all card readers with a sanitizing wipe.", "Clean all terminals with blue spray, dry with paper towel."] }
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Transfer And Clean Tea", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
+                            { title: "Clean Drink Towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
+                            { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                            { title: "Clean POS Terminals And Card Readers", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] }
                         ]
                     },
                     {
                         name: "Desserts",
                         subtitle: "Start at 9:30 PM",
                         tasks: [
-                            { title: "Taylor - Wash Cycle", steps: ["Put one side of Taylor on wash."] },
-                            { title: "Prepare Kay-5 Solution", steps: ["Prepare Kay-5 solution (1 packet to 10 quarts lukewarm water), verify 50-100 ppm."] },
-                            { title: "Dishes & Leftovers", steps: ["Take back machine arm, disassembled shooter, cherry/lemon holder, and all Taylor/shakebase drip trays.", "Save leftover oreo, chocolate syrup, cherries, and lemons in a labeled styrofoam cup.", "Wed/Sat: Bring back disassembled oreo dispenser.", "Sat: Bring back disassembled chocolate syrup dispenser."] },
-                            { title: "Taylor - Exterior", steps: ["Clean the outside of the machine including the spindles."] },
-                            { title: "Wall & Surroundings", steps: ["Pull Taylor out; clean wall behind and to the left, and any mess on the right."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                            { title: "Taylor Wash", steps: ["Put one side of Taylor on wash"] },
+                            { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Dishes & Leftovers", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray), while saving leftover oreo (if appicable), choccolate syrup (if applicable), cherries and lemons in a styrofoam cup, making sure to label them. For Saturday, bring back disassembled chocolate syrup dispenser For Wendsday/saturday, bring disassembled oreo dispenser back as well"] },
+                            { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles"] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                         ]
                     },
                     {
                         name: "Drinks",
                         subtitle: "Start at 9:30 PM",
                         tasks: [
-                            { title: "Break down lemonades", steps: ["Turn off, drain into pitchers, remove parts, bring to dish."] },
-                            { title: "Remaining Dishes", steps: ["Bring back disassembled shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts."] },
-                            { title: "Wipe Counters", steps: ["Wipe down all drinks area counters, tea/coffee brewing area, and team member drink rack with sanitizing wipe."] },
-                            { title: "DT Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels."] },
-                            { title: "Clean FC Coffee Pot", steps: ["Empty pot into dump sink, add clean filter/cleaning tab, run small brew.", "Discard filter/tab, scrub inside with white brush.", "Empty solution, run rinse cycle (no filter/tab), drain rinse water.", "Replace lid, return to station."] },
-                            { title: "Clean DT Coffee Pot", steps: ["Repeat the exact same cleaning process for the DT coffee pot."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Bring back disassembled strawberry shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts"] },
+                            { title: "Wipe Down Counters", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
+                            { title: "Dt Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
+                            { title: "Clean Coffee Pots", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station", "Repeat with DT coffee pot"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                         ]
                     },
                     {
                         name: "Chutes",
                         subtitle: "Start at 9:30 PM",
                         tasks: [
-                            { title: "Fry Bins", steps: ["Bring fry bins back to dish."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
-                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set aside.", "Empty them and wipe down thoroughly.", "Refill with bags when dry and place them back."] },
-                            { title: "Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe."] }
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set them aside"] },
+                            { title: "Wipe Down Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
+                            { title: "Clean Bag Holders", steps: ["Empty the bag holders and wipe them down thoroughly", "After they dry, refill them with bags and place them back"] }
                         ]
                     }
                 ]
@@ -588,65 +588,66 @@
                     {
                         name: "Front Counter",
                         tasks: [
-                            { title: "Break down lemonades", steps: ["Turn lemonade dispenser off.", "Drain lemonade into an empty bin.", "Print labels, apply to lemonade, bring to walk-in.", "Remove lid, plunger, container, gaskets, spinners, and drip tray.", "Bring all removed parts to dish."] },
-                            { title: "Transfer and clean tea", steps: ["Transfer remaining sweet/unsweet tea to Drive-Thru, dump remainder into dump sink.", "Remove tea nozzles, throw away liners.", "Bring tea urn, nozzles, and tea drip tray to dish."] },
-                            { title: "Bring back dishes", steps: ["Throw away strawberry shooter cup.", "Disassemble shooter.", "Bring back disassembled shooter."] },
-                            { title: "Clean drink towers", steps: ["Prepare Kay-5 Sanitizer solution (verify 50-100 ppm).", "Remove ALL nozzles & diffusers and place into Kay-5.", "Wipe down all metal splash guards with sanitizing wipe.", "Clean all drip trays with hot water followed by sanitizing wipe."] },
-                            { title: "Clean swinging door", steps: ["Clean window/door with blue spray on both sides.", "Polish metal parts with stainless steel polish."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
-                            { title: "Wipe down all counters", steps: ["Spray white surfaces with blue spray, follow with sanitizing wipe."] },
-                            { title: "Clean POS terminals", steps: ["Sanitize card readers, clean terminals with blue spray."] },
-                            { title: "Reassemble Towers", steps: ["Put drink towers back together."] },
-                            { title: "Reassemble items", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, and lemonade machine."] }
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into an empty lemonade bin", "Print labels and apply them to the lemonade, bring them to the walk-in", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Transfer And Clean Tea", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into the dump sink", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
+                            { title: "Clean Drink Towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down all metal splash guards with a sanitizing wipe", "Clean all drip trays with hot water followed by a sanitizing wipe"] },
+                            { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                            { title: "Clean POS Terminals And Card Readers", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] },
+                            { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
+                            { title: "Bring Back Dishes", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, lemonade machine"] }
                         ]
                     },
                     {
                         name: "Dining Room",
                         tasks: [
-                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store away from walkways."] },
-                            { title: "Sweep", steps: ["Sweep thoroughly, including under all tables, chairs, and booths."] },
-                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in."] },
-                            { title: "Furniture", steps: ["Clean all tables, chairs, high chairs, and booths."] },
-                            { title: "Put up chairs", steps: ["Put up all chairs (Only after 9:00 PM)."] },
-                            { title: "Blinds", steps: ["Close all blinds."] },
-                            { title: "Table Items", steps: ["Clean all trays, table toppers, and unused sauces."] },
-                            { title: "Return Items", steps: ["Line clean trays. Return trays, toppers, and unused sauces to front counter."] },
-                            { title: "Condiment Stand", steps: ["Stock condiment stand."] }
+                            { title: "Vacuum Rugs", steps: ["Vacuum all rugs, roll them up, and store them away from walkways"] },
+                            { title: "Sweep", steps: ["Sweep thoroughly including under all table, chairs, booths"] },
+                            { title: "Flowers", steps: ["Collect flowers and store them in the walk-in"] },
+                            { title: "Cleaning Furniture", steps: ["Clean all tables, chairs, high chairs, and booths"] },
+                            { title: "Put Up Chairs", steps: ["Put up all chairs (Only after 9pm)"] },
+                            { title: "Blinds", steps: ["Close all blinds"] },
+                            { title: "Cleaning Table Items", steps: ["Clean all trays, table toppers, and unused sauces"] },
+                            { title: "Return Items", steps: ["Line all clean trays, and return trys, table toppers, and unused sauces to front counter"] },
+                            { title: "Condiment Stand", steps: ["Stock condiment stand"] }
                         ]
                     },
                     {
                         name: "Bathrooms",
                         tasks: [
-                            { title: "Mirrors & Sink", steps: ["Clean mirrors with blue spray, dry with paper towels.", "Clean hand sink with sanitizing wipes."] },
-                            { title: "Baby Changing Station", steps: ["Wipe down with a sanitizing wipe."] },
-                            { title: "Doors", steps: ["Clean main door and stall doors with blue spray and paper towels."] },
-                            { title: "Dispensers", steps: ["Clean soap, sanitizer, paper towel, and toilet paper dispensers."] },
-                            { title: "Metal Appliances", steps: ["Clean all metal appliances with blue spray, dry with paper towel."] },
-                            { title: "High-Touch Surfaces", steps: ["Wipe door handle, stall door handle, light switch, and toilet flusher with sanitizing wipe."] },
-                            { title: "Urinals & Toilets", steps: ["Spray entirety of urinals/toilets with restroom cleaner, dry with cloth towels."] },
-                            { title: "Stocking", steps: ["Stock paper towels, toilet paper, hand soap, sanitizer, and toilet seat covers."] },
-                            { title: "Repeat", steps: ["Repeat the above steps for the other bathroom."] },
-                            { title: "Floors", steps: ["Sweep both bathrooms.", "Prepare mop water in red mop bucket; mop both floors with red mop."] },
-                            { title: "Trash", steps: ["Replace trashes in both bathrooms."] }
+                            { title: "Mirrors And Sink", steps: ["Clean mirrors with blue spray and dry with paper towels", "Clean hand sink with sanitizing wipes"] },
+                            { title: "Baby Changing Station", steps: ["Wipe down the baby changing station with a sanitizing wipe"] },
+                            { title: "Doors", steps: ["Clean door and stall doors with blue spray and paper towels"] },
+                            { title: "Dispensers", steps: ["Clean soap and sanitizing dispensers, paper towel dispenser, toilet paper dispenser"] },
+                            { title: "Metal Appliances", steps: ["Clean all metal appliances with blue spray, dry with paper towel"] },
+                            { title: "High-Touch Surfaces", steps: ["Wipe down everything commonly touched with a sanitizing wipe (door handle, stall door handle, light switch, toilet flusher)"] },
+                            { title: "Urinals And Toilets", steps: ["Spray entirety urinals/toilets with restroom cleaner, dry with cloth towels"] },
+                            { title: "Stocking", steps: ["Stock paper towels, toilet paper, hand soap, santizer, toilet seat covers"] },
+                            { title: "Repeat", steps: ["Repeat with other bathroom"] },
+                            { title: "Floors", steps: ["Sweep both bathrooms", "Prepare mop water in the red mop bucket, use red mop to mop both bathroom floors"] },
+                            { title: "Trash", steps: ["Replace trashes in both bathrooms"] }
                         ]
                     },
                     {
                         name: "Break Room & Tech",
                         tasks: [
-                            { title: "Trash & Belongings", steps: ["Throw away all trash on the tables.", "Hang all coats, jackets, backpacks.", "Place all shoes onto the windowsill."] },
-                            { title: "Furniture", steps: ["Clean all tables and chairs, flip the chairs up."] },
-                            { title: "Tech Storage", steps: ["Unplug all TMS bags; place them on the top rack of the tech room."] },
-                            { title: "Floors", steps: ["Sweep floor, mop with the blue mop bucket and blue mop."] },
-                            { title: "Microwave & Trash", steps: ["Wipe inside microwave with sanitizing wipe.", "Replace and dispose of trash."] },
-                            { title: "Tech Forms", steps: ["Ensure all tech is plugged in.", "Scan the tech form QR code and fill it out."] }
+                            { title: "Personal Belongings", steps: ["Throw away all trash on the tables", "Hang all coats, jackets, backbacks", "Place all shoes onto the windowsill"] },
+                            { title: "Cleaning Furniture", steps: ["Clean all tables and chairs, flip the chairs up"] },
+                            { title: "Tms Bags", steps: ["Unplug all TMS bags, and place them on the top rack of the tech room"] },
+                            { title: "Floors", steps: ["Sweep floor, mop with the blue mop bucket and blue mop"] },
+                            { title: "Microwave", steps: ["Wipe inside microwave with a sanitizing wipe"] },
+                            { title: "Trash", steps: ["Replace and dispose of trash"] },
+                            { title: "Tech", steps: ["Ensure all tech is plugged in", "Scan the tech form qr code and fill it out"] }
                         ]
                     },
                     {
                         name: "Floors",
                         tasks: [
-                            { title: "Floor Prep", steps: ["Ensure floor is swept, rugs vacuumed, and chairs put up."] },
-                            { title: "Mopping", steps: ["One person mops from lobby to back door; one person mops from back door to lobby. Meet in the middle."] },
-                            { title: "Chairs", steps: ["After mopping, ensure all chairs have been taken back down."] }
+                            { title: "Floor Prep", steps: ["Ensure floor has been swept, rugs have been vaccumed, and chair put up"] },
+                            { title: "Mopping", steps: ["One person mops from the lobby to the back door, one person mops from the back door to the lobby, meet in the middle"] },
+                            { title: "Chairs", steps: ["After moping, ensure all chairs have been taken back down"] }
                         ]
                     }
                 ]
@@ -658,60 +659,68 @@
                     {
                         name: "Desserts",
                         tasks: [
-                            { title: "Taylor - Wash Cycle", steps: ["Put Taylor on wash for 15 mins."] },
-                            { title: "Prepare Kay-5", steps: ["Prepare Kay-5 solution, verify 50-100 ppm."] },
-                            { title: "Dishes & Leftovers", steps: ["Bring back all parts & trays. Save/label leftovers.", "Wed/Sat: bring back disassembled oreo dispenser.", "Sat: bring back disassembled chocolate syrup dispenser.", "Sat: turn off shakebase, put boxes in walk-in (labeled), leave door open to defrost."] },
-                            { title: "Drain Icedream", steps: ["Drain all icedream into leftover tub, label with date, put in walk-in."] },
-                            { title: "Wash Taylor Inside", steps: ["Rinse with hot water, pour in Kay-5.", "Wipe inside with blue wipes using the Kay-5.", "Drain Kay-5 and rinse with water again."] },
-                            { title: "Clean Taylor Exterior", steps: ["Clean outside including spindles. Unplug Taylor."] },
-                            { title: "Wall & Surroundings", steps: ["Pull Taylor out, clean wall behind/left, and mess to the right."] },
-                            { title: "Wash & Reassemble", steps: ["Disassemble Taylor, wash pieces.", "Lay pieces on white board to ensure none missing.", "Return dishes and reassemble."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] }
+                            { title: "Taylor Wash", steps: ["Put Taylor on wash for 15 mins"] },
+                            { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Dishes & Leftovers", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray), while saving leftover oreo (if appicable), choccolate syrup (if applicable), cherries and lemons in a styrofoam cup, making sure to label them. For Saturday, bring back disassembled chocolate syrup dispenser For Wendsday/saturday, bring disassembled oreo dispenser back as well For Saturday, turn off shakebase machine, place used boxes in the walk-in with a date label, and leave the door open to defrost"] },
+                            { title: "Drain Icedream", steps: ["Drain all icedream into the leftover icedream tub, sticker it with a date label, put it in the walk-in"] },
+                            { title: "Wash Taylor Inside", steps: ["Rinse Taylor with hot water", "Pour the prepared Kay-5 solution into Taylor", "Wipe down the inside with blue wipes, using the kay-5 to clean the inside", "Drain the Kay-5 and rinse with water again"] },
+                            { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles", "Unplug Taylor"] },
+                            { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
+                            { title: "Wash & Reassemble", steps: ["Disaasemble Taylor, and wash the pieces", "Lay the pieces out on the white board and ensure you aren't missing any pieces", "Return your dishes and reassemble them"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                         ]
                     },
                     {
                         name: "Drinks",
                         tasks: [
-                            { title: "Break down lemonades", steps: ["Turn off, drain into bin, label/walk-in, remove parts to dish."] },
-                            { title: "Transfer Tea", steps: ["Dump remaining tea into dump sink, remove nozzles/liners, bring to dish."] },
-                            { title: "Bring Back Dishes", steps: ["Shooter, scoop, whisks, spoons, brewing urns, dump sink insert, brewing inserts."] },
-                            { title: "Clean Drink Towers", steps: ["Prepare Kay-5, verify ppm. Remove ALL nozzles/diffusers into Kay-5.", "Wipe metal splash guards and clean drip trays."] },
-                            { title: "Counters & Door", steps: ["Wipe all drinks counters/racks. Spray DT window door with blue spray and wipe dry."] },
-                            { title: "Dumpsink", steps: ["Clean the dumpsink."] },
-                            { title: "Coffee Pots", steps: ["Clean both FC and DT coffee pots (dump, filter+tab, brew cycle, scrub, rinse cycle, drain)."] },
-                            { title: "Reassemble", steps: ["Put drink towers back together.", "Return clean utensils, reassemble shooter, tea urns, lemonade machine."] }
+                            { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into an empty lemonade bin", "Print labels and apply them to the lemonade, bring them to the walk-in", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
+                            { title: "Transfer Tea", steps: ["Dump the remaining tea into the dump sink", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
+                            { title: "Bring Back Remaining Dishes", steps: ["Bring back disassembled strawberry shooter, sugar scoop, whisks, spoons, tea brewing urns, dump sink insert, tea and coffee brewing inserts"] },
+                            { title: "Clean Drink Tower", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down the metal splash guard with a sanitizing wipe", "Clean the drip tray with hot water followed by a sanitizing wipe"] },
+                            { title: "Wipe Down Counters", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Dt Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
+                            { title: "Clean Dumpsink", steps: ["Clean the dumpsink"] },
+                            { title: "Clean Coffee Pots", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station", "Repeat with DT coffee pot"] },
+                            { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
+                            { title: "Bring Back Dishes", steps: ["Return sugar scoop, whisk, spoon, tea brewing urns, dump sink insert, tea and coffee brewing inserts, tea drip tray and reassemble strawberry shooter, tea urns, lemonade machine"] }
                         ]
                     },
                     {
                         name: "Chutes",
                         tasks: [
-                            { title: "Fry Bins", steps: ["Bring fry bins back to dish."] },
-                            { title: "Faceplates & Dividers", steps: ["Unscrew faceplates, keep in secure area. Remove all dividers."] },
-                            { title: "Wipe Down", steps: ["Wipe chutes and all pieces down with a sanitizing wipe."] },
-                            { title: "Reassemble", steps: ["Put chutes back together.", "Return the clean fry bins."] },
-                            { title: "Clean lowboy", steps: ["Clean with blue spray, follow with stainless polish."] },
-                            { title: "Bag Holders & Counter", steps: ["Pull out bag holders, empty/wipe down, refill when dry.", "Wipe counter area."] }
+                            { title: "Fry Bins", steps: ["Bring fry bins back to dish"] },
+                            { title: "Faceplates & Dividers", steps: ["Unscrew the faceplates and keep them in a secured area", "Remove all dividers"] },
+                            { title: "Wipe Down", steps: ["Wipe chutes down with a sanitizing wipe", "Wipe down all pieces with a santizing wipe"] },
+                            { title: "Reassemble", steps: ["Put the chutes back together"] },
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Bag Holders", steps: ["Pull out metal bag holders and set them aside"] },
+                            { title: "Wipe Down Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
+                            { title: "Clean Bag Holders", steps: ["Empty the bag holders and wipe them down thoroughly", "After they dry, refill them with bags and place them back"] },
+                            { title: "Return Fry Bins", steps: ["Return the clean fry bins"] }
                         ]
                     },
                     {
                         name: "Stocking",
                         tasks: [
-                            { title: "FC & DT Areas", steps: ["Stock FC/DT sauce walls including breakfast condiments.", "Stock FC/DT/Bagging/Desserts lowboys.", "Check dates in bagging lowboy, waste expired product.", "Stock cups, lids, straws, cup carriers, ice bins."] },
-                            { title: "Boxed Goods", steps: ["Stock boxed bags, napkins, straws, ketchup, cup carriers."] }
+                            { title: "Sauce Wall", steps: ["Stocks FC and DT sauce walls, including breakfast condiments"] },
+                            { title: "Lowboy", steps: ["Stocks FC, DT, Bagging, and Desserts lowboys", "Checks dates in bagging lowboy, wastes expired product"] },
+                            { title: "Cups Lids Straws Cup Carriers Icebins", steps: ["Stocks FC and DT cups, lids, straws, cup carriers", "Stocks FC and DT ice bins"] },
+                            { title: "Boxed Goods", steps: ["Stocks boxed bags, boxed napkins, boxed straws, boxed ketchup, boxed cup carriers"] }
                         ]
                     },
                     {
                         name: "Trash",
                         tasks: [
-                            { title: "Replace All Trash Bags", steps: ["Dispose and replace: outside back door, inside back door, 2 compacting dining room trashes, trash under TV, FC trash, and DT trash."] },
-                            { title: "Make Lemonades", steps: ["Check lemonade levels and make a fresh batch if necessary for the upcoming shift."] }
+                            { title: "Trash Removal", steps: ["Dispose of and replace all trash bags, including the one outside of the building by the back door, the one inside of the building by the back door, the two compacting dining room trashes, the trash under the TV, the FC trash, and the DT trash"] },
+                            { title: "Make Lemonades", steps: ["Check with a leader once trash is complete to see if lemonade needs to be made for the morning"] }
                         ]
                     },
                     {
                         name: "Floors",
                         tasks: [
-                            { title: "Sweep", steps: ["Sweep entire DT area, including under drink towers, lowboys, tables, Taylor, ice machine, etc."] },
-                            { title: "Mop", steps: ["Mop using blue mop from mobile drinks area to tea/coffee brewing area, including under equipment."] }
+                            { title: "Sweep", steps: ["Sweep entire DT area, including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] },
+                            { title: "Mop", steps: ["Mop using the blue mop from the mobile drinks area to the tea/coffee brewing area, including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] }
                         ]
                     }
                 ]
