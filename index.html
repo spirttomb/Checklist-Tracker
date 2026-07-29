@@ -670,6 +670,7 @@
                     "Tms Bags": "entry.1840882147",
                     "Floors": "entry.87698102",
                     "Microwave": "entry.1475384836",
+                    "Trash": "entry.336478269",
                     "Tech": "entry.1530636489"
                 }
             },
@@ -709,12 +710,12 @@
                     "Bring Back Remaining Dishes": "entry.1093113017",
                     "Clean Drink Tower": "entry.1480788207",
                     "Wipe Down Counters": "entry.229081274",
-                    "Clean Lowboy": "entry.229081274",
-                    "Dt Window Door": "entry.229081274",
+                    "Clean Lowboy": "entry.206701927",
+                    "Dt Window Door": "entry.1435983399",
                     "Clean Dumpsink": "entry.1487542935",
                     "Clean Coffee Pots": "entry.1784850478",
                     "Reassemble Towers": "entry.992710073",
-                    "Bring Back Dishes": "entry.992710073"
+                    "Bring Back Dishes": "entry.437073424"
                 }
             },
             "close-1030::Chutes": {
@@ -728,20 +729,9 @@
                     "Reassemble": "entry.216194971",
                     "Clean Lowboy": "entry.2058407943",
                     "Bag Holders": "entry.524565776",
-                    "Wipe Down Counter": "entry.524565776",
-                    "Clean Bag Holders": "entry.524565776",
-                    "Return Fry Bins": "entry.1831189851"
-                }
-            },
-            "close-1030::Stocking": {
-                formId: "10yiHbVuqlOpecFhvKBHngRCWlouyt110yUTdbQ5IlnQ",
-                sheetId: "12H3yHFteW3ZjfPMnwrTe9ulGQCrOQWQcrCOeaU2sQ4g",
-                nameEntry: "entry.2144443666",
-                tasks: {
-                    "Sauce Wall": "entry.496068327",
-                    "Lowboy": "entry.1277215098",
-                    "Cups Lids Straws Cup Carriers Icebins": "entry.688684061",
-                    "Boxed Goods": "entry.2053686261"
+                    "Wipe Down Counter": "entry.1240876433",
+                    "Clean Bag Holders": "entry.1002537616",
+                    "Return Fry Bins": "entry.1934980171"
                 }
             },
             "close-1030::Trash": {
@@ -1370,26 +1360,46 @@
 
         // Fetch API no-cors Fix Applied
         async function submitToGoogleForm(formId, formDataObj) {
-            const formUrl = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
-            const formData = new URLSearchParams();
+    const formUrl = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
+    
+    return new Promise((resolve) => {
+        // Create a unique hidden iframe to catch the response
+        const iframeName = 'hidden_iframe_' + Date.now();
+        const iframe = document.createElement('iframe');
+        iframe.name = iframeName;
+        iframe.id = iframeName;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
 
-            for (const [key, value] of Object.entries(formDataObj)) {
-                formData.append(key, value);
-            }
+        // Create a hidden form that targets the iframe
+        const form = document.createElement('form');
+        form.action = formUrl;
+        form.method = 'POST';
+        form.target = iframeName;
+        form.style.display = 'none';
 
-            try {
-                await fetch(formUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formData
-                });
-                return true;
-            } catch (error) {
-                console.error("Form submission failed:", error);
-                return false;
-            }
+        // Append all entry fields as hidden inputs
+        for (const [key, value] of Object.entries(formDataObj)) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = value;
+            form.appendChild(input);
         }
+
+        document.body.appendChild(form);
+        
+        // Submit natively
+        form.submit();
+
+        // Clean up the DOM elements after submission completes
+        setTimeout(() => {
+            form.remove();
+            iframe.remove();
+            resolve(true);
+        }, 1500);
+    });
+}
 
         async function submitZoneChecklist() {
             const shift = checklistsData[activeTabIndex];
