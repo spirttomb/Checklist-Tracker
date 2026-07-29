@@ -25,7 +25,7 @@
             --text-main: #1e293b;
             --text-white: #ffffff;
             --text-muted: #5C768D;
-            --success: rgb(219, 228, 238);
+            --success: rgb(229, 233, 238);
             --success-dark: rgb(181, 200, 219);
             --leader-gold: #6366F1;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
@@ -102,7 +102,16 @@
         #activeUserPin {
   display: none;
 }
-
+.main-content-box {
+  background-color: var(--bg-color);
+  border: 5px solid var(--header);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  width: 100%;
+}
         /* The single master container box */
 .single-control-box {
   background-color: var(--signin);
@@ -1237,8 +1246,8 @@
             appViewport.innerHTML = `
                 <div class="cloud-sync-loader">
                     <div class="spinner"></div>
-                    <h2>Loading..</h2>
-                    <p>Please wait..</p>
+                    <h2>Loading...</h2>
+                    <p>Please wait...</p>
                 </div>
             `;
 
@@ -1375,7 +1384,7 @@
             
             if (activeZoneIndex === null) {
                 let html = `
-                    <div class="fade-in">
+                    <div class="fade-in main-content-box">
                         <div class="view-header">
                             <h2 class="view-title">${shift.title} Areas</h2>
                             <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
@@ -1424,7 +1433,7 @@
                 const preclosedMap = getPreclosedMap();
                 
                 let html = `
-                    <div class="fade-in">
+                    <div class="fade-in main-content-box">
                         <div class="task-view-header">
                             <div>
                                 <h2 class="task-zone-title">
