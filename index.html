@@ -963,6 +963,7 @@
             }, 
             "close-1030::Stocking": {
                 formId: "1FAIpQLSelkRBBGsL9x5onhovWQ-mhpXHiKE1TvqqQZ6apViKO4fxeVw",
+                sheetId: "12H3yHFteW3ZjfPMnwrTe9ulGQCrOQWQcrCOeaU2sQ4g",
                 nameEntry: "entry.2144443666",
                 tasks: {
                     "Sauce Wall": "entry.496068327",
@@ -1229,7 +1230,8 @@
 
         async function fetchSheetLatestStatus(sheetId) {
             if (!sheetId) return null;
-            const query = encodeURIComponent("SELECT A, B ORDER BY A DESC LIMIT 1");
+            // Changed to SELECT * to grab all columns
+            const query = encodeURIComponent("SELECT * ORDER BY A DESC LIMIT 1");
             const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
             
             const controller = new AbortController();
@@ -1272,11 +1274,21 @@
                     
                     const today = new Date();
                     if (dateObj.toDateString() === today.toDateString()) {
-                        const submitterField = data.table.rows[0].c[1];
-                        let submitter = (submitterField && submitterField.v) ? submitterField.v : "Team Member";
+                        let submitter = "Team Member";
                         
-                        if (PIN_DATABASE[submitter]) {
-                            submitter = PIN_DATABASE[submitter].name;
+                        // Scan the row to dynamically find the Submitter's Name
+                        const rowData = data.table.rows[0].c;
+                        for (let i = 1; i < rowData.length; i++) {
+                            if (rowData[i] && rowData[i].v) {
+                                let cellVal = rowData[i].v.toString().trim();
+                                if (Object.values(PIN_DATABASE).some(u => u.name === cellVal)) {
+                                    submitter = cellVal;
+                                    break;
+                                } else if (PIN_DATABASE[cellVal]) {
+                                    submitter = PIN_DATABASE[cellVal].name;
+                                    break;
+                                }
+                            }
                         }
                         
                         return { teamMember: submitter, leaderVerified: false, leaderName: null }; 
@@ -1334,7 +1346,39 @@
             renderApp();
         }
 
+        function cleanOldLocalStorage() {
+            const today = new Date().toDateString();
+            const keysToCheck = ['preclosedTasks', 'precloseLocks', 'leaderVerifications', 'lockedShifts'];
+            
+            keysToCheck.forEach(key => {
+                try {
+                    let data = JSON.parse(localStorage.getItem(key));
+                    if (!data) return;
+
+                    if (key === 'preclosedTasks' && data.date !== today) {
+                        localStorage.removeItem(key);
+                    } else if (key !== 'preclosedTasks') {
+                        let freshData = {};
+                        let changed = false;
+                        for (let k in data) {
+                            const entryDate = typeof data[k] === 'string' ? data[k] : data[k].date;
+                            if (entryDate === today) {
+                                freshData[k] = data[k];
+                            } else {
+                                changed = true;
+                            }
+                        }
+                        if (changed) {
+                            if (Object.keys(freshData).length === 0) localStorage.removeItem(key);
+                            else localStorage.setItem(key, JSON.stringify(freshData));
+                        }
+                    }
+                } catch(e) {}
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
+            cleanOldLocalStorage();
             promptLogin();
         });
 
@@ -1433,6 +1477,21 @@
             }
             
             if (activeZoneIndex === null) {
+                // NEW: Check if shift is locked for today
+                const today = new Date().toDateString();
+                const lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
+                
+                if (lockedShifts[shift.id] === today) {
+                    appViewport.innerHTML = `
+                        <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
+                            <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">🎉 Shift Completed!</h2>
+                            <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
+                            <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
                 let html = `
                     <div class="main-content-box">
                         <div class="view-header">
@@ -1803,7 +1862,7 @@
                 shift.zones.forEach(zone => {
                     const state = submittedAreas[`${shift.id}::${zone.name}`];
                     if (state) {
-                        entries.push(`${state.teamMember} - ${zone.name.toLowerCase()}`);
+                        entries.push(`${state.teamMember} - ${zone.name}`);
                     }
                 });
                 
@@ -1813,16 +1872,18 @@
                 const formData = { 'entry.629425722': logPayload };
                 
                 await submitToGoogleForm(masterFormId, formData);
-                showStatusMessage(`All ${shift.title} areas verified! Master log submitted. Starting fresh day automatically.`, 'success', 6000);
+                showStatusMessage(`All ${shift.title} areas verified! Master log submitted. Shift locked for today.`, 'success', 6000);
                 
-                localStorage.removeItem('leaderVerifications');
-                localStorage.removeItem('preclosedTasks');
-                localStorage.removeItem('precloseLocks');
-                cloudSyncedAreas = {};
+                // Set lock for this specific shift today
+                let lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
+                lockedShifts[shift.id] = new Date().toDateString();
+                localStorage.setItem('lockedShifts', JSON.stringify(lockedShifts));
+                
                 completedTasks.clear();
                 
                 setTimeout(() => {
-                    loadShiftStatusFromCloud();
+                    activeZoneIndex = null;
+                    renderApp();
                 }, 2000);
             }
         }
