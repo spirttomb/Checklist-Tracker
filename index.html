@@ -2058,91 +2058,106 @@ setTimeout(() => {
         }
 
         async function fetchOverallLogs() {
-            const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
-            const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
+    const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
+    const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
 
-            try {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error("Failed to fetch overall log sheet");
-                const text = await res.text();
+    try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch overall log sheet");
+        const text = await res.text();
+        
+        const prefix = "setResponse(";
+        const startIndex = text.indexOf(prefix);
+        if (startIndex === -1) return [];
+        
+        const jsonStart = startIndex + prefix.length;
+        const jsonEnd = text.lastIndexOf(")");
+        const jsonString = text.substring(jsonStart, jsonEnd);
+        const data = JSON.parse(jsonString);
+
+        const logs = [];
+        if (data.table && data.table.rows) {
+            data.table.rows.forEach(row => {
+                if (!row.c || !row.c[0] || !row.c[1]) return;
                 
-                const prefix = "setResponse(";
-                const startIndex = text.indexOf(prefix);
-                if (startIndex === -1) return [];
+                const timeCell = row.c[0];
+                // Check value (v) first since gviz puts 'Date(YYYY,M,D...)' inside .v
+                const rawVal = timeCell.v ? timeCell.v.toString() : "";
+                const rawFormatted = timeCell.f ? timeCell.f.toString() : "";
+                let dateObj = null;
+
+                // 1. Try parsing Google's Date(...) format
+                if (rawVal.startsWith('Date(')) {
+                    const parts = rawVal.match(/\d+/g);
+                    if (parts && parts.length >= 3) {
+                        dateObj = new Date(parts[0], parts[1], parts[2], parts[3] || 0, parts[4] || 0, parts[5] || 0);
+                    }
+                } 
                 
-                const jsonStart = startIndex + prefix.length;
-                const jsonEnd = text.lastIndexOf(")");
-                const jsonString = text.substring(jsonStart, jsonEnd);
-                const data = JSON.parse(jsonString);
-
-                const logs = [];
-                if (data.table && data.table.rows) {
-                    data.table.rows.forEach(row => {
-                        if (!row.c || !row.c[0] || !row.c[1]) return;
-                        
-                        const timeCell = row.c[0];
-                        const rawTime = timeCell.f || timeCell.v;
-                        let dateObj = null;
-
-                        if (typeof rawTime === 'string' && rawTime.startsWith('Date(')) {
-                            const parts = rawTime.match(/\d+/g);
-                            if (parts && parts.length >= 3) {
-                                dateObj = new Date(parts[0], parts[1], parts[2], parts[3]||0, parts[4]||0, parts[5]||0);
-                            } else {
-                                dateObj = new Date();
-                            }
-                        } else if (rawTime) {
-                            dateObj = new Date(rawTime);
-                        } else {
-                            dateObj = new Date();
-                        }
-
-                        const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
-                        if (!logText) return;
-
-                        const parts = logText.split(',').map(s => s.trim()).filter(Boolean);
-                        let leader = "Unknown Leader";
-                        const assignments = [];
-                        const namesSet = new Set();
-                        const areasSet = new Set();
-
-                        parts.forEach(part => {
-                            const dashIdx = part.indexOf('-');
-                            if (dashIdx !== -1) {
-                                const person = part.substring(0, dashIdx).trim();
-                                const actionOrArea = part.substring(dashIdx + 1).trim();
-
-                                if (person) namesSet.add(person);
-
-                                if (actionOrArea.toLowerCase() === 'verified') {
-                                    leader = person;
-                                } else if (actionOrArea) {
-                                    assignments.push({ name: person, area: actionOrArea });
-                                    areasSet.add(actionOrArea);
-                                }
-                            }
-                        });
-
-                        logs.push({
-                            timestamp: dateObj,
-                            formattedDate: dateObj.toLocaleDateString(),
-                            formattedTime: dateObj.toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                            isoDate: dateObj.toISOString().split('T')[0],
-                            rawText: logText,
-                            leader: leader,
-                            assignments: assignments,
-                            names: Array.from(namesSet),
-                            areas: Array.from(areasSet)
-                        });
-                    });
+                // 2. Fallback to standard date strings if Date(...) wasn't found
+                if (!dateObj || isNaN(dateObj.getTime())) {
+                    const fallbackTime = rawFormatted || rawVal;
+                    if (fallbackTime) {
+                        dateObj = new Date(fallbackTime);
+                    }
                 }
-                return logs;
-            } catch(e) {
-                console.error("Error fetching overall logs:", e);
-                return [];
-            }
+
+                // 3. Final Fallback: If still invalid (e.g. Header text "Timestamp"), default or skip
+                if (!dateObj || isNaN(dateObj.getTime())) {
+                    dateObj = new Date(); 
+                }
+
+                const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
+                if (!logText) return;
+
+                const parts = logText.split(',').map(s => s.trim()).filter(Boolean);
+                let leader = "Unknown Leader";
+                const assignments = [];
+                const namesSet = new Set();
+                const areasSet = new Set();
+
+                parts.forEach(part => {
+                    const dashIdx = part.indexOf('-');
+                    if (dashIdx !== -1) {
+                        const person = part.substring(0, dashIdx).trim();
+                        const actionOrArea = part.substring(dashIdx + 1).trim();
+
+                        if (person) namesSet.add(person);
+
+                        if (actionOrArea.toLowerCase() === 'verified') {
+                            leader = person;
+                        } else if (actionOrArea) {
+                            assignments.push({ name: person, area: actionOrArea });
+                            areasSet.add(actionOrArea);
+                        }
+                    }
+                });
+
+                // Safely format dates without crashing on unexpected string data
+                const isoDateString = !isNaN(dateObj.getTime()) 
+                    ? dateObj.toISOString().split('T')[0] 
+                    : new Date().toISOString().split('T')[0];
+
+                logs.push({
+                    timestamp: dateObj,
+                    formattedDate: dateObj.toLocaleDateString(),
+                    formattedTime: dateObj.toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                    isoDate: isoDateString,
+                    rawText: logText,
+                    leader: leader,
+                    assignments: assignments,
+                    names: Array.from(namesSet),
+                    areas: Array.from(areasSet)
+                });
+            });
         }
+        return logs;
+    } catch(e) {
+        console.error("Error fetching overall logs:", e);
+        return [];
+    }
+}
 
         function populateFilterDropdowns() {
             const nameSelect = document.getElementById("logFilterName");
