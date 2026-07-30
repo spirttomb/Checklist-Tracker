@@ -597,6 +597,118 @@
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
+        /* --- Explosion Popup Styles --- */
+.explosion-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(11, 19, 31, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2500; /* Keeps it above everything */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.explosion-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.explosion-shape {
+    background: radial-gradient(circle, #fde047 0%, #ea580c 100%);
+    width: 90vw;
+    max-width: 550px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem;
+    /* 20-point comic explosion polygon */
+    clip-path: polygon(50% 0%, 61% 16%, 86% 5%, 75% 26%, 100% 29%, 81% 47%, 98% 70%, 75% 69%, 81% 94%, 61% 81%, 50% 100%, 39% 81%, 19% 94%, 25% 69%, 2% 70%, 19% 47%, 0% 29%, 25% 26%, 14% 5%, 39% 16%);
+    transform: scale(0) rotate(-20deg);
+    box-shadow: 0 0 40px rgba(234, 88, 12, 0.6);
+}
+
+.explosion-overlay.active .explosion-shape {
+    animation: explosionPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes explosionPop {
+    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+    50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.explosion-text {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    /* Deep comic-style drop shadow */
+    text-shadow: 2px 2px 0 #9a3412, -2px -2px 0 #9a3412, 2px -2px 0 #9a3412, -2px 2px 0 #9a3412, 4px 4px 10px rgba(0,0,0,0.6);
+    line-height: 1.2;
+}/* --- Explosion Popup Styles --- */
+.explosion-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(11, 19, 31, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2500; /* Keeps it above everything */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.explosion-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.explosion-shape {
+    background: radial-gradient(circle, #fde047 0%, #ea580c 100%);
+    width: 90vw;
+    max-width: 550px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem;
+    /* 20-point comic explosion polygon */
+    clip-path: polygon(50% 0%, 61% 16%, 86% 5%, 75% 26%, 100% 29%, 81% 47%, 98% 70%, 75% 69%, 81% 94%, 61% 81%, 50% 100%, 39% 81%, 19% 94%, 25% 69%, 2% 70%, 19% 47%, 0% 29%, 25% 26%, 14% 5%, 39% 16%);
+    transform: scale(0) rotate(-20deg);
+    box-shadow: 0 0 40px rgba(234, 88, 12, 0.6);
+}
+
+.explosion-overlay.active .explosion-shape {
+    animation: explosionPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes explosionPop {
+    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+    50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.explosion-text {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    /* Deep comic-style drop shadow */
+    text-shadow: 2px 2px 0 #9a3412, -2px -2px 0 #9a3412, 2px -2px 0 #9a3412, -2px 2px 0 #9a3412, 4px 4px 10px rgba(0,0,0,0.6);
+    line-height: 1.2;
+}
+
         .modal-card h3 { font-size: 1.5rem; color: var(--text-main); }
 
         .modal-card input {
@@ -743,7 +855,17 @@
         </div>
     </div>
 
+    <!-- Explosion Popup Overlay -->
+<div id="explosionPopupOverlay" class="explosion-overlay">
+    <div class="explosion-shape">
+        <h2 id="explosionMessage" class="explosion-text"></h2>
+    </div>
+</div>
+
     <script>
+
+        
+
         // Host list of team member and manager PINs
         const PIN_DATABASE = {
             "4834": { name: "Fawn C", role: "leader" },
@@ -1777,10 +1899,17 @@
                 await submitToGoogleForm(formConfig.formId, formData);
             }
 
-            cloudSyncedAreas[areaKey] = statePayload;
+            // INSIDE submitZoneChecklist()
+cloudSyncedAreas[areaKey] = statePayload;
 
-            showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
-            goBackToAreas();
+showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
+
+// NEW: Fire explosion popup for completing an area (exclude preclose)
+if (shift.id !== 'preclose') {
+    showExplosionPopup(`Congratulations ${currentUser.name} on a successful ${zone.name} close!`);
+}
+
+goBackToAreas();
         }
 
         async function verifyArea() {
@@ -1884,10 +2013,30 @@
                 
                 completedTasks.clear();
                 
-                setTimeout(() => {
-                    activeZoneIndex = null;
-                    renderApp();
-                }, 2000);
+                // INSIDE checkDayCompletion() 
+// Right after localStorage.setItem('lockedShifts', JSON.stringify(lockedShifts));
+// and completedTasks.clear();
+
+// NEW: Check if BOTH 9:30 and 10:30 shifts are completely verified
+const is930Verified = checklistsData.find(s => s.id === 'close-930').zones.every(z => {
+    const st = cloudSyncedAreas[`close-930::${z.name}`];
+    return st && st.leaderVerified;
+});
+
+const is1030Verified = checklistsData.find(s => s.id === 'close-1030').zones.every(z => {
+    const st = cloudSyncedAreas[`close-1030::${z.name}`];
+    return st && st.leaderVerified;
+});
+
+// Trigger grand finale popup if everything is verified
+if (is930Verified && is1030Verified) {
+    showExplosionPopup(`Congratulations ${currentUser.name} on a successful close!`);
+}
+
+setTimeout(() => {
+    activeZoneIndex = null;
+    renderApp();
+}, 2000);
             }
         }
 
@@ -2144,6 +2293,51 @@
                 osc.stop(audioCtx.currentTime + (i * 0.09) + 0.35);
             });
         }
+
+        function showExplosionPopup(message) {
+    const overlay = document.getElementById('explosionPopupOverlay');
+    const msgEl = document.getElementById('explosionMessage');
+    msgEl.innerText = message;
+    
+    overlay.classList.add('active');
+    
+    // Play the success chime twice for a grand effect
+    playChime();
+    setTimeout(playChime, 250);
+
+    // Blast heavy confetti from the center
+    triggerConfettiCenter();
+
+    // Auto-hide after 4.5 seconds
+    setTimeout(() => {
+        overlay.classList.remove('active');
+    }, 4500);
+}
+
+function triggerConfettiCenter() {
+    const originX = window.innerWidth / 2;
+    const originY = window.innerHeight / 2;
+    const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6', '#ffffff'];
+
+    for (let i = 0; i < 75; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.position = "fixed";
+        particle.style.left = `${originX}px`;
+        particle.style.top = `${originY}px`;
+        particle.style.zIndex = "2501"; // Ensures it sits above the popup
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 150 + Math.random() * 350; // Wide blast radius
+
+        particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+        particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 850);
+    }
+}
 
         function triggerConfetti(cardElement) {
             const rect = cardElement.getBoundingClientRect();
