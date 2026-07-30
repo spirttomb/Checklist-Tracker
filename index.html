@@ -15,7 +15,7 @@
         }
 
         :root {
-            /*002a4e, 005b9f*/
+            /* Light Mode Variables */
             --primary: #003d73;
             --primary-hover: #044e8f;
             --bg-color: #ffffff;
@@ -27,17 +27,27 @@
             --text-muted: #5C768D;
             --success: rgb(237, 241, 245);
             --success-dark: rgb(181, 200, 219);
-            --leader-gold: #6366F1;
+            --leader-gold: #f59e0b; /* True gold for leader highlights */
+            --border-color: #002a4f;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
             --transition-speed: 0.3s;
         }
 
-        /* Leader Dark Mode Overrides */
+        /* Leader Dark Mode Overrides (Overhauled to look cohesive and premium) */
         body.leader-mode-active {
-            --bg-color: #0b131f;
-            --card-bg: #132238;
+            --primary: #0b131f; /* Dark app background */
+            --primary-hover: #1e3a5f;
+            --bg-color: #132238; /* Content box background */
+            --card-bg: #1e293b; /* Inner cards background */
+            --signin: #132238; /* Top control box background */
+            --header: #0b131f; 
             --text-main: #f8fafc;
+            --text-white: #ffffff;
             --text-muted: #94a3b8;
+            --success: #1e3a5f;
+            --success-dark: #334155;
+            --leader-gold: #fbbf24;
+            --border-color: #334155; /* Slate border replacing hardcoded blues */
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
         }
 
@@ -50,7 +60,6 @@
         body {
             font-family: 'Apercu Regular Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--primary);
-            border: 4px solid var(--header);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -65,7 +74,7 @@
 
         /* In-Page Status Message Bar */
         #statusMessageBar {
-            background: var(--primary);
+            background: var(--border-color);
             color: white;
             padding: 0.75rem 1.5rem;
             text-align: center;
@@ -77,66 +86,76 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
-        #statusMessageBar.success { background: var(--success); }
+        #statusMessageBar.success { background: var(--success-dark); }
         #statusMessageBar.error { background: #ef4444; }
         #statusMessageBar.warning { background: var(--leader-gold); }
 
-        /* Top Bar & Controls */
+        /* Top Bar Wrapper */
         header {
-            background: var(--primary);
-            padding: 1.25rem 2rem;
-            box-shadow: var(--shadow);
+            background-color: var(--primary);
+            padding: 2rem 2rem 0 2rem; /* Removed bottom padding so boxes touch */
             display: flex;
             flex-direction: column;
-            gap: 1.25rem;
             position: sticky;
             top: 0;
             z-index: 100;
+            width: 100%;
             transition: background-color 0.3s ease;
-            border: 4px solid var(--header); 
         }
-    
 
-        body.leader-mode-active header {
-            border-bottom: 1px solid #1e3a5f;
+        /* Top Connected Box */
+        .single-control-box {
+            background-color: var(--signin);
+            border: 4px solid var(--border-color);
+            border-bottom: none; /* Removes line between the two boxes */
+            border-radius: 12px 12px 0 0;
+            padding: 16px 24px;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto; /* Centers and perfectly aligns with bottom box */
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
+
+        /* Bottom Container Wrapper */
+        .viewport-container {
+            flex: 1;
+            padding: 0 2rem 2rem 2rem; /* Removed top padding to meet header */
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Bottom Connected Box */
+        .main-content-box {
+            background-color: var(--bg-color);
+            border: 4px solid var(--border-color);
+            border-top: none; /* Seamlessly joins the top box */
+            border-radius: 0 0 12px 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto; /* Centers and perfectly aligns with top box */
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
         #activeUserPin {
-  display: none;
-}
-.main-content-box {
-  background-color: var(--bg-color);
-  border: 5px solid var(--header);
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  padding: 24px;
-  margin-top: 0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  box-sizing: border-box;
-  width: 100%;
-}
-        /* The single master container box */
-.single-control-box {
-  background-color: var(--signin);
-  border: 3px solid var(--header);
-  border-radius: 8px 8px 0 0;
-  padding: 12px 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  margin-bottom: 0 !important;
-  box-sizing: border-box;
-}
+            display: none;
+        }
 
-/* Groups the AM/PM toggle and time buttons together in the center */
-.center-group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;
-}
+        .center-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-content: center;
+        }
 
         .user-info-badge {
             display: flex;
@@ -155,67 +174,54 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        body.leader-mode-active .user-info-badge span {
-            background: #1e3a5f;
-            color: #f8fafc;
-        }
-
         .btn-switch-user {
-            background: var(--header);
-            border: 1px solid var(--signin);
-            padding: 0.25rem 0.5rem;
+            background: var(--border-color);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
             border-radius: 0.3rem;
-            font-size: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
             cursor: pointer;
             color: var(--text-white);
+            transition: background-color 0.3s ease;
         }
 
-        body.leader-mode-active .btn-switch-user {
-            border-color: #334155;
+        .btn-switch-user:hover {
+            background: var(--primary-hover);
         }
 
         .am-pm-toggle {
-            /* Removed grid-column: 2; */
             display: flex;
-            background: var(--header);
+            background: var(--border-color);
             border-radius: 9999px;
             padding: 0.25rem;
             transition: background-color 0.3s ease;
         }
 
-        body.leader-mode-active .am-pm-toggle {
-            background: #1e3a5f;
-        }
-
-        .am-pm-btn.active {
-            background: var(--primary);
-            color: var(--text-white);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
         .am-pm-btn {    
             border: none;
-            background: var(--header);
+            background: transparent;
             padding: 0.5rem 1.25rem;
             border-radius: 9999px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            color: var(--text-white);
+            color: var(--text-muted);
         }
 
-        body.leader-mode-active .am-pm-btn {
-            color: #94a3b8;
+        .am-pm-btn.active {
+            background: var(--primary);
+            color: var(--text-white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .leader-controls {
-            /* Removed grid-column: 3; and justify-self: end; */
             display: flex;
             gap: 0.5rem;
         }
 
         .leader-btn {
-            background: var(--header);
+            background: var(--border-color);
             color: white;
             border: none;
             padding: 0.6rem 1.2rem;
@@ -225,16 +231,12 @@
             transition: background 0.2s;
         }
 
-        body.leader-mode-active .leader-btn {
-            background: #1e3a5f;
-        }
-
         .leader-btn:hover { background: var(--primary-hover); }
-        body.leader-mode-active .leader-btn:hover { background: #2a4c7e; }
 
         .leader-btn.active-mode {
             background: var(--leader-gold);
-            box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
+            color: #1e293b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
         }
 
         /* Checklist Navigation Tabs */
@@ -243,13 +245,12 @@
             justify-content: center;
             gap: 0.75rem;
             overflow-x: auto;
-            padding-bottom: 0.5rem;
         }
 
         .nav-tab {
-            background: var(--header);
+            background: var(--border-color);
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.25rem;
             border-radius: 0.5rem;
             font-weight: 600;
             font-size: 1rem;
@@ -259,25 +260,9 @@
             color: var(--text-white);
         }
 
-        body.leader-mode-active .nav-tab {
-            background: #1e3a5f;
-            color: #94a3b8;
-        }
-
         .nav-tab.active {
             background: var(--primary);
             color: var(--text-white);
-        }
-
-        /* Main Viewport */
-        .viewport-container {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1300px;
-            margin-top: 0 !important;
-            width: 100%;
-            margin: 0 auto;
-            position: relative;
         }
 
         .fade-in {
@@ -309,7 +294,7 @@
 
         .area-card {
             background: var(--card-bg);
-            border: 2px solid var(--success-dark);
+            border: 2px solid var(--border-color);
             border-radius: 1rem;
             padding: 2rem 1.5rem;
             text-align: center;
@@ -324,24 +309,15 @@
             position: relative;
         }
 
-        body.leader-mode-active .area-card {
-            border-color: #1e3a5f;
-        }
-
         .area-card:hover {
-            border-color: var(--primary);
+            border-color: var(--primary-hover);
             transform: translateY(-4px);
             box-shadow: var(--shadow);
         }
 
         .area-card.submitted-card {
-            border-color: var(--primary);
+            border-color: var(--success-dark);
             background: var(--success);
-        }
-
-        body.leader-mode-active .area-card.submitted-card {
-            background: #064e3b;
-            border-color: #059669;
         }
 
         .submitted-badge {
@@ -361,15 +337,16 @@
             font-size: 1.5rem;
             color: var(--primary);
             margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
         }
 
         body.leader-mode-active .area-card h3 {
-            color: #60a5fa;
+            color: var(--text-main);
         }
 
         .area-subtitle {
             font-size: 0.95rem;
-            color: var(--text-muted);
+            color: var(--text-main);
             font-weight: 500;
             background: var(--success-dark);
             padding: 0.25rem 0.75rem;
@@ -378,52 +355,33 @@
             transition: background-color 0.3s ease;
         }
 
-        body.leader-mode-active .area-subtitle {
-            background: #1e3a5f;
-            color: #cbd5e1;
-        }
-
         /* View 2: Tasks List */
         .task-view-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 2rem;
-            border-bottom: 2px solid var(--success-dark);
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 1rem;
             transition: border-color 0.3s ease;
         }
 
-        body.leader-mode-active .task-view-header {
-            border-bottom-color: #1e3a5f;
-        }
-
         .btn-back {
             background: transparent;
-            border: 2px solid var(--success-dark);
+            border: 2px solid var(--border-color);
             padding: 0.6rem 1.2rem;
             border-radius: 0.5rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: var(--text-muted);
+            color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        body.leader-mode-active .btn-back {
-            border-color: #1e3a5f;
-            color: #94a3b8;
-        }
-
         .btn-back:hover {
-            background: var(--success);
-            color: var(--text-main);
-        }
-
-        body.leader-mode-active .btn-back:hover {
-            background: #1e3a5f;
+            background: var(--border-color);
             color: white;
         }
 
@@ -434,7 +392,7 @@
         }
 
         .task-subtitle-badge {
-            background: var(--primary);
+            background: var(--border-color);
             color: white;
             padding: 0.3rem 0.8rem;
             border-radius: 999px;
@@ -498,24 +456,15 @@
 
         .card-front {
             background: var(--card-bg);
-            border: 2px solid #cbd5e1;
+            border: 2px solid var(--border-color);
             justify-content: flex-start;
             overflow-y: auto;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        body.leader-mode-active .card-front {
-            border-color: #1e3a5f;
-        }
-
         .task-card-container.preclosed .card-front {
             border: 3px solid var(--success-dark) !important;
-            background-color: #f8fafc;
-        }
-
-        body.leader-mode-active .task-card-container.preclosed .card-front {
-            background-color: #0f172a;
-            border-color: var(--success-dark) !important;
+            background-color: var(--success);
         }
 
         .card-header-wrapper {
@@ -524,14 +473,10 @@
             align-items: flex-start;
             gap: 0.5rem;
             margin-bottom: 0.75rem;
-            border-bottom: 1px solid #cbd5e1;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 0.5rem;
             flex-shrink: 0;
             transition: border-color 0.3s ease;
-        }
-
-        body.leader-mode-active .card-header-wrapper {
-            border-bottom-color: #1e3a5f;
         }
 
         .card-header-wrapper h3 {
@@ -558,7 +503,7 @@
 
         .card-front::-webkit-scrollbar { width: 6px; }
         .card-front::-webkit-scrollbar-track { background: transparent; }
-        .card-front::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .card-front::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         .card-front ul {
             padding-left: 1.25rem;
@@ -570,7 +515,7 @@
         }
 
         .card-back {
-            background: linear-gradient(135deg, var(--success), #16a34a);
+            background: linear-gradient(135deg, var(--border-color), #16a34a);
             color: white;
             transform: rotateY(180deg);
             justify-content: center;
@@ -616,16 +561,12 @@
             margin-top: 3rem;
             text-align: center;
             padding-top: 2rem;
-            border-top: 2px dashed #cbd5e1;
+            border-top: 2px dashed var(--border-color);
             transition: border-color 0.3s ease;
         }
 
-        body.leader-mode-active .submit-section {
-            border-top-color: #1e3a5f;
-        }
-
         .btn-submit-area {
-            background: var(--primary);
+            background: var(--border-color);
             color: white;
             border: none;
             padding: 1rem 2.5rem;
@@ -634,13 +575,13 @@
             border-radius: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 61, 115, 0.4);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
         .btn-submit-area:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 6px 8px -1px rgba(0, 61, 115, 0.5);
+            box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.3);
         }
 
         /* Mandatory Initial Login & Modal Overlay */
@@ -664,59 +605,49 @@
             display: flex; flex-direction: column; gap: 1.25rem;
             text-align: center;
             color: var(--text-main);
-            border: 1px solid #cbd5e1;
+            border: 2px solid var(--border-color);
             transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        body.leader-mode-active .modal-card {
-            border-color: #1e3a5f;
         }
 
         .modal-card h3 { font-size: 1.5rem; color: var(--text-main); }
 
         .modal-card input {
-            padding: 0.85rem; border: 2px solid #cbd5e1;
+            padding: 0.85rem; border: 2px solid var(--border-color);
             border-radius: 0.5rem; font-size: 1.2rem;
             text-align: center; letter-spacing: 4px;
             background: transparent;
             color: var(--text-main);
         }
 
-        body.leader-mode-active .modal-card input {
-            border-color: #1e3a5f;
-        }
-
         .modal-card button {
-            padding: 0.85rem; background: var(--primary); color: white;
+            padding: 0.85rem; background: var(--border-color); color: white;
             border: none; border-radius: 0.5rem; font-weight: 700; font-size: 1rem; cursor: pointer;
         }
 
         .modal-card button:hover { background: var(--primary-hover); }
 
         @media (max-width: 768px) {
-            header { padding: 1rem; }
+            header { padding: 1rem 1rem 0 1rem; }
+            .viewport-container { padding: 0 1rem 1rem 1rem; }
             
-            /* Tell the new master container to stack vertically on mobile */
             .single-control-box { 
                 flex-direction: column; 
                 gap: 1rem; 
                 padding: 16px;
             }
             
-            /* Allow the AM/PM toggle and checklist nav to stack or wrap cleanly */
             .center-group { 
                 flex-direction: column; 
                 gap: 1rem; 
                 width: 100%;
             }
 
-            /* Ensure tabs can scroll horizontally if they overflow on small screens */
             .checklist-nav {
                 width: 100%;
                 justify-content: flex-start; 
             }
 
-            .viewport-container { padding: 1rem; }
+            .main-content-box { padding: 1rem; }
             .task-view-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
             .task-subtitle-badge { margin-left: 0; margin-top: 0.5rem; display: inline-block; }
         }
@@ -726,14 +657,15 @@
             padding: 4rem 2rem;
             color: var(--text-muted);
             background: var(--bg-color);
+            border: 5px solid var(--header);
             animation: fadeIn 0.3s ease forwards;
         }
 
         .spinner {
-            border: 4px solid #cbd5e1;
+            border: 4px solid var(--border-color);
             width: 48px; height: 48px;
             border-radius: 50%;
-            border-left-color: var(--primary);
+            border-left-color: var(--primary-hover);
             animation: spin 1s linear infinite;
             margin: 0 auto 1.5rem auto;
         }
@@ -1426,7 +1358,7 @@
 
                     let badgeHtml = '';
                     if (isVerified) {
-                        badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold);">Verified</div>`;
+                        badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
                     } else if (isSubmitted) {
                         badgeHtml = `<div class="submitted-badge">Completed</div>`;
                     }
@@ -1517,7 +1449,7 @@
                 } else if (areaState && areaState.leaderVerified) {
                     html += `
                         <div class="submit-section">
-                            <p style="color: var(--success); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
+                            <p style="color: var(--success-dark); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
                         </div>`;
                 }
 
@@ -1701,7 +1633,7 @@
                 const verifyContainer = document.querySelector('.submit-section');
                 verifyContainer.innerHTML = `
                     <p style="color: var(--leader-gold); font-weight: bold; margin-bottom: 0.75rem;">Only ${completedCount}/${zone.tasks.length} cards reviewed. Verify anyway?</p>
-                    <button class="btn-submit-area" style="background: var(--leader-gold); margin-right: 0.5rem;" onclick="executeVerification()">Yes, Verify</button>
+                    <button class="btn-submit-area" style="background: var(--leader-gold); color: #1e293b; margin-right: 0.5rem;" onclick="executeVerification()">Yes, Verify</button>
                     <button class="btn-back" style="display: inline-block;" onclick="renderApp()">Cancel</button>
                 `;
                 return;
