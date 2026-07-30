@@ -1930,17 +1930,21 @@ const OVERALL_LOG_CONFIG = {
 }
 
         function checkDayCompletionCalculated() {
-            const is930Done = isShiftComplete('close-930');
-            const is1030Done = isShiftComplete('close-1030');
+    const is930Done = isShiftComplete('close-930');
+    const is1030Done = isShiftComplete('close-1030');
 
-            if (is930Done && is1030Done) {
-                setTimeout(() => {
-                    showExplosionPopup(
-                        `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed today's close!`
-                    );
-                }, 600);
-            }
-        }
+    if (is930Done && is1030Done) {
+        // Prevent the popup from firing repeatedly in the same session
+        if (sessionStorage.getItem('dayCompletionShown') === 'true') return;
+        sessionStorage.setItem('dayCompletionShown', 'true');
+
+        setTimeout(() => {
+            showExplosionPopup(
+                `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed today's close!`
+            );
+        }, 600);
+    }
+}
 
         async function openOverallLogModal() {
             const modal = document.getElementById("overallLogModal");
