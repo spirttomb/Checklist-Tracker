@@ -647,61 +647,6 @@
     text-transform: uppercase;
     letter-spacing: 1.5px;
     line-height: 1;
-}/* --- Explosion Popup Styles --- */
-.explosion-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(11, 19, 31, 0.85);
-    backdrop-filter: blur(4px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2500; /* Keeps it above everything */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.explosion-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.explosion-shape {
-    background: radial-gradient(circle, #fde047 0%, #ea580c 100%);
-    width: 90vw;
-    max-width: 550px;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 3rem;
-    /* 20-point comic explosion polygon */
-    clip-path: polygon(50% 0%, 61% 16%, 86% 5%, 75% 26%, 100% 29%, 81% 47%, 98% 70%, 75% 69%, 81% 94%, 61% 81%, 50% 100%, 39% 81%, 19% 94%, 25% 69%, 2% 70%, 19% 47%, 0% 29%, 25% 26%, 14% 5%, 39% 16%);
-    transform: scale(0) rotate(-20deg);
-    box-shadow: 0 0 40px rgba(234, 88, 12, 0.6);
-}
-
-.explosion-overlay.active .explosion-shape {
-    animation: explosionPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes explosionPop {
-    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
-    50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-
-.explosion-text {
-    font-size: 2.25rem;
-    font-weight: 40;
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    /* Deep comic-style drop shadow */
-    text-shadow: 2px 2px 0 #9a3412, -2px -2px 0 #9a3412, 2px -2px 0 #9a3412, -2px 2px 0 #9a3412, 4px 4px 10px rgba(0,0,0,0.6);
-    line-height: 1.2;
 }
 
         .modal-card h3 { font-size: 1.5rem; color: var(--text-main); }
