@@ -146,10 +146,6 @@
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        #activeUserPin {
-            display: none;
-        }
-
         .center-group {
             display: flex;
             align-items: center;
@@ -666,10 +662,10 @@
     <!-- One single box wrapping all controls together -->
     <div class="single-control-box">
         
-        <!-- Left: Switch PIN (Pin text hidden for JS safety) -->
+        <!-- Left: Current user + Switch User -->
         <div class="user-info-badge" id="userInfoDisplay">
-            <span id="activeUserPin" style="display: none;">None</span>
-            <button class="btn-switch-user" onclick="promptLogin()">Switch PIN</button>
+            <span id="activeUserName">Not signed in</span>
+            <button class="btn-switch-user" onclick="promptLogin()">Switch User</button>
         </div>
 
         <!-- Center: AM/PM Toggle & Time Selecting Buttons -->
@@ -704,73 +700,73 @@
     <script>
         // Host list of team member and manager PINs
         const PIN_DATABASE = {
-            "4834": { name: "Fawn", role: "leader" },
-"8793": { name: "Josh", role: "leader" },
-"1107": { name: "Chloe", role: "leader" },
-"1757": { name: "Niah", role: "leader" },
-"3871": { name: "Emma", role: "leader" },
-"9440": { name: "Kendal", role: "leader" },
-"2554": { name: "Jaida", role: "leader" },
+            "4834": { name: "Fawn C", role: "leader" },
+"8793": { name: "Josh E", role: "leader" },
+"1107": { name: "Chloe J", role: "leader" },
+"1757": { name: "Niah I", role: "leader" },
+"3871": { name: "Emma R", role: "leader" },
+"9440": { name: "Kendal S", role: "leader" },
+"2554": { name: "Jaida W", role: "leader" },
 
-"3897": { name: "Chace", role: "member" },
-"7458": { name: "Riley", role: "member" },
-"9974": { name: "Chimere", role: "member" },
-"3187": { name: "Karlton", role: "member" },
-"5674": { name: "Ania", role: "member" },
-"3168": { name: "Lay", role: "member" },
-"1191": { name: "Mikyah", role: "member" },
-"2862": { name: "Marcus", role: "member" },
-"6008": { name: "Carmen", role: "member" },
-"5309": { name: "Anthony", role: "member" },
-"1124": { name: "Ariane", role: "member" },
-"9306": { name: "London", role: "member" },
-"4853": { name: "Kennedi", role: "member" },
-"4587": { name: "Latecia", role: "member" },
-"5377": { name: "Kadashya", role: "member" },
-"7636": { name: "Andrew", role: "member" },
-"9691": { name: "Brooklyn", role: "member" },
-"1729": { name: "Cassidy", role: "member" },
-"4032": { name: "Anthony", role: "member" },
-"6555": { name: "Jamarr", role: "member" },
-"2011": { name: "Destiny", role: "member" },
-"8672": { name: "Akira", role: "member" },
-"6176": { name: "Millie", role: "member" },
-"6638": { name: "Ken", role: "member" },
-"7565": { name: "Kianna", role: "member" },
-"8088": { name: "Taylor", role: "member" },
-"5927": { name: "Presten", role: "member" },
-"3455": { name: "Mara", role: "member" },
-"5117": { name: "Kaitlyn", role: "member" },
-"9681": { name: "Karrington", role: "member" },
-"5065": { name: "Nicolette", role: "member" },
-"2516": { name: "Kayla", role: "member" },
-"5373": { name: "Kaleil", role: "member" },
-"1930": { name: "Rolland", role: "member" },
-"3660": { name: "Chloe", role: "member" },
-"5705": { name: "Jeremie", role: "member" },
-"5738": { name: "Kennedy", role: "member" },
-"3527": { name: "Amor", role: "member" },
-"4247": { name: "Aniyah", role: "member" },
-"3105": { name: "Kiarra", role: "member" },
-"9998": { name: "Madison", role: "member" },
-"1263": { name: "Nique", role: "member" },
-"9203": { name: "Kenneth", role: "member" },
-"9826": { name: "Bailey", role: "member" },
-"6251": { name: "Madison", role: "member" },
-"4632": { name: "Pey", role: "member" },
-"4044": { name: "Yasmin", role: "member" },
-"7711": { name: "Will", role: "member" },
-"9201": { name: "Johnathon", role: "member" },
-"1760": { name: "Alana", role: "member" },
-"4048": { name: "Tracy", role: "member" },
-"8647": { name: "Kendall", role: "member" },
-"2219": { name: "Lundyn", role: "member" },
-"8948": { name: "Bobby", role: "member" },
-"5322": { name: "Erin", role: "member" },
-"5614": { name: "Teyre", role: "member" },
-"6281": { name: "Boyd", role: "member" },
-"7876": { name: "Adriene", role: "member" },
-"7307": { name: "ZahCorey", role: "member" },
+"3897": { name: "Chace A", role: "member" },
+"7458": { name: "Riley A", role: "member" },
+"9974": { name: "Chimere A", role: "member" },
+"3187": { name: "Karlton A", role: "member" },
+"5674": { name: "Ania A", role: "member" },
+"3168": { name: "Lay A", role: "member" },
+"1191": { name: "Mikyah A", role: "member" },
+"2862": { name: "Marcus B", role: "member" },
+"6008": { name: "Carmen B", role: "member" },
+"5309": { name: "Anthony B", role: "member" },
+"1124": { name: "Ariane B", role: "member" },
+"9306": { name: "London B", role: "member" },
+"4853": { name: "Kennedi B", role: "member" },
+"4587": { name: "Latecia C", role: "member" },
+"5377": { name: "Kadashya C", role: "member" },
+"7636": { name: "Andrew D", role: "member" },
+"9691": { name: "Brooklyn E", role: "member" },
+"1729": { name: "Cassidy F", role: "member" },
+"4032": { name: "Anthony G", role: "member" },
+"6555": { name: "Jamarr G", role: "member" },
+"2011": { name: "Destiny G", role: "member" },
+"8672": { name: "Akira H", role: "member" },
+"6176": { name: "Millie H", role: "member" },
+"6638": { name: "Ken H", role: "member" },
+"7565": { name: "Kianna H", role: "member" },
+"8088": { name: "Taylor H", role: "member" },
+"5927": { name: "Presten H", role: "member" },
+"3455": { name: "Mara J", role: "member" },
+"5117": { name: "Kaitlyn J", role: "member" },
+"9681": { name: "Karrington J", role: "member" },
+"5065": { name: "Nicolette J", role: "member" },
+"2516": { name: "Kayla K", role: "member" },
+"5373": { name: "Kaleil L", role: "member" },
+"1930": { name: "Rolland L", role: "member" },
+"3660": { name: "Chloe M", role: "member" },
+"5705": { name: "Jeremie M", role: "member" },
+"5738": { name: "Kennedy M", role: "member" },
+"3527": { name: "Amor M", role: "member" },
+"4247": { name: "Aniyah M", role: "member" },
+"3105": { name: "Kiarra M", role: "member" },
+"9998": { name: "Madison M", role: "member" },
+"1263": { name: "Nique M", role: "member" },
+"9203": { name: "Kenneth P", role: "member" },
+"9826": { name: "Bailey R", role: "member" },
+"6251": { name: "Madison R", role: "member" },
+"4632": { name: "Pey R", role: "member" },
+"4044": { name: "Yasmin S", role: "member" },
+"7711": { name: "Will S", role: "member" },
+"9201": { name: "Johnathon S", role: "member" },
+"1760": { name: "Alana T", role: "member" },
+"4048": { name: "Tracy T", role: "member" },
+"8647": { name: "Kendall T", role: "member" },
+"2219": { name: "Lundyn T", role: "member" },
+"8948": { name: "Bobby W", role: "member" },
+"5322": { name: "Erin W", role: "member" },
+"5614": { name: "Teyre W", role: "member" },
+"6281": { name: "Boyd W", role: "member" },
+"7876": { name: "Adriene W", role: "member" },
+"7307": { name: "ZahCorey W", role: "member" },
         };
 
         // Form mapping matrix
@@ -1305,13 +1301,14 @@
                 return;
             }
 
-            if (PIN_DATABASE[pin]) {
-                currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
-            } else {
-                currentUser = { pin: pin, name: pin, role: "member" };
+            if (!PIN_DATABASE[pin]) {
+                showStatusMessage("Incorrect PIN.", "error");
+                return;
             }
 
-            document.getElementById("activeUserPin").innerText = "****";
+            currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
+
+            document.getElementById("activeUserName").innerText = currentUser.name;
             const leaderBtn = document.getElementById("leaderOverviewToggle");
             
             if (currentUser.role === 'leader') {
