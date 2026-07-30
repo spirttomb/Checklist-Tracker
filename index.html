@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Checklist Dashboard</title>
+    <title>Checklist Tracker</title>
     <style>
         /* Custom Local Font Definition */
         @font-face {
@@ -1121,7 +1121,8 @@
                             { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
                             { title: "Transfer And Clean Tea", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into pitchers", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
                             { title: "Bring Back Remaining Dishes", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
-                            { title: "Clean Drink Towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
+                            { title: "Prepare Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Clean Drink Towers", steps: ["Remove two drink tower nozzles and diffusers and place them into the Kay-5 solution", "Wipe down those two drink towers' metal splash guards with a sanitizing wipe", "Clean those two drink towers' drip trays with hot water followed by a sanitizing wipe"] },
                             { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
                             { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
@@ -1134,8 +1135,15 @@
                         tasks: [
                             { title: "Taylor Wash", steps: ["Put one side of Taylor on wash"] },
                             { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
-                            { title: "Dishes & Leftovers", steps: ["Take back all dishes (machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray), while saving leftover oreo (if appicable), choccolate syrup (if applicable), cherries and lemons in a styrofoam cup, making sure to label them. For Saturday, bring back disassembled chocolate syrup dispenser For Wendsday/saturday, bring disassembled oreo dispenser back as well"] },
-                            { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles"] },
+                            {
+    title: "Dishes & Leftovers",
+    steps: [
+        "Take back all dishes: machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, and taylor drip tray",
+        "Save leftover oreo (if applicable), chocolate syrup (if applicable), cherries, and lemons in a styrofoam cup, making sure to label them",
+        "For Saturday, bring back the disassembled chocolate syrup dispenser",
+        "For Wednesday and Saturday, bring back the disassembled Oreo dispenser as well"
+    ]
+},{ title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles"] },
                             { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                         ]
@@ -1175,13 +1183,14 @@
                             { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into an empty lemonade bin", "Print labels and apply them to the lemonade, bring them to the walk-in", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
                             { title: "Transfer And Clean Tea", steps: ["Transfer remaining sweet/unsweet tea to Drive Thu, dump the remainder into the dump sink", "Remove tea nozzles, throw away liners", "Bring tea urn, nozzles, and tea drip tray to dish"] },
                             { title: "Bring Back Remaining Dishes", steps: ["Throw away strawberry shooter cup", "Disassemble shooter", "Bring back disassembled shooter"] },
-                            { title: "Clean Drink Towers", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)", "Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down all metal splash guards with a sanitizing wipe", "Clean all drip trays with hot water followed by a sanitizing wipe"] },
+                            { title: "Prepare Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Clean Drink Towers", steps: ["Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down all metal splash guards with a sanitizing wipe", "Clean all drip trays with hot water followed by a sanitizing wipe"] },
                             { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
                             { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
                             { title: "Clean POS Terminals And Card Readers", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] },
                             { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
-                            { title: "Bring Back Dishes", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, lemonade machine"] }
+                            { title: "Reassemble Dishes", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, lemonade machine"] }
                         ]
                     },
                     {
@@ -1223,7 +1232,7 @@
                             { title: "Floors", steps: ["Sweep floor, mop with the blue mop bucket and blue mop"] },
                             { title: "Microwave", steps: ["Wipe inside microwave with a sanitizing wipe"] },
                             { title: "Trash", steps: ["Replace and dispose of trash"] },
-                            { title: "Tech", steps: ["Ensure all tech is plugged in", "Scan the tech form qr code and fill it out"] }
+                            { title: "Tech", steps: ["Ensure all tech is plugged in", "Scan the tech form QR code and fill it out"] }
                         ]
                     },
                     {
@@ -1267,7 +1276,8 @@
                             { title: "Clean Dumpsink", steps: ["Clean the dumpsink"] },
                             { title: "Clean Coffee Pots", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station", "Repeat with DT coffee pot"] },
                             { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
-                            { title: "Bring Back Dishes", steps: ["Return sugar scoop, whisk, spoon, tea brewing urns, dump sink insert, tea and coffee brewing inserts, tea drip tray and reassemble strawberry shooter, tea urns, lemonade machine"] }
+                            { title: "Bring Back Dishes", steps: ["Return sugar scoop, whisk, spoon, tea brewing urns, dump sink insert, tea and coffee brewing inserts, tea drip tray and reassemble strawberry shooter, tea urns, lemonade machine"] },
+                            { title: "Reassemble Dishes", steps: ["Reassemble strawberry shooter, tea urns, lemonade machine"] }
                         ]
                     },
                     {
@@ -1296,8 +1306,17 @@
                     {
                         name: "Trash",
                         tasks: [
-                            { title: "Trash Removal", steps: ["Dispose of and replace all trash bags, including the one outside of the building by the back door, the one inside of the building by the back door, the two compacting dining room trashes, the trash under the TV, the FC trash, and the DT trash"] },
-                            { title: "Make Lemonades", steps: ["Check with a leader once trash is complete to see if lemonade needs to be made for the morning"] }
+                            {
+    title: "Trash Removal",
+    steps: [
+        "Dispose of and replace the trash bag outside of the building by the back door",
+        "Dispose of and replace the trash bag inside of the building by the back door",
+        "Dispose of and replace the two compacting dining room trash bags",
+        "Dispose of and replace the trash under the TV",
+        "Dispose of and replace the FC trash and the DT trash"
+    ]
+},
+{ title: "Make Lemonades", steps: ["Check with a leader when all trash has been disposed of to see if lemonade needs to be made for the morning"] }
                         ]
                     },
                     {
@@ -1591,162 +1610,182 @@
         }
 
         function renderApp() {
-            const appViewport = document.getElementById("appViewport");
-            const shift = checklistsData[activeTabIndex];
-            const submittedAreas = cloudSyncedAreas;
+    const appViewport = document.getElementById("appViewport");
+    const shift = checklistsData[activeTabIndex];
+    const submittedAreas = cloudSyncedAreas;
 
-            if (isLeaderOverviewMode) {
-                document.body.classList.add("leader-mode-active");
-            } else {
-                document.body.classList.remove("leader-mode-active");
-            }
-            
-            if (activeZoneIndex === null) {
-                // NEW: Check if shift is locked for today
-                const today = new Date().toDateString();
-                const lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
-                
-                if (lockedShifts[shift.id] === today) {
-                    appViewport.innerHTML = `
-                        <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
-                            <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
-                            <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
-                            <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
-                        </div>
-                    `;
-                    return;
-                }
+    if (isLeaderOverviewMode) {
+        document.body.classList.add("leader-mode-active");
+    } else {
+        document.body.classList.remove("leader-mode-active");
+    }
+    
+    if (activeZoneIndex === null) {
+        // NEW: Check if shift is locked for today
+        const today = new Date().toDateString();
+        const lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
+        
+        // Define completion states for the main shifts
+        const is930Locked = lockedShifts['close-930'] === today;
+        const is1030Locked = lockedShifts['close-1030'] === today;
+        
+        // Check if both shifts are locked while viewing the preclose tab
+        const isPrecloseFullyLocked = shift.id === 'preclose' && is930Locked && is1030Locked;
+        
+        if (lockedShifts[shift.id] === today || isPrecloseFullyLocked) {
+            appViewport.innerHTML = `
+                <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
+                    <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
+                    <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
+                </div>
+            `;
+            return;
+        }
 
-                let html = `
-                    <div class="main-content-box">
-                        <div class="view-header">
-                            <h2 class="view-title">${shift.title} Areas</h2>
-                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
-                        </div>
-                        <div class="areas-grid">
-                `;
-                
-                let count = 0;
-                if (isSyncingCloudData) {
-                    html += `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem 2rem;">
-                            <div class="spinner"></div>
-                            <p style="color: var(--text-muted); margin-top: 1rem;">Checking today's status...</p>
-                        </div>
-                    `;
-                } else {
-                    shift.zones.forEach((zone, zIndex) => {
-                        const areaKey = `${shift.id}::${zone.name}`;
-                        const areaState = submittedAreas[areaKey];
-                        const isSubmitted = !!areaState;
-                        const isVerified = areaState && areaState.leaderVerified;
+        let html = `
+            <div class="main-content-box">
+                <div class="view-header">
+                    <h2 class="view-title">${shift.title} Areas</h2>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
+                </div>
+                <div class="areas-grid">
+        `;
+        
+        let count = 0;
+        if (isSyncingCloudData) {
+            html += `
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem 2rem;">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text-muted); margin-top: 1rem;">Checking today's status...</p>
+                </div>
+            `;
+        } else {
+            shift.zones.forEach((zone, zIndex) => {
+                // NEW: Hide specific preclose areas if their corresponding shift is locked
+                if (shift.id === 'preclose') {
+                    const preclose930Zones = ["Dining Room", "Front Counter"];
+                    const preclose1030Zones = ["Desserts", "Drinks", "Chutes"];
 
-                        if (isLeaderOverviewMode && !isSubmitted) {
-                            return; 
-                        }
-
-                        let badgeHtml = '';
-                        if (isVerified) {
-                            badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
-                        } else if (isSubmitted) {
-                            badgeHtml = `<div class="submitted-badge">Completed</div>`;
-                        }
-
-                        count++;
-                        html += `
-                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
-                                ${badgeHtml}
-                                <h3>${zone.name}</h3>
-                                ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
-                            </div>
-                        `;
-                    });
-
-                    if (isLeaderOverviewMode && count === 0) {
-                        html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
+                    if (is930Locked && preclose930Zones.includes(zone.name)) {
+                        return; // Hide this 9:30 preclose area
+                    }
+                    if (is1030Locked && preclose1030Zones.includes(zone.name)) {
+                        return; // Hide this 10:30 preclose area
                     }
                 }
 
-                html += `</div></div>`;
-                appViewport.innerHTML = html;
-            } else {
-                const zone = shift.zones[activeZoneIndex];
                 const areaKey = `${shift.id}::${zone.name}`;
                 const areaState = submittedAreas[areaKey];
-                const preclosedMap = getPreclosedMap();
-                
-                let html = `
-                    <div class="main-content-box">
-                        <div class="task-view-header">
-                            <div>
-                                <h2 class="task-zone-title">
-                                    ${zone.name}
-                                    ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
-                                </h2>
-                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
-                            </div>
-                            <button class="btn-back" onclick="goBackToAreas()">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                                Back to Areas
-                            </button>
-                        </div>
-                        <div class="cards-grid">
-                `;
+                const isSubmitted = !!areaState;
+                const isVerified = areaState && areaState.leaderVerified;
 
-                zone.tasks.forEach((task, tIndex) => {
-                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-                    const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
-                    
-                    const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
-                    const preclosedClass = isPreclosed ? 'preclosed' : '';
-                    const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
-
-                    let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
-                    const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
-
-                    html += `
-                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
-                            <div class="task-card-inner">
-                                <div class="card-face card-front">
-                                    <div class="card-header-wrapper">
-                                        <h3>${task.title}</h3>
-                                        ${preclosedBadgeHtml}
-                                    </div>
-                                    <ul>${stepsHtml}</ul>
-                                </div>
-                                <div class="card-face card-back">
-                                    <div class="stamp">${stampText}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                html += `</div>`;
-                
-                const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
-
-                if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
-                    html += `
-                        <div class="submit-section">
-                            <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
-                        </div>`;
-                } else if (!areaState) {
-                    html += `
-                        <div class="submit-section">
-                            <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
-                        </div>`;
-                } else if (areaState && areaState.leaderVerified) {
-                    html += `
-                        <div class="submit-section">
-                            <p style="color: var(--success-dark); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
-                        </div>`;
+                if (isLeaderOverviewMode && !isSubmitted) {
+                    return; 
                 }
 
-                html += `</div>`;
-                appViewport.innerHTML = html;
+                let badgeHtml = '';
+                if (isVerified) {
+                    badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
+                } else if (isSubmitted) {
+                    badgeHtml = `<div class="submitted-badge">Completed</div>`;
+                }
+
+                count++;
+                html += `
+                    <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
+                        ${badgeHtml}
+                        <h3>${zone.name}</h3>
+                        ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                    </div>
+                `;
+            });
+
+            if (isLeaderOverviewMode && count === 0) {
+                html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
             }
         }
+
+        html += `</div></div>`;
+        appViewport.innerHTML = html;
+    } else {
+        const zone = shift.zones[activeZoneIndex];
+        const areaKey = `${shift.id}::${zone.name}`;
+        const areaState = submittedAreas[areaKey];
+        const preclosedMap = getPreclosedMap();
+        
+        let html = `
+            <div class="main-content-box">
+                <div class="task-view-header">
+                    <div>
+                        <h2 class="task-zone-title">
+                            ${zone.name}
+                            ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
+                        </h2>
+                        <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
+                    </div>
+                    <button class="btn-back" onclick="goBackToAreas()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Back to Areas
+                    </button>
+                </div>
+                <div class="cards-grid">
+        `;
+
+        zone.tasks.forEach((task, tIndex) => {
+            const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+            const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
+            
+            const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
+            const preclosedClass = isPreclosed ? 'preclosed' : '';
+            const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
+
+            let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+            const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
+
+            html += `
+                <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                    <div class="task-card-inner">
+                        <div class="card-face card-front">
+                            <div class="card-header-wrapper">
+                                <h3>${task.title}</h3>
+                                ${preclosedBadgeHtml}
+                            </div>
+                            <ul>${stepsHtml}</ul>
+                        </div>
+                        <div class="card-face card-back">
+                            <div class="stamp">${stampText}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+        
+        const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
+
+        if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
+            html += `
+                <div class="submit-section">
+                    <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
+                </div>`;
+        } else if (!areaState) {
+            html += `
+                <div class="submit-section">
+                    <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
+                </div>`;
+        } else if (areaState && areaState.leaderVerified) {
+            html += `
+                <div class="submit-section">
+                    <p style="color: var(--success-dark); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
+                </div>`;
+        }
+
+        html += `</div>`;
+        appViewport.innerHTML = html;
+    }
+}
 
         function selectZone(index) {
             const shift = checklistsData[activeTabIndex];
