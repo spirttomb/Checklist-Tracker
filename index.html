@@ -1934,6 +1934,12 @@
                         formData[entryId] = isPreclosed ? "preclosed and completed" : "completed";
                     }
                 });
+                showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
+
+// NEW: Fire explosion popup for completing an area (exclude preclose)
+if (shift.id !== 'preclose') {
+    showExplosionPopup(`Congratulations ${currentUser.name} on a successful ${zone.name} close!`);
+}
 
                 await submitToGoogleForm(formConfig.formId, formData);
             }
@@ -1941,12 +1947,7 @@
             // INSIDE submitZoneChecklist()
 cloudSyncedAreas[areaKey] = statePayload;
 
-showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
 
-// NEW: Fire explosion popup for completing an area (exclude preclose)
-if (shift.id !== 'preclose') {
-    showExplosionPopup(`Congratulations ${currentUser.name} on a successful ${zone.name} close!`);
-}
 
 goBackToAreas();
         }
