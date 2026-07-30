@@ -957,6 +957,7 @@
                 nameEntry: "entry.609807457",
                 tasks: {
                     "Taylor Wash": "entry.771576326",
+                    "Kay-5 Sanitizer": "entry.1069087250",
                     "Dishes & Leftovers": "entry.498948150",
                     "Drain Icedream": "entry.984065864",
                     "Wash Taylor Inside": "entry.1683751067",
@@ -1968,63 +1969,48 @@
 
             showStatusMessage(`${zone.name} verified successfully!`, 'success');
             
-            await checkDayCompletion();
+            const shiftCompleted = await checkDayCompletion();
 
-            goBackToAreas();
+if (!shiftCompleted) {
+    goBackToAreas();
+}
         }
 
         async function checkDayCompletion() {
-            const shift = checklistsData[activeTabIndex];
-            const submittedAreas = cloudSyncedAreas;
-            
-            const allVerified = shift.zones.every(zone => {
-                const state = submittedAreas[`${shift.id}::${zone.name}`];
-                return state && state.leaderVerified;
-            });
+    const shift = checklistsData[activeTabIndex];
 
-            if (allVerified && shift.id !== 'preclose') {
-                const entries = [`${currentUser.name} - verified`];
-                shift.zones.forEach(zone => {
-                    const state = submittedAreas[`${shift.id}::${zone.name}`];
-                    if (state) {
-                        entries.push(`${state.teamMember} - ${zone.name}`);
-                    }
-                });
-                
-                const logPayload = entries.join(', ');
-                
-                const masterFormId = '1FAIpQLSdHFRRt4Lu4DdtzsnNoeVIZClZoS7_HxE4OIQQx--vVNmrJIw';
-                const formData = { 'entry.629425722': logPayload };
-                
-                await submitToGoogleForm(masterFormId, formData);
-                showStatusMessage(`All ${shift.title} areas verified! Master log submitted. Shift locked for today.`, 'success', 6000);
-                
-                let lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
-                lockedShifts[shift.id] = new Date().toDateString();
-                localStorage.setItem('lockedShifts', JSON.stringify(lockedShifts));
-                
-                completedTasks.clear();
-                
-                const is930Verified = checklistsData.find(s => s.id === 'close-930').zones.every(z => {
-                    const st = cloudSyncedAreas[`close-930::${z.name}`];
-                    return st && st.leaderVerified;
-                });
+    if (!shift || shift.id === "preclose") return false;
 
-                const is1030Verified = checklistsData.find(s => s.id === 'close-1030').zones.every(z => {
-                    const st = cloudSyncedAreas[`close-1030::${z.name}`];
-                    return st && st.leaderVerified;
-                });
+    const allVerified = shift.zones.every(zone => {
+        const state = cloudSyncedAreas[`${shift.id}::${zone.name}`];
+        return state && state.leaderVerified;
+    });
 
-                if (is930Verified && is1030Verified) {
-                    showExplosionPopup(`Congratulations ${currentUser.name} on a successful close!`);
-                }
+    if (!allVerified) return false;
 
-                setTimeout(() => {
-                    activeZoneIndex = null;
-                    renderApp();
-                }, 2000);
-            }
-        }
+    const today = new Date().toDateString();
+
+    const lockedShifts = JSON.parse(localStorage.getItem("lockedShifts")) || {};
+    lockedShifts[shift.id] = today;
+    localStorage.setItem("lockedShifts", JSON.stringify(lockedShifts));
+
+    completedTasks.clear();
+
+    renderApp();
+
+    if (
+        lockedShifts["close-930"] === today &&
+        lockedShifts["close-1030"] === today
+    ) {
+        setTimeout(() => {
+            showExplosionPopup(
+                `Congratulations ${currentUser.name.substring(0, currentUser.name.lastIndexOf(' '))}! \n\nYou successfully completed today's close!`
+            );
+        }, 600);
+    }
+
+    return true;
+}
 
         /* --- Overall Shift Log Viewer Functions --- */
 
