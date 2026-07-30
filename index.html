@@ -606,7 +606,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 2500; /* Keeps it above everything */
+            z-index: 2500;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -646,6 +646,7 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             line-height: 1;
+            white-space: pre-line;
         }
 
         .modal-card h3 { font-size: 1.5rem; color: var(--text-main); }
@@ -710,16 +711,12 @@
     <div id="statusMessageBar"></div>
 
 <header>
-    <!-- One single box wrapping all controls together -->
     <div class="single-control-box">
-        
-        <!-- Left: Current user + Switch User -->
         <div class="user-info-badge" id="userInfoDisplay">
             <span id="activeUserName">Not signed in</span>
             <button class="btn-switch-user" onclick="promptLogin()">Switch User</button>
         </div>
 
-        <!-- Center: AM/PM Toggle & Time Selecting Buttons -->
         <div class="center-group">
             <div class="am-pm-toggle">
                 <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
@@ -728,27 +725,23 @@
             <div class="checklist-nav" id="checklistNav"></div>
         </div>
 
-        <!-- Right: Leadership Overview & Overall Log Viewer Button -->
         <div class="leader-controls">
             <button class="leader-btn" id="overallLogBtn" style="display: none; background: var(--border-color);" onclick="openOverallLogModal()">Overall Log</button>
             <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
-
     </div>
 </header>
 
     <div class="viewport-container" id="appViewport"></div>
 
-    <!-- Mandatory Initial PIN Authentication Overlay -->
     <div class="modal-overlay" id="authOverlay">
-    <div class="modal-card">
-        <h3>Enter Team Member PIN</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
-        <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
+        <div class="modal-card">
+            <h3>Enter Team Member PIN</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
+            <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
+        </div>
     </div>
-</div>
 
-    <!-- Overall Shift Log Viewer Modal -->
     <div class="modal-overlay" id="overallLogModal">
         <div class="modal-card" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
@@ -756,7 +749,6 @@
                 <button onclick="closeOverallLogModal()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
             </div>
             
-            <!-- Filters Controls Grid -->
             <div style="background: var(--signin); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; align-items: end;">
                 <div>
                     <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem;">Filter by Date</label>
@@ -779,7 +771,6 @@
                 </div>
             </div>
 
-            <!-- Primary Entry Selection Dropdown (Newest First) -->
             <div style="margin-bottom: 1.5rem;">
                 <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">Select Log Entry (Newest First)</label>
                 <select id="overallLogSelect" onchange="renderSelectedLogDetails()" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 0.5rem; background: var(--card-bg); color: var(--text-main); font-weight: 600;">
@@ -787,23 +778,19 @@
                 </select>
             </div>
 
-            <!-- Visualization Content Container -->
             <div id="overallLogDisplay">
                 <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading overall log data from spreadsheet...</p>
             </div>
         </div>
     </div>
 
-    <!-- Explosion Popup Overlay -->
-<div id="explosionPopupOverlay" class="explosion-overlay">
-    <div class="explosion-shape">
-        <h2 id="explosionMessage" class="explosion-text"></h2>
+    <div id="explosionPopupOverlay" class="explosion-overlay">
+        <div class="explosion-shape">
+            <h2 id="explosionMessage" class="explosion-text"></h2>
+        </div>
     </div>
-</div>
 
     <script>
-
-        // Host list of team member and manager PINs
         const PIN_DATABASE = {
             "4834": { name: "Fawn C", role: "leader" },
             "8793": { name: "Josh E", role: "leader" },
@@ -873,8 +860,10 @@
             "7876": { name: "Adriene W", role: "member" },
             "7307": { name: "ZahCorey W", role: "member" },
         };
-
-        // Form mapping matrix
+const OVERALL_LOG_CONFIG = {
+    formId: "1FAIpQLSdHFRRt4Lu4DdtzsnNoeVIZClZoS7_HxE4OIQQx--vVNmrJIw",
+    entryKey: "entry.629425722"
+};
         const FORM_MAPPINGS = {
             "close-930::Front Counter": {
                 formId: "1FAIpQLSct_5hXLVUObY92qrFwfB5XR71tT2_he7-3vpyCs-lPSKJTtA",
@@ -1073,14 +1062,15 @@
                             { title: "Taylor Wash", steps: ["Put one side of Taylor on wash"] },
                             { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
                             {
-    title: "Dishes & Leftovers",
-    steps: [
-        "Take back all dishes: machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, and taylor drip tray",
-        "Save leftover oreo (if applicable), chocolate syrup (if applicable), cherries, and lemons in a styrofoam cup, making sure to label them",
-        "For Saturday, bring back the disassembled chocolate syrup dispenser",
-        "For Wednesday and Saturday, bring back the disassembled Oreo dispenser as well"
-    ]
-},{ title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles"] },
+                                title: "Dishes & Leftovers",
+                                steps: [
+                                    "Take back all dishes: machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, and taylor drip tray",
+                                    "Save leftover oreo (if applicable), chocolate syrup (if applicable), cherries, and lemons in a styrofoam cup, making sure to label them",
+                                    "For Saturday, bring back the disassembled chocolate syrup dispenser",
+                                    "For Wednesday and Saturday, bring back the disassembled Oreo dispenser as well"
+                                ]
+                            },
+                            { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles"] },
                             { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
                         ]
@@ -1192,15 +1182,15 @@
                             { title: "Taylor Wash", steps: ["Put Taylor on wash for 15 mins"] },
                             { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
                             {
-    title: "Dishes & Leftovers",
-    steps: [
-        "Take back all dishes: machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, and taylor drip tray",
-        "Save leftover oreo (if applicable), chocolate syrup (if applicable), cherries, and lemons in a styrofoam cup, making sure to label them",
-        "For Saturday, bring back the disassembled chocolate syrup dispenser",
-        "For Wednesday and Saturday, bring back the disassembled Oreo dispenser as well"
-    ]
-}, 
-{ title: "Drain Icedream", steps: ["Drain all icedream into the leftover icedream tub, sticker it with a date label, put it in the walk-in"] },
+                                title: "Dishes & Leftovers",
+                                steps: [
+                                    "Take back all dishes: machine arm, disassembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, and taylor drip tray",
+                                    "Save leftover oreo (if applicable), chocolate syrup (if applicable), cherries, and lemons in a styrofoam cup, making sure to label them",
+                                    "For Saturday, bring back the disassembled chocolate syrup dispenser",
+                                    "For Wednesday and Saturday, bring back the disassembled Oreo dispenser as well"
+                                ]
+                            }, 
+                            { title: "Drain Icedream", steps: ["Drain all icedream into the leftover icedream tub, sticker it with a date label, put it in the walk-in"] },
                             { title: "Wash Taylor Inside", steps: ["Rinse Taylor with hot water", "Pour the prepared Kay-5 solution into Taylor", "Wipe down the inside with blue wipes, using the kay-5 to clean the inside", "Drain the Kay-5 and rinse with water again"] },
                             { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles", "Unplug Taylor"] },
                             { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
@@ -1253,16 +1243,16 @@
                         name: "Trash",
                         tasks: [
                             {
-    title: "Trash Removal",
-    steps: [
-        "Dispose of and replace the trash bag outside of the building by the back door",
-        "Dispose of and replace the trash bag inside of the building by the back door",
-        "Dispose of and replace the two compacting dining room trash bags",
-        "Dispose of and replace the trash under the TV",
-        "Dispose of and replace the FC trash and the DT trash"
-    ]
-},
-{ title: "Make Lemonades", steps: ["Check with a leader when all trash has been disposed of to see if lemonade needs to be made for the morning"] }
+                                title: "Trash Removal",
+                                steps: [
+                                    "Dispose of and replace the trash bag outside of the building by the back door",
+                                    "Dispose of and replace the trash bag inside of the building by the back door",
+                                    "Dispose of and replace the two compacting dining room trash bags",
+                                    "Dispose of and replace the trash under the TV",
+                                    "Dispose of and replace the FC trash and the DT trash"
+                                ]
+                            },
+                            { title: "Make Lemonades", steps: ["Check with a leader when all trash has been disposed of to see if lemonade needs to be made for the morning"] }
                         ]
                     },
                     {
@@ -1286,11 +1276,9 @@
         
         let cloudSyncedAreas = {}; 
 
-        // Overall Log Viewer Data state
         let overallLogsData = [];
         let filteredLogsData = [];
 
-        // In-page status message handler
         function showStatusMessage(message, type = 'info', duration = 4000) {
             const bar = document.getElementById("statusMessageBar");
             bar.innerText = message;
@@ -1416,76 +1404,45 @@
             cloudSyncedAreas = {};
             renderApp();
 
-            const shift = checklistsData[activeTabIndex];
-
             try {
-                if (shift.id !== 'preclose') {
-                    const fetchPromises = shift.zones.map(async (zone) => {
+                const fetchPromises = [];
+                for (const shift of checklistsData) {
+                    if (shift.id === 'preclose') continue;
+                    for (const zone of shift.zones) {
                         const areaKey = `${shift.id}::${zone.name}`;
                         const config = FORM_MAPPINGS[areaKey];
-                        
                         if (config && config.sheetId) {
-                            const status = await fetchSheetLatestStatus(config.sheetId);
-                            if (status) {
-                                try {
-                                    const localVerification = JSON.parse(localStorage.getItem('leaderVerifications')) || {};
-                                    const today = new Date().toDateString();
-                                    if (localVerification[areaKey] && localVerification[areaKey].date === today) {
-                                        status.leaderVerified = true;
-                                        status.leaderName = localVerification[areaKey].leaderName;
+                            fetchPromises.push(
+                                fetchSheetLatestStatus(config.sheetId).then(status => {
+                                    if (status) {
+                                        cloudSyncedAreas[areaKey] = status;
                                     }
-                                } catch(e) {}
-                                cloudSyncedAreas[areaKey] = status;
-                            }
+                                })
+                            );
                         }
-                    });
-                    await Promise.all(fetchPromises); 
-                } else {
-                    try {
-                        const localPrecloseLocks = JSON.parse(localStorage.getItem('precloseLocks')) || {};
-                        const today = new Date().toDateString();
-                        for (const [key, data] of Object.entries(localPrecloseLocks)) {
-                            if (data.date === today) cloudSyncedAreas[key] = data.state;
-                        }
-                    } catch(e) {}
+                    }
                 }
+                await Promise.all(fetchPromises);
             } catch (error) {
                 console.error("Critical error during cloud sync:", error);
             }
             
             isSyncingCloudData = false;
             renderApp();
+            checkDayCompletionCalculated();
         }
 
         function cleanOldLocalStorage() {
             const today = new Date().toDateString();
-            const keysToCheck = ['preclosedTasks', 'precloseLocks', 'leaderVerifications', 'lockedShifts'];
-            
-            keysToCheck.forEach(key => {
-                try {
-                    let data = JSON.parse(localStorage.getItem(key));
-                    if (!data) return;
-
-                    if (key === 'preclosedTasks' && data.date !== today) {
-                        localStorage.removeItem(key);
-                    } else if (key !== 'preclosedTasks') {
-                        let freshData = {};
-                        let changed = false;
-                        for (let k in data) {
-                            const entryDate = typeof data[k] === 'string' ? data[k] : data[k].date;
-                            if (entryDate === today) {
-                                freshData[k] = data[k];
-                            } else {
-                                changed = true;
-                            }
-                        }
-                        if (changed) {
-                            if (Object.keys(freshData).length === 0) localStorage.removeItem(key);
-                            else localStorage.setItem(key, JSON.stringify(freshData));
-                        }
-                    }
-                } catch(e) {}
-            });
+            try {
+                const stored = JSON.parse(localStorage.getItem('preclosedTasks'));
+                if (stored && stored.date !== today) {
+                    localStorage.removeItem('preclosedTasks');
+                }
+            } catch(e) {}
+            localStorage.removeItem('lockedShifts');
+            localStorage.removeItem('leaderVerifications');
+            localStorage.removeItem('precloseLocks');
         }
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -1580,6 +1537,16 @@
             });
         }
 
+        function isShiftComplete(shiftId) {
+            const shiftObj = checklistsData.find(s => s.id === shiftId);
+            if (!shiftObj) return false;
+            return shiftObj.zones.every(zone => {
+                const areaKey = `${shiftId}::${zone.name}`;
+                const state = cloudSyncedAreas[areaKey];
+                return state && state.leaderVerified;
+            });
+        }
+
         function renderApp() {
             const appViewport = document.getElementById("appViewport");
             const shift = checklistsData[activeTabIndex];
@@ -1592,15 +1559,12 @@
             }
             
             if (activeZoneIndex === null) {
-                const today = new Date().toDateString();
-                const lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
-                
-                const is930Locked = lockedShifts['close-930'] === today;
-                const is1030Locked = lockedShifts['close-1030'] === today;
-                
+                const is930Locked = isShiftComplete('close-930');
+                const is1030Locked = isShiftComplete('close-1030');
                 const isPrecloseFullyLocked = shift.id === 'preclose' && is930Locked && is1030Locked;
+                const currentShiftLocked = shift.id !== 'preclose' ? isShiftComplete(shift.id) : isPrecloseFullyLocked;
                 
-                if (lockedShifts[shift.id] === today || isPrecloseFullyLocked) {
+                if (currentShiftLocked) {
                     appViewport.innerHTML = `
                         <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
                             <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
@@ -1862,7 +1826,6 @@
             }
 
             const areaKey = `${shift.id}::${zone.name}`;
-            const statePayload = { teamMember: currentUser.name, leaderVerified: false, leaderName: null };
 
             if (shift.id === 'preclose') {
                 const preclosedMap = getPreclosedMap();
@@ -1874,14 +1837,6 @@
                     }
                 });
                 localStorage.setItem('preclosedTasks', JSON.stringify({ date: new Date().toDateString(), tasks: preclosedMap }));
-
-                const allDone = zone.tasks.every(t => preclosedMap[`${zone.name}::${t.title}`]);
-                if (allDone) {
-                    cloudSyncedAreas[areaKey] = statePayload;
-                    let precloseLocks = JSON.parse(localStorage.getItem('precloseLocks')) || {};
-                    precloseLocks[areaKey] = { date: new Date().toDateString(), state: statePayload };
-                    localStorage.setItem('precloseLocks', JSON.stringify(precloseLocks));
-                }
 
                 showStatusMessage(`${zone.name} preclose saved successfully!`, 'success');
                 goBackToAreas();
@@ -1910,14 +1865,13 @@
                 await submitToGoogleForm(formConfig.formId, formData);
             }
 
-            cloudSyncedAreas[areaKey] = statePayload;
+            await loadShiftStatusFromCloud();
             goBackToAreas();
         }
 
         async function verifyArea() {
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[activeZoneIndex];
-            const areaKey = `${shift.id}::${zone.name}`;
 
             let completedCount = 0;
             zone.tasks.forEach((task, tIndex) => {
@@ -1941,86 +1895,52 @@
         }
 
         async function executeVerification() {
-            const shift = checklistsData[activeTabIndex];
-            const zone = shift.zones[activeZoneIndex];
-            const areaKey = `${shift.id}::${zone.name}`;
-
-            const formConfig = FORM_MAPPINGS[areaKey];
-            if (formConfig) {
-                const formData = {};
-                formData[formConfig.nameEntry] = currentUser.name;
-
-                zone.tasks.forEach(task => {
-                    const entryId = formConfig.tasks[task.title];
-                    if (entryId) {
-                        formData[entryId] = "verified";
-                    }
-                });
-
-                await submitToGoogleForm(formConfig.formId, formData);
-            }
-
-            if (!cloudSyncedAreas[areaKey]) {
-                cloudSyncedAreas[areaKey] = { teamMember: "Team Member", leaderVerified: false, leaderName: null };
-            }
-            cloudSyncedAreas[areaKey].leaderVerified = true;
-            cloudSyncedAreas[areaKey].leaderName = currentUser.name;
-
-            let localVerifications = JSON.parse(localStorage.getItem("leaderVerifications")) || {};
-            localVerifications[areaKey] = {
-                date: new Date().toDateString(),
-                leaderName: currentUser.name
-            };
-
-            localStorage.setItem("leaderVerifications", JSON.stringify(localVerifications));
-            completedTasks.clear();
-
-            showStatusMessage(`${zone.name} verified successfully!`, 'success');
-            
-            const shiftCompleted = await checkDayCompletion();
-
-if (!shiftCompleted) {
-    goBackToAreas();
-}
-        }
-
-        async function checkDayCompletion() {
     const shift = checklistsData[activeTabIndex];
+    const zone = shift.zones[activeZoneIndex];
+    const areaKey = `${shift.id}::${zone.name}`;
 
-    if (!shift || shift.id === "preclose") return false;
+    const formConfig = FORM_MAPPINGS[areaKey];
+    if (formConfig) {
+        const formData = {};
+        formData[formConfig.nameEntry] = currentUser.name;
 
-    const allVerified = shift.zones.every(zone => {
-        const state = cloudSyncedAreas[`${shift.id}::${zone.name}`];
-        return state && state.leaderVerified;
-    });
+        zone.tasks.forEach(task => {
+            const entryId = formConfig.tasks[task.title];
+            if (entryId) {
+                formData[entryId] = "verified";
+            }
+        });
 
-    if (!allVerified) return false;
-
-    const today = new Date().toDateString();
-
-    const lockedShifts = JSON.parse(localStorage.getItem("lockedShifts")) || {};
-    lockedShifts[shift.id] = today;
-    localStorage.setItem("lockedShifts", JSON.stringify(lockedShifts));
-
-    completedTasks.clear();
-
-    renderApp();
-
-    if (
-        lockedShifts["close-930"] === today &&
-        lockedShifts["close-1030"] === today
-    ) {
-        setTimeout(() => {
-            showExplosionPopup(
-                `Congratulations ${currentUser.name.substring(0, currentUser.name.lastIndexOf(' '))}! \n\nYou successfully completed today's close!`
-            );
-        }, 600);
+        // Submit individual zone form
+        await submitToGoogleForm(formConfig.formId, formData);
     }
 
-    return true;
+    completedTasks.clear();
+    showStatusMessage(`${zone.name} verified successfully!`, 'success');
+    
+    // Refresh cloud status data first so the newly verified zone is registered
+    await loadShiftStatusFromCloud();
+
+    // Check if this verification completed the entire shift
+    if (isShiftComplete(shift.id)) {
+        await submitOverallLogForShift(shift);
+    }
+
+    goBackToAreas();
 }
 
-        /* --- Overall Shift Log Viewer Functions --- */
+        function checkDayCompletionCalculated() {
+            const is930Done = isShiftComplete('close-930');
+            const is1030Done = isShiftComplete('close-1030');
+
+            if (is930Done && is1030Done) {
+                setTimeout(() => {
+                    showExplosionPopup(
+                        `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed today's close!`
+                    );
+                }, 600);
+            }
+        }
 
         async function openOverallLogModal() {
             const modal = document.getElementById("overallLogModal");
@@ -2032,6 +1952,35 @@ if (!shiftCompleted) {
             populateFilterDropdowns();
             filterAndPopulateLogDropdown();
         }
+
+        async function submitOverallLogForShift(shift) {
+    let logParts = [];
+    let leaderName = currentUser ? currentUser.name : "Leader";
+
+    // 1. Add the leader verification part
+    logParts.push(`${leaderName} - verified`);
+
+    // 2. Iterate through all zones in the shift to gather team members and areas
+    shift.zones.forEach(zone => {
+        const areaKey = `${shift.id}::${zone.name}`;
+        const areaState = cloudSyncedAreas[areaKey];
+        
+        // Use the team member who completed it, fallback to leader if verified directly
+        const memberName = (areaState && areaState.teamMember) ? areaState.teamMember : leaderName;
+        
+        logParts.push(`${memberName} - ${zone.name}`);
+    });
+
+    // Combine into the requested format: "Josh E - verified, Josh E - Front Counter, ..."
+    const formattedLogString = logParts.join(", ");
+
+    // Prepare payload for the overall log Google Form
+    const overallFormData = {};
+    overallFormData[OVERALL_LOG_CONFIG.entryKey] = formattedLogString;
+
+    // Submit to the overall log form
+    await submitToGoogleForm(OVERALL_LOG_CONFIG.formId, overallFormData);
+}
 
         function closeOverallLogModal() {
             document.getElementById("overallLogModal").classList.remove("active");
@@ -2240,7 +2189,7 @@ if (!shiftCompleted) {
             `;
 
             if (log.assignments.length === 0) {
-                html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No specific position records found in entry payload.</p>`;
+                html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No entries found.</p>`;
             } else {
                 log.assignments.forEach(item => {
                     const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
@@ -2264,7 +2213,6 @@ if (!shiftCompleted) {
             container.innerHTML = html;
         }
 
-        /* Sound & Visual Effects */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
