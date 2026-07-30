@@ -1895,7 +1895,7 @@
                 showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
 
                 if (shift.id !== 'preclose') {
-                    showExplosionPopup(`Congratulations ${currentUser.name} on a successful ${zone.name} close!`);
+                    showExplosionPopup(`Congratulations ${currentUser.name.substring(0, currentUser.name.lastIndexOf(' '))} on a successful ${zone.name} close!`);
                 }
 
                 await submitToGoogleForm(formConfig.formId, formData);
