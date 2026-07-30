@@ -598,56 +598,55 @@
         }
 
         /* --- Explosion Popup Styles --- */
-.explosion-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(11, 19, 31, 0.85);
-    backdrop-filter: blur(4px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2500; /* Keeps it above everything */
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
+        .explosion-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(11, 19, 31, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2500; /* Keeps it above everything */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
 
-.explosion-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
-}
+        .explosion-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-.explosion-shape {
-    width: 90vw;
-    max-width: 550px;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 3rem;
-    /* 20-point comic explosion polygon */
-    transform: scale(0) rotate(-20deg);
-}
+        .explosion-shape {
+            width: 90vw;
+            max-width: 550px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 3rem;
+            transform: scale(0) rotate(-20deg);
+        }
 
-.explosion-overlay.active .explosion-shape {
-    animation: explosionPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+        .explosion-overlay.active .explosion-shape {
+            animation: explosionPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
 
-@keyframes explosionPop {
-    0% { transform: scale(0) rotate(-20deg); opacity: 0; }
-    50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
+        @keyframes explosionPop {
+            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
 
-.explosion-text {
-    font-size: 2.25rem;
-    font-weight: 300;
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    line-height: 1;
-}
+        .explosion-text {
+            font-size: 2.25rem;
+            font-weight: 300;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            line-height: 1;
+        }
 
         .modal-card h3 { font-size: 1.5rem; color: var(--text-main); }
 
@@ -804,8 +803,6 @@
 
     <script>
 
-        
-
         // Host list of team member and manager PINs
         const PIN_DATABASE = {
             "4834": { name: "Fawn C", role: "leader" },
@@ -893,7 +890,7 @@
                     "Wipe Down All Counters": "entry.1759044535",
                     "Clean POS Terminals And Card Readers": "entry.1142316488",
                     "Reassemble Towers": "entry.834524323",
-                    "Bring Back Dishes": "entry.1863485176"
+                    "Reassemble Dishes": "entry.1863485176"
                 }
             },
             "close-930::Dining Room": {
@@ -960,7 +957,6 @@
                 nameEntry: "entry.609807457",
                 tasks: {
                     "Taylor Wash": "entry.771576326",
-                    "Kay-5 Sanitizer": "entry.1069087250",
                     "Dishes & Leftovers": "entry.498948150",
                     "Drain Icedream": "entry.984065864",
                     "Wash Taylor Inside": "entry.1683751067",
@@ -985,7 +981,7 @@
                     "Clean Dumpsink": "entry.1487542935",
                     "Clean Coffee Pots": "entry.1784850478",
                     "Reassemble Towers": "entry.992710073",
-                    "Bring Back Dishes": "entry.437073424"
+                    "Reassemble Dishes": "entry.437073424"
                 }
             },
             "close-1030::Chutes": {
@@ -1311,11 +1307,6 @@
 
         async function fetchSheetLatestStatus(sheetId) {
             if (!sheetId) return null;
-            // No ORDER BY / LIMIT here on purpose: Google Forms always appends
-            // new rows to the bottom, so the physically last row is guaranteed
-            // to be the newest regardless of how many rows the sheet has grown
-            // to. We walk backward from the end below instead of trusting a
-            // capped, sorted query that could miss rows once the sheet grows.
             const query = encodeURIComponent("SELECT *");
             const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
             
@@ -1346,8 +1337,6 @@
                 let leaderVerified = false;
                 let leaderName = null;
 
-                // Walk backward from the true last row (the actual newest
-                // entry, no matter how far down it is) toward the top.
                 for (let idx = allRows.length - 1; idx >= 0; idx--) {
                     const rowData = allRows[idx].c;
                     if (!rowData || !rowData[0]) continue;
@@ -1364,9 +1353,6 @@
                     }
 
                     if (dateObj.toDateString() !== today.toDateString()) {
-                        // Rows are appended chronologically, so once we've
-                        // walked back past today's entries there's nothing
-                        // older left worth checking.
                         break;
                     }
 
@@ -1505,41 +1491,41 @@
         }
 
         function handleLogin() {
-    const pinInput = document.getElementById("authPinInput");
-    const pin = pinInput.value.trim();
+            const pinInput = document.getElementById("authPinInput");
+            const pin = pinInput.value.trim();
 
-    if (!pin) {
-        showStatusMessage("Please enter a valid PIN.", "error");
-        return;
-    }
+            if (!pin) {
+                showStatusMessage("Please enter a valid PIN.", "error");
+                return;
+            }
 
-    if (!PIN_DATABASE[pin]) {
-        showStatusMessage("Incorrect PIN.", "error");
-        pinInput.value = ""; // Clears the input so user can instantly type a new PIN
-        return;
-    }
+            if (!PIN_DATABASE[pin]) {
+                showStatusMessage("Incorrect PIN.", "error");
+                pinInput.value = ""; 
+                return;
+            }
 
-    currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
+            currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
 
-    document.getElementById("activeUserName").innerText = currentUser.name;
-    const leaderBtn = document.getElementById("leaderOverviewToggle");
-    const overallLogBtn = document.getElementById("overallLogBtn");
-    
-    if (currentUser.role === 'leader') {
-        leaderBtn.style.display = "block";
-        overallLogBtn.style.display = "block";
-    } else {
-        leaderBtn.style.display = "none";
-        overallLogBtn.style.display = "none";
-        isLeaderOverviewMode = false;
-        leaderBtn.classList.remove("active-mode");
-    }
+            document.getElementById("activeUserName").innerText = currentUser.name;
+            const leaderBtn = document.getElementById("leaderOverviewToggle");
+            const overallLogBtn = document.getElementById("overallLogBtn");
+            
+            if (currentUser.role === 'leader') {
+                leaderBtn.style.display = "block";
+                overallLogBtn.style.display = "block";
+            } else {
+                leaderBtn.style.display = "none";
+                overallLogBtn.style.display = "none";
+                isLeaderOverviewMode = false;
+                leaderBtn.classList.remove("active-mode");
+            }
 
-    document.getElementById("authOverlay").classList.remove("active");
-    pinInput.value = ""; // Clear for security once logged in
-    renderTabs();
-    loadShiftStatusFromCloud();
-}
+            document.getElementById("authOverlay").classList.remove("active");
+            pinInput.value = ""; 
+            renderTabs();
+            loadShiftStatusFromCloud();
+        }
 
         function toggleLeaderMode() {
             isLeaderOverviewMode = !isLeaderOverviewMode;
@@ -1551,7 +1537,7 @@
                 btn.innerText = "Exit Leader View";
                 overallLogBtn.style.display = "block";
                 if (checklistsData[activeTabIndex].id === 'preclose') {
-                    activeTabIndex = 1; // Default to 9:30 Close
+                    activeTabIndex = 1; 
                 }
             } else {
                 btn.classList.remove("active-mode");
@@ -1586,182 +1572,178 @@
         }
 
         function renderApp() {
-    const appViewport = document.getElementById("appViewport");
-    const shift = checklistsData[activeTabIndex];
-    const submittedAreas = cloudSyncedAreas;
+            const appViewport = document.getElementById("appViewport");
+            const shift = checklistsData[activeTabIndex];
+            const submittedAreas = cloudSyncedAreas;
 
-    if (isLeaderOverviewMode) {
-        document.body.classList.add("leader-mode-active");
-    } else {
-        document.body.classList.remove("leader-mode-active");
-    }
-    
-    if (activeZoneIndex === null) {
-        // NEW: Check if shift is locked for today
-        const today = new Date().toDateString();
-        const lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
-        
-        // Define completion states for the main shifts
-        const is930Locked = lockedShifts['close-930'] === today;
-        const is1030Locked = lockedShifts['close-1030'] === today;
-        
-        // Check if both shifts are locked while viewing the preclose tab
-        const isPrecloseFullyLocked = shift.id === 'preclose' && is930Locked && is1030Locked;
-        
-        if (lockedShifts[shift.id] === today || isPrecloseFullyLocked) {
-            appViewport.innerHTML = `
-                <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
-                    <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
-                    <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
-                    <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
-                </div>
-            `;
-            return;
-        }
+            if (isLeaderOverviewMode) {
+                document.body.classList.add("leader-mode-active");
+            } else {
+                document.body.classList.remove("leader-mode-active");
+            }
+            
+            if (activeZoneIndex === null) {
+                const today = new Date().toDateString();
+                const lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
+                
+                const is930Locked = lockedShifts['close-930'] === today;
+                const is1030Locked = lockedShifts['close-1030'] === today;
+                
+                const isPrecloseFullyLocked = shift.id === 'preclose' && is930Locked && is1030Locked;
+                
+                if (lockedShifts[shift.id] === today || isPrecloseFullyLocked) {
+                    appViewport.innerHTML = `
+                        <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
+                            <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
+                            <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
+                            <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-        let html = `
-            <div class="main-content-box">
-                <div class="view-header">
-                    <h2 class="view-title">${shift.title} Areas</h2>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
-                </div>
-                <div class="areas-grid">
-        `;
-        
-        let count = 0;
-        if (isSyncingCloudData) {
-            html += `
-                <div style="grid-column: 1/-1; text-align: center; padding: 3rem 2rem;">
-                    <div class="spinner"></div>
-                    <p style="color: var(--text-muted); margin-top: 1rem;">Checking today's status...</p>
-                </div>
-            `;
-        } else {
-            shift.zones.forEach((zone, zIndex) => {
-                // NEW: Hide specific preclose areas if their corresponding shift is locked
-                if (shift.id === 'preclose') {
-                    const preclose930Zones = ["Dining Room", "Front Counter"];
-                    const preclose1030Zones = ["Desserts", "Drinks", "Chutes"];
+                let html = `
+                    <div class="main-content-box">
+                        <div class="view-header">
+                            <h2 class="view-title">${shift.title} Areas</h2>
+                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
+                        </div>
+                        <div class="areas-grid">
+                `;
+                
+                let count = 0;
+                if (isSyncingCloudData) {
+                    html += `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem 2rem;">
+                            <div class="spinner"></div>
+                            <p style="color: var(--text-muted); margin-top: 1rem;">Checking today's status...</p>
+                        </div>
+                    `;
+                } else {
+                    shift.zones.forEach((zone, zIndex) => {
+                        if (shift.id === 'preclose') {
+                            const preclose930Zones = ["Dining Room", "Front Counter"];
+                            const preclose1030Zones = ["Desserts", "Drinks", "Chutes"];
 
-                    if (is930Locked && preclose930Zones.includes(zone.name)) {
-                        return; // Hide this 9:30 preclose area
-                    }
-                    if (is1030Locked && preclose1030Zones.includes(zone.name)) {
-                        return; // Hide this 10:30 preclose area
+                            if (is930Locked && preclose930Zones.includes(zone.name)) {
+                                return; 
+                            }
+                            if (is1030Locked && preclose1030Zones.includes(zone.name)) {
+                                return; 
+                            }
+                        }
+
+                        const areaKey = `${shift.id}::${zone.name}`;
+                        const areaState = submittedAreas[areaKey];
+                        const isSubmitted = !!areaState;
+                        const isVerified = areaState && areaState.leaderVerified;
+
+                        if (isLeaderOverviewMode && !isSubmitted) {
+                            return; 
+                        }
+
+                        let badgeHtml = '';
+                        if (isVerified) {
+                            badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
+                        } else if (isSubmitted) {
+                            badgeHtml = `<div class="submitted-badge">Completed</div>`;
+                        }
+
+                        count++;
+                        html += `
+                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
+                                ${badgeHtml}
+                                <h3>${zone.name}</h3>
+                                ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    if (isLeaderOverviewMode && count === 0) {
+                        html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
                     }
                 }
 
+                html += `</div></div>`;
+                appViewport.innerHTML = html;
+            } else {
+                const zone = shift.zones[activeZoneIndex];
                 const areaKey = `${shift.id}::${zone.name}`;
                 const areaState = submittedAreas[areaKey];
-                const isSubmitted = !!areaState;
-                const isVerified = areaState && areaState.leaderVerified;
-
-                if (isLeaderOverviewMode && !isSubmitted) {
-                    return; 
-                }
-
-                let badgeHtml = '';
-                if (isVerified) {
-                    badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
-                } else if (isSubmitted) {
-                    badgeHtml = `<div class="submitted-badge">Completed</div>`;
-                }
-
-                count++;
-                html += `
-                    <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
-                        ${badgeHtml}
-                        <h3>${zone.name}</h3>
-                        ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
-                    </div>
+                const preclosedMap = getPreclosedMap();
+                
+                let html = `
+                    <div class="main-content-box">
+                        <div class="task-view-header">
+                            <div>
+                                <h2 class="task-zone-title">
+                                    ${zone.name}
+                                    ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
+                                </h2>
+                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
+                            </div>
+                            <button class="btn-back" onclick="goBackToAreas()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                Back to Areas
+                            </button>
+                        </div>
+                        <div class="cards-grid">
                 `;
-            });
 
-            if (isLeaderOverviewMode && count === 0) {
-                html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
+                zone.tasks.forEach((task, tIndex) => {
+                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                    const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
+                    
+                    const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
+                    const preclosedClass = isPreclosed ? 'preclosed' : '';
+                    const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
+
+                    let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
+                    const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
+
+                    html += `
+                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                            <div class="task-card-inner">
+                                <div class="card-face card-front">
+                                    <div class="card-header-wrapper">
+                                        <h3>${task.title}</h3>
+                                        ${preclosedBadgeHtml}
+                                    </div>
+                                    <ul>${stepsHtml}</ul>
+                                </div>
+                                <div class="card-face card-back">
+                                    <div class="stamp">${stampText}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+                
+                const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
+
+                if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
+                    html += `
+                        <div class="submit-section">
+                            <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
+                        </div>`;
+                } else if (!areaState) {
+                    html += `
+                        <div class="submit-section">
+                            <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
+                        </div>`;
+                } else if (areaState && areaState.leaderVerified) {
+                    html += `
+                        <div class="submit-section">
+                            <p style="color: var(--success-dark); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
+                        </div>`;
+                }
+
+                html += `</div>`;
+                appViewport.innerHTML = html;
             }
         }
-
-        html += `</div></div>`;
-        appViewport.innerHTML = html;
-    } else {
-        const zone = shift.zones[activeZoneIndex];
-        const areaKey = `${shift.id}::${zone.name}`;
-        const areaState = submittedAreas[areaKey];
-        const preclosedMap = getPreclosedMap();
-        
-        let html = `
-            <div class="main-content-box">
-                <div class="task-view-header">
-                    <div>
-                        <h2 class="task-zone-title">
-                            ${zone.name}
-                            ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
-                        </h2>
-                        <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
-                    </div>
-                    <button class="btn-back" onclick="goBackToAreas()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        Back to Areas
-                    </button>
-                </div>
-                <div class="cards-grid">
-        `;
-
-        zone.tasks.forEach((task, tIndex) => {
-            const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
-            const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
-            
-            const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
-            const preclosedClass = isPreclosed ? 'preclosed' : '';
-            const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
-
-            let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
-            const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
-
-            html += `
-                <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
-                    <div class="task-card-inner">
-                        <div class="card-face card-front">
-                            <div class="card-header-wrapper">
-                                <h3>${task.title}</h3>
-                                ${preclosedBadgeHtml}
-                            </div>
-                            <ul>${stepsHtml}</ul>
-                        </div>
-                        <div class="card-face card-back">
-                            <div class="stamp">${stampText}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-
-        html += `</div>`;
-        
-        const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
-
-        if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
-            html += `
-                <div class="submit-section">
-                    <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
-                </div>`;
-        } else if (!areaState) {
-            html += `
-                <div class="submit-section">
-                    <button class="btn-submit-area" onclick="submitZoneChecklist()">${submitButtonText}</button>
-                </div>`;
-        } else if (areaState && areaState.leaderVerified) {
-            html += `
-                <div class="submit-section">
-                    <p style="color: var(--success-dark); font-weight: bold; font-size: 1.2rem;">✓ Verified by ${areaState.leaderName}</p>
-                </div>`;
-        }
-
-        html += `</div>`;
-        appViewport.innerHTML = html;
-    }
-}
 
         function selectZone(index) {
             const shift = checklistsData[activeTabIndex];
@@ -1912,20 +1894,15 @@
                 });
                 showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
 
-// NEW: Fire explosion popup for completing an area (exclude preclose)
-if (shift.id !== 'preclose') {
-    showExplosionPopup(`Congratulations ${currentUser.name} on a successful ${zone.name} close!`);
-}
+                if (shift.id !== 'preclose') {
+                    showExplosionPopup(`Congratulations ${currentUser.name} on a successful ${zone.name} close!`);
+                }
 
                 await submitToGoogleForm(formConfig.formId, formData);
             }
 
-            // INSIDE submitZoneChecklist()
-cloudSyncedAreas[areaKey] = statePayload;
-
-
-
-goBackToAreas();
+            cloudSyncedAreas[areaKey] = statePayload;
+            goBackToAreas();
         }
 
         async function verifyArea() {
@@ -2022,37 +1999,30 @@ goBackToAreas();
                 await submitToGoogleForm(masterFormId, formData);
                 showStatusMessage(`All ${shift.title} areas verified! Master log submitted. Shift locked for today.`, 'success', 6000);
                 
-                // Set lock for this specific shift today
                 let lockedShifts = JSON.parse(localStorage.getItem('lockedShifts')) || {};
                 lockedShifts[shift.id] = new Date().toDateString();
                 localStorage.setItem('lockedShifts', JSON.stringify(lockedShifts));
                 
                 completedTasks.clear();
                 
-                // INSIDE checkDayCompletion() 
-// Right after localStorage.setItem('lockedShifts', JSON.stringify(lockedShifts));
-// and completedTasks.clear();
+                const is930Verified = checklistsData.find(s => s.id === 'close-930').zones.every(z => {
+                    const st = cloudSyncedAreas[`close-930::${z.name}`];
+                    return st && st.leaderVerified;
+                });
 
-// NEW: Check if BOTH 9:30 and 10:30 shifts are completely verified
-const is930Verified = checklistsData.find(s => s.id === 'close-930').zones.every(z => {
-    const st = cloudSyncedAreas[`close-930::${z.name}`];
-    return st && st.leaderVerified;
-});
+                const is1030Verified = checklistsData.find(s => s.id === 'close-1030').zones.every(z => {
+                    const st = cloudSyncedAreas[`close-1030::${z.name}`];
+                    return st && st.leaderVerified;
+                });
 
-const is1030Verified = checklistsData.find(s => s.id === 'close-1030').zones.every(z => {
-    const st = cloudSyncedAreas[`close-1030::${z.name}`];
-    return st && st.leaderVerified;
-});
+                if (is930Verified && is1030Verified) {
+                    showExplosionPopup(`Congratulations ${currentUser.name} on a successful close!`);
+                }
 
-// Trigger grand finale popup if everything is verified
-if (is930Verified && is1030Verified) {
-    showExplosionPopup(`Congratulations ${currentUser.name} on a successful close!`);
-}
-
-setTimeout(() => {
-    activeZoneIndex = null;
-    renderApp();
-}, 2000);
+                setTimeout(() => {
+                    activeZoneIndex = null;
+                    renderApp();
+                }, 2000);
             }
         }
 
@@ -2074,106 +2044,101 @@ setTimeout(() => {
         }
 
         async function fetchOverallLogs() {
-    const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
-    const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
-    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
+            const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
+            const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
 
-    try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch overall log sheet");
-        const text = await res.text();
-        
-        const prefix = "setResponse(";
-        const startIndex = text.indexOf(prefix);
-        if (startIndex === -1) return [];
-        
-        const jsonStart = startIndex + prefix.length;
-        const jsonEnd = text.lastIndexOf(")");
-        const jsonString = text.substring(jsonStart, jsonEnd);
-        const data = JSON.parse(jsonString);
-
-        const logs = [];
-        if (data.table && data.table.rows) {
-            data.table.rows.forEach(row => {
-                if (!row.c || !row.c[0] || !row.c[1]) return;
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Failed to fetch overall log sheet");
+                const text = await res.text();
                 
-                const timeCell = row.c[0];
-                // Check value (v) first since gviz puts 'Date(YYYY,M,D...)' inside .v
-                const rawVal = timeCell.v ? timeCell.v.toString() : "";
-                const rawFormatted = timeCell.f ? timeCell.f.toString() : "";
-                let dateObj = null;
-
-                // 1. Try parsing Google's Date(...) format
-                if (rawVal.startsWith('Date(')) {
-                    const parts = rawVal.match(/\d+/g);
-                    if (parts && parts.length >= 3) {
-                        dateObj = new Date(parts[0], parts[1], parts[2], parts[3] || 0, parts[4] || 0, parts[5] || 0);
-                    }
-                } 
+                const prefix = "setResponse(";
+                const startIndex = text.indexOf(prefix);
+                if (startIndex === -1) return [];
                 
-                // 2. Fallback to standard date strings if Date(...) wasn't found
-                if (!dateObj || isNaN(dateObj.getTime())) {
-                    const fallbackTime = rawFormatted || rawVal;
-                    if (fallbackTime) {
-                        dateObj = new Date(fallbackTime);
-                    }
-                }
+                const jsonStart = startIndex + prefix.length;
+                const jsonEnd = text.lastIndexOf(")");
+                const jsonString = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonString);
 
-                // 3. Final Fallback: If still invalid (e.g. Header text "Timestamp"), default or skip
-                if (!dateObj || isNaN(dateObj.getTime())) {
-                    dateObj = new Date(); 
-                }
+                const logs = [];
+                if (data.table && data.table.rows) {
+                    data.table.rows.forEach(row => {
+                        if (!row.c || !row.c[0] || !row.c[1]) return;
+                        
+                        const timeCell = row.c[0];
+                        const rawVal = timeCell.v ? timeCell.v.toString() : "";
+                        const rawFormatted = timeCell.f ? timeCell.f.toString() : "";
+                        let dateObj = null;
 
-                const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
-                if (!logText) return;
-
-                const parts = logText.split(',').map(s => s.trim()).filter(Boolean);
-                let leader = "Unknown Leader";
-                const assignments = [];
-                const namesSet = new Set();
-                const areasSet = new Set();
-
-                parts.forEach(part => {
-                    const dashIdx = part.indexOf('-');
-                    if (dashIdx !== -1) {
-                        const person = part.substring(0, dashIdx).trim();
-                        const actionOrArea = part.substring(dashIdx + 1).trim();
-
-                        if (person) namesSet.add(person);
-
-                        if (actionOrArea.toLowerCase() === 'verified') {
-                            leader = person;
-                        } else if (actionOrArea) {
-                            assignments.push({ name: person, area: actionOrArea });
-                            areasSet.add(actionOrArea);
+                        if (rawVal.startsWith('Date(')) {
+                            const parts = rawVal.match(/\d+/g);
+                            if (parts && parts.length >= 3) {
+                                dateObj = new Date(parts[0], parts[1], parts[2], parts[3] || 0, parts[4] || 0, parts[5] || 0);
+                            }
+                        } 
+                        
+                        if (!dateObj || isNaN(dateObj.getTime())) {
+                            const fallbackTime = rawFormatted || rawVal;
+                            if (fallbackTime) {
+                                dateObj = new Date(fallbackTime);
+                            }
                         }
-                    }
-                });
 
-                // Safely format dates without crashing on unexpected string data
-                const isoDateString = !isNaN(dateObj.getTime()) 
-                    ? dateObj.toISOString().split('T')[0] 
-                    : new Date().toISOString().split('T')[0];
+                        if (!dateObj || isNaN(dateObj.getTime())) {
+                            dateObj = new Date(); 
+                        }
 
-                logs.push({
-                    timestamp: dateObj,
-                    formattedDate: dateObj.toLocaleDateString(),
-                    formattedTime: dateObj.toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                    isoDate: isoDateString,
-                    rawText: logText,
-                    leader: leader,
-                    assignments: assignments,
-                    names: Array.from(namesSet),
-                    areas: Array.from(areasSet)
-                });
-            });
+                        const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
+                        if (!logText) return;
+
+                        const parts = logText.split(',').map(s => s.trim()).filter(Boolean);
+                        let leader = "Unknown Leader";
+                        const assignments = [];
+                        const namesSet = new Set();
+                        const areasSet = new Set();
+
+                        parts.forEach(part => {
+                            const dashIdx = part.indexOf('-');
+                            if (dashIdx !== -1) {
+                                const person = part.substring(0, dashIdx).trim();
+                                const actionOrArea = part.substring(dashIdx + 1).trim();
+
+                                if (person) namesSet.add(person);
+
+                                if (actionOrArea.toLowerCase() === 'verified') {
+                                    leader = person;
+                                } else if (actionOrArea) {
+                                    assignments.push({ name: person, area: actionOrArea });
+                                    areasSet.add(actionOrArea);
+                                }
+                            }
+                        });
+
+                        const isoDateString = !isNaN(dateObj.getTime()) 
+                            ? dateObj.toISOString().split('T')[0] 
+                            : new Date().toISOString().split('T')[0];
+
+                        logs.push({
+                            timestamp: dateObj,
+                            formattedDate: dateObj.toLocaleDateString(),
+                            formattedTime: dateObj.toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                            isoDate: isoDateString,
+                            rawText: logText,
+                            leader: leader,
+                            assignments: assignments,
+                            names: Array.from(namesSet),
+                            areas: Array.from(areasSet)
+                        });
+                    });
+                }
+                return logs;
+            } catch(e) {
+                console.error("Error fetching overall logs:", e);
+                return [];
+            }
         }
-        return logs;
-    } catch(e) {
-        console.error("Error fetching overall logs:", e);
-        return [];
-    }
-}
 
         function populateFilterDropdowns() {
             const nameSelect = document.getElementById("logFilterName");
@@ -2251,59 +2216,59 @@ setTimeout(() => {
         }
 
         function renderSelectedLogDetails() {
-    const selectEl = document.getElementById("overallLogSelect");
-    const idx = parseInt(selectEl.value, 10);
-    const container = document.getElementById("overallLogDisplay");
+            const selectEl = document.getElementById("overallLogSelect");
+            const idx = parseInt(selectEl.value, 10);
+            const container = document.getElementById("overallLogDisplay");
 
-    if (isNaN(idx) || !filteredLogsData[idx]) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Please select a log entry above.</p>';
-        return;
-    }
+            if (isNaN(idx) || !filteredLogsData[idx]) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Please select a log entry above.</p>';
+                return;
+            }
 
-    const log = filteredLogsData[idx];
-    const filterName = document.getElementById("logFilterName").value.toLowerCase();
-    const filterArea = document.getElementById("logFilterArea").value.toLowerCase();
+            const log = filteredLogsData[idx];
+            const filterName = document.getElementById("logFilterName").value.toLowerCase();
+            const filterArea = document.getElementById("logFilterArea").value.toLowerCase();
 
-    let html = `
-        <div style="background: var(--signin); border: 2px solid var(--border-color); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
-                <div>
-                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">Submission Timestamp</span>
-                    <h4 style="font-size: 1.2rem; color: var(--text-main); font-weight: 700; margin-top: 0.1rem;">${log.formattedTime}</h4>
-                </div>
-                <div style="background: var(--leader-gold); color: #1e293b; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.9rem;">
-                    Verified Leader: ${log.leader}
-                </div>
-            </div>
-            
-            <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
-    `;
+            let html = `
+                <div style="background: var(--signin); border: 2px solid var(--border-color); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">Submission Timestamp</span>
+                            <h4 style="font-size: 1.2rem; color: var(--text-main); font-weight: 700; margin-top: 0.1rem;">${log.formattedTime}</h4>
+                        </div>
+                        <div style="background: var(--leader-gold); color: #1e293b; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.9rem;">
+                            Verified Leader: ${log.leader}
+                        </div>
+                    </div>
+                    
+                    <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
+            `;
 
-    if (log.assignments.length === 0) {
-        html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No specific position records found in entry payload.</p>`;
-    } else {
-        log.assignments.forEach(item => {
-            const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
-            const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
-            const isHighlight = isNameMatch || isAreaMatch;
+            if (log.assignments.length === 0) {
+                html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No specific position records found in entry payload.</p>`;
+            } else {
+                log.assignments.forEach(item => {
+                    const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
+                    const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
+                    const isHighlight = isNameMatch || isAreaMatch;
+
+                    html += `
+                        <div style="background: ${isHighlight ? 'var(--primary-hover)' : 'var(--card-bg)'}; border: 1px solid ${isHighlight ? 'var(--leader-gold)' : 'var(--border-color)'}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-muted)'};">${item.area}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-main)'}; margin-top: 0.2rem;">${item.name}</div>
+                        </div>
+                    `;
+                });
+            }
 
             html += `
-                <div style="background: ${isHighlight ? 'var(--primary-hover)' : 'var(--card-bg)'}; border: 1px solid ${isHighlight ? 'var(--leader-gold)' : 'var(--border-color)'}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-muted)'};">${item.area}</div>
-                    <div style="font-size: 1.1rem; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-main)'}; margin-top: 0.2rem;">${item.name}</div>
+                    </div>
                 </div>
             `;
-        });
-    }
 
-    html += `
-            </div>
-        </div>
-    `;
-
-    container.innerHTML = html;
-}
+            container.innerHTML = html;
+        }
 
         /* Sound & Visual Effects */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2326,49 +2291,46 @@ setTimeout(() => {
         }
 
         function showExplosionPopup(message) {
-    const overlay = document.getElementById('explosionPopupOverlay');
-    const msgEl = document.getElementById('explosionMessage');
-    msgEl.innerText = message;
-    
-    overlay.classList.add('active');
-    
-    // Play the success chime twice for a grand effect
-    playChime();
-    setTimeout(playChime, 250);
+            const overlay = document.getElementById('explosionPopupOverlay');
+            const msgEl = document.getElementById('explosionMessage');
+            msgEl.innerText = message;
+            
+            overlay.classList.add('active');
+            
+            playChime();
+            setTimeout(playChime, 250);
 
-    // Blast heavy confetti from the center
-    triggerConfettiCenter();
+            triggerConfettiCenter();
 
-    // Auto-hide after 4.5 seconds
-    setTimeout(() => {
-        overlay.classList.remove('active');
-    }, 4500);
-}
+            setTimeout(() => {
+                overlay.classList.remove('active');
+            }, 4500);
+        }
 
-function triggerConfettiCenter() {
-    const originX = window.innerWidth / 2;
-    const originY = window.innerHeight / 2;
-    const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6', '#ffffff'];
+        function triggerConfettiCenter() {
+            const originX = window.innerWidth / 2;
+            const originY = window.innerHeight / 2;
+            const colors = ['#f59e0b', '#22c55e', '#3b82f6', '#ec4899', '#8b5cf6', '#ffffff'];
 
-    for (let i = 0; i < 75; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'confetti';
-        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.position = "fixed";
-        particle.style.left = `${originX}px`;
-        particle.style.top = `${originY}px`;
-        particle.style.zIndex = "2501"; // Ensures it sits above the popup
+            for (let i = 0; i < 75; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.position = "fixed";
+                particle.style.left = `${originX}px`;
+                particle.style.top = `${originY}px`;
+                particle.style.zIndex = "2501";
 
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 150 + Math.random() * 350; // Wide blast radius
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 150 + Math.random() * 350; 
 
-        particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
-        particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+                particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
 
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 850);
-    }
-}
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 850);
+            }
+        }
 
         function triggerConfetti(cardElement) {
             const rect = cardElement.getBoundingClientRect();
