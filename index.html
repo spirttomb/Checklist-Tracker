@@ -33,7 +33,7 @@
             --transition-speed: 0.3s;
         }
 
-        /* Leader Dark Mode Overrides (Overhauled to look cohesive and premium) */
+        /* Leader Dark Mode Overrides */
         body.leader-mode-active {
             --primary: #0b131f; /* Dark app background */
             --primary-hover: #1e3a5f;
@@ -93,7 +93,7 @@
         /* Top Bar Wrapper */
         header {
             background-color: var(--primary);
-            padding: 2rem 2rem 0 2rem; /* Removed bottom padding so boxes touch */
+            padding: 2rem 2rem 0 2rem;
             display: flex;
             flex-direction: column;
             position: sticky;
@@ -107,7 +107,7 @@
         .single-control-box {
             background-color: var(--signin);
             border: 12px solid var(--border-color);
-            border-bottom: none; /* Removes line between the two boxes */
+            border-bottom: none;
             border-radius: 12px 12px 0 0;
             padding: 16px 24px;
             box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.05);
@@ -117,7 +117,7 @@
             gap: 16px;
             width: 100%;
             max-width: 1300px;
-            margin: 0 auto; /* Centers and perfectly aligns with bottom box */
+            margin: 0 auto;
             box-sizing: border-box;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
@@ -125,7 +125,7 @@
         /* Bottom Container Wrapper */
         .viewport-container {
             flex: 1;
-            padding: 0 2rem 2rem 2rem; /* Removed top padding to meet header */
+            padding: 0 2rem 2rem 2rem;
             width: 100%;
             margin: 0 auto;
             position: relative;
@@ -135,13 +135,13 @@
         .main-content-box {
             background-color: var(--bg-color);
             border: 12px solid var(--border-color);
-            border-top: none; /* Seamlessly joins the top box */
+            border-top: none;
             border-radius: 0 0 12px 12px;
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 1300px;
-            margin: 0 auto; /* Centers and perfectly aligns with top box */
+            margin: 0 auto;
             box-sizing: border-box;
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
@@ -214,6 +214,7 @@
         .leader-controls {
             display: flex;
             gap: 0.5rem;
+            align-items: center;
         }
 
         .leader-btn {
@@ -575,7 +576,7 @@
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 19, 31, 0.8);
+            background: rgba(11, 19, 31, 0.85);
             backdrop-filter: blur(6px);
             display: flex; justify-content: center; align-items: center;
             z-index: 1000; opacity: 0; pointer-events: none;
@@ -676,8 +677,9 @@
             <div class="checklist-nav" id="checklistNav"></div>
         </div>
 
-        <!-- Right: Leadership Overview -->
+        <!-- Right: Leadership Overview & Overall Log Viewer Button -->
         <div class="leader-controls">
+            <button class="leader-btn" id="overallLogBtn" style="display: none; background: var(--border-color);" onclick="openOverallLogModal()">Overall Log</button>
             <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
 
@@ -686,7 +688,7 @@
 
     <div class="viewport-container" id="appViewport"></div>
 
-    <!-- mandatory initial pin auth overlay -->
+    <!-- Mandatory Initial PIN Authentication Overlay -->
     <div class="modal-overlay" id="authOverlay">
         <div class="modal-card">
             <h3>Enter Team Member PIN</h3>
@@ -696,76 +698,122 @@
         </div>
     </div>
 
+    <!-- Overall Shift Log Viewer Modal -->
+    <div class="modal-overlay" id="overallLogModal">
+        <div class="modal-card" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">Overall Shift Log Viewer</h3>
+                <button onclick="closeOverallLogModal()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
+            </div>
+            
+            <!-- Filters Controls Grid -->
+            <div style="background: var(--signin); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; align-items: end;">
+                <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem;">Filter by Date</label>
+                    <input type="date" id="logFilterDate" onchange="filterAndPopulateLogDropdown()" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem;">Filter by Name</label>
+                    <select id="logFilterName" onchange="filterAndPopulateLogDropdown()" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
+                        <option value="">All Team Members</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem;">Filter by Area</label>
+                    <select id="logFilterArea" onchange="filterAndPopulateLogDropdown()" style="width: 100%; padding: 0.55rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
+                        <option value="">All Areas</option>
+                    </select>
+                </div>
+                <div>
+                    <button onclick="resetLogFilters()" class="btn-switch-user" style="width: 100%; padding: 0.6rem; text-align: center;">Reset Filters</button>
+                </div>
+            </div>
+
+            <!-- Primary Entry Selection Dropdown (Newest First) -->
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem;">Select Log Entry (Newest First)</label>
+                <select id="overallLogSelect" onchange="renderSelectedLogDetails()" style="width: 100%; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 0.5rem; background: var(--card-bg); color: var(--text-main); font-weight: 600;">
+                    <option value="">Loading entries...</option>
+                </select>
+            </div>
+
+            <!-- Visualization Content Container -->
+            <div id="overallLogDisplay">
+                <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading overall log data from spreadsheet...</p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Host list of team member and manager PINs
         const PIN_DATABASE = {
             "4834": { name: "Fawn C", role: "leader" },
-"8793": { name: "Josh E", role: "leader" },
-"1107": { name: "Chloe J", role: "leader" },
-"1757": { name: "Niah I", role: "leader" },
-"3871": { name: "Emma R", role: "leader" },
-"9440": { name: "Kendal S", role: "leader" },
-"2554": { name: "Jaida W", role: "leader" },
+            "8793": { name: "Josh E", role: "leader" },
+            "1107": { name: "Chloe J", role: "leader" },
+            "1757": { name: "Niah I", role: "leader" },
+            "3871": { name: "Emma R", role: "leader" },
+            "9440": { name: "Kendal S", role: "leader" },
+            "2554": { name: "Jaida W", role: "leader" },
 
-"3897": { name: "Chace A", role: "member" },
-"7458": { name: "Riley A", role: "member" },
-"9974": { name: "Chimere A", role: "member" },
-"3187": { name: "Karlton A", role: "member" },
-"5674": { name: "Ania A", role: "member" },
-"3168": { name: "Lay A", role: "member" },
-"1191": { name: "Mikyah A", role: "member" },
-"2862": { name: "Marcus B", role: "member" },
-"6008": { name: "Carmen B", role: "member" },
-"5309": { name: "Anthony B", role: "member" },
-"1124": { name: "Ariane B", role: "member" },
-"9306": { name: "London B", role: "member" },
-"4853": { name: "Kennedi B", role: "member" },
-"4587": { name: "Latecia C", role: "member" },
-"5377": { name: "Kadashya C", role: "member" },
-"7636": { name: "Andrew D", role: "member" },
-"9691": { name: "Brooklyn E", role: "member" },
-"1729": { name: "Cassidy F", role: "member" },
-"4032": { name: "Anthony G", role: "member" },
-"6555": { name: "Jamarr G", role: "member" },
-"2011": { name: "Destiny G", role: "member" },
-"8672": { name: "Akira H", role: "member" },
-"6176": { name: "Millie H", role: "member" },
-"6638": { name: "Ken H", role: "member" },
-"7565": { name: "Kianna H", role: "member" },
-"8088": { name: "Taylor H", role: "member" },
-"5927": { name: "Presten H", role: "member" },
-"3455": { name: "Mara J", role: "member" },
-"5117": { name: "Kaitlyn J", role: "member" },
-"9681": { name: "Karrington J", role: "member" },
-"5065": { name: "Nicolette J", role: "member" },
-"2516": { name: "Kayla K", role: "member" },
-"5373": { name: "Kaleil L", role: "member" },
-"1930": { name: "Rolland L", role: "member" },
-"3660": { name: "Chloe M", role: "member" },
-"5705": { name: "Jeremie M", role: "member" },
-"5738": { name: "Kennedy M", role: "member" },
-"3527": { name: "Amor M", role: "member" },
-"4247": { name: "Aniyah M", role: "member" },
-"3105": { name: "Kiarra M", role: "member" },
-"9998": { name: "Madison M", role: "member" },
-"1263": { name: "Nique M", role: "member" },
-"9203": { name: "Kenneth P", role: "member" },
-"9826": { name: "Bailey R", role: "member" },
-"6251": { name: "Madison R", role: "member" },
-"4632": { name: "Pey R", role: "member" },
-"4044": { name: "Yasmin S", role: "member" },
-"7711": { name: "Will S", role: "member" },
-"9201": { name: "Johnathon S", role: "member" },
-"1760": { name: "Alana T", role: "member" },
-"4048": { name: "Tracy T", role: "member" },
-"8647": { name: "Kendall T", role: "member" },
-"2219": { name: "Lundyn T", role: "member" },
-"8948": { name: "Bobby W", role: "member" },
-"5322": { name: "Erin W", role: "member" },
-"5614": { name: "Teyre W", role: "member" },
-"6281": { name: "Boyd W", role: "member" },
-"7876": { name: "Adriene W", role: "member" },
-"7307": { name: "ZahCorey W", role: "member" },
+            "3897": { name: "Chace A", role: "member" },
+            "7458": { name: "Riley A", role: "member" },
+            "9974": { name: "Chimere A", role: "member" },
+            "3187": { name: "Karlton A", role: "member" },
+            "5674": { name: "Ania A", role: "member" },
+            "3168": { name: "Lay A", role: "member" },
+            "1191": { name: "Mikyah A", role: "member" },
+            "2862": { name: "Marcus B", role: "member" },
+            "6008": { name: "Carmen B", role: "member" },
+            "5309": { name: "Anthony B", role: "member" },
+            "1124": { name: "Ariane B", role: "member" },
+            "9306": { name: "London B", role: "member" },
+            "4853": { name: "Kennedi B", role: "member" },
+            "4587": { name: "Latecia C", role: "member" },
+            "5377": { name: "Kadashya C", role: "member" },
+            "7636": { name: "Andrew D", role: "member" },
+            "9691": { name: "Brooklyn E", role: "member" },
+            "1729": { name: "Cassidy F", role: "member" },
+            "4032": { name: "Anthony G", role: "member" },
+            "6555": { name: "Jamarr G", role: "member" },
+            "2011": { name: "Destiny G", role: "member" },
+            "8672": { name: "Akira H", role: "member" },
+            "6176": { name: "Millie H", role: "member" },
+            "6638": { name: "Ken H", role: "member" },
+            "7565": { name: "Kianna H", role: "member" },
+            "8088": { name: "Taylor H", role: "member" },
+            "5927": { name: "Presten H", role: "member" },
+            "3455": { name: "Mara J", role: "member" },
+            "5117": { name: "Kaitlyn J", role: "member" },
+            "9681": { name: "Karrington J", role: "member" },
+            "5065": { name: "Nicolette J", role: "member" },
+            "2516": { name: "Kayla K", role: "member" },
+            "5373": { name: "Kaleil L", role: "member" },
+            "1930": { name: "Rolland L", role: "member" },
+            "3660": { name: "Chloe M", role: "member" },
+            "5705": { name: "Jeremie M", role: "member" },
+            "5738": { name: "Kennedy M", role: "member" },
+            "3527": { name: "Amor M", role: "member" },
+            "4247": { name: "Aniyah M", role: "member" },
+            "3105": { name: "Kiarra M", role: "member" },
+            "9998": { name: "Madison M", role: "member" },
+            "1263": { name: "Nique M", role: "member" },
+            "9203": { name: "Kenneth P", role: "member" },
+            "9826": { name: "Bailey R", role: "member" },
+            "6251": { name: "Madison R", role: "member" },
+            "4632": { name: "Pey R", role: "member" },
+            "4044": { name: "Yasmin S", role: "member" },
+            "7711": { name: "Will S", role: "member" },
+            "9201": { name: "Johnathon S", role: "member" },
+            "1760": { name: "Alana T", role: "member" },
+            "4048": { name: "Tracy T", role: "member" },
+            "8647": { name: "Kendall T", role: "member" },
+            "2219": { name: "Lundyn T", role: "member" },
+            "8948": { name: "Bobby W", role: "member" },
+            "5322": { name: "Erin W", role: "member" },
+            "5614": { name: "Teyre W", role: "member" },
+            "6281": { name: "Boyd W", role: "member" },
+            "7876": { name: "Adriene W", role: "member" },
+            "7307": { name: "ZahCorey W", role: "member" },
         };
 
         // Form mapping matrix
@@ -1151,7 +1199,11 @@
         
         let cloudSyncedAreas = {}; 
 
-        // In-page status message handler (replaces alert/confirm)
+        // Overall Log Viewer Data state
+        let overallLogsData = [];
+        let filteredLogsData = [];
+
+        // In-page status message handler
         function showStatusMessage(message, type = 'info', duration = 4000) {
             const bar = document.getElementById("statusMessageBar");
             bar.innerText = message;
@@ -1223,7 +1275,6 @@
                         const submitterField = data.table.rows[0].c[1];
                         let submitter = (submitterField && submitterField.v) ? submitterField.v : "Team Member";
                         
-                        // Resolve PIN to name if submitter matches a PIN in PIN_DATABASE
                         if (PIN_DATABASE[submitter]) {
                             submitter = PIN_DATABASE[submitter].name;
                         }
@@ -1309,11 +1360,14 @@
 
             document.getElementById("activeUserName").innerText = currentUser.name;
             const leaderBtn = document.getElementById("leaderOverviewToggle");
+            const overallLogBtn = document.getElementById("overallLogBtn");
             
             if (currentUser.role === 'leader') {
                 leaderBtn.style.display = "block";
+                overallLogBtn.style.display = "block";
             } else {
                 leaderBtn.style.display = "none";
+                overallLogBtn.style.display = "none";
                 isLeaderOverviewMode = false;
                 leaderBtn.classList.remove("active-mode");
             }
@@ -1326,16 +1380,21 @@
         function toggleLeaderMode() {
             isLeaderOverviewMode = !isLeaderOverviewMode;
             const btn = document.getElementById("leaderOverviewToggle");
+            const overallLogBtn = document.getElementById("overallLogBtn");
+
             if (isLeaderOverviewMode) {
                 btn.classList.add("active-mode");
                 btn.innerText = "Exit Leader View";
-                // Hide Preclose entirely in leader mode by switching tab if currently on preclose
+                overallLogBtn.style.display = "block";
                 if (checklistsData[activeTabIndex].id === 'preclose') {
                     activeTabIndex = 1; // Default to 9:30 Close
                 }
             } else {
                 btn.classList.remove("active-mode");
                 btn.innerText = "Leader Overview";
+                if (currentUser && currentUser.role !== 'leader') {
+                    overallLogBtn.style.display = "none";
+                }
             }
             activeZoneIndex = null;
             renderTabs();
@@ -1347,7 +1406,6 @@
             navContainer.innerHTML = "";
             
             checklistsData.forEach((shift, index) => {
-                // Hide Preclose entirely in leader mode
                 if (isLeaderOverviewMode && shift.id === 'preclose') return;
 
                 const tab = document.createElement("button");
@@ -1393,36 +1451,36 @@
                         </div>
                     `;
                 } else {
-                shift.zones.forEach((zone, zIndex) => {
-                    const areaKey = `${shift.id}::${zone.name}`;
-                    const areaState = submittedAreas[areaKey];
-                    const isSubmitted = !!areaState;
-                    const isVerified = areaState && areaState.leaderVerified;
+                    shift.zones.forEach((zone, zIndex) => {
+                        const areaKey = `${shift.id}::${zone.name}`;
+                        const areaState = submittedAreas[areaKey];
+                        const isSubmitted = !!areaState;
+                        const isVerified = areaState && areaState.leaderVerified;
 
-                    if (isLeaderOverviewMode && !isSubmitted) {
-                        return; 
+                        if (isLeaderOverviewMode && !isSubmitted) {
+                            return; 
+                        }
+
+                        let badgeHtml = '';
+                        if (isVerified) {
+                            badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
+                        } else if (isSubmitted) {
+                            badgeHtml = `<div class="submitted-badge">Completed</div>`;
+                        }
+
+                        count++;
+                        html += `
+                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
+                                ${badgeHtml}
+                                <h3>${zone.name}</h3>
+                                ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                            </div>
+                        `;
+                    });
+
+                    if (isLeaderOverviewMode && count === 0) {
+                        html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
                     }
-
-                    let badgeHtml = '';
-                    if (isVerified) {
-                        badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
-                    } else if (isSubmitted) {
-                        badgeHtml = `<div class="submitted-badge">Completed</div>`;
-                    }
-
-                    count++;
-                    html += `
-                        <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
-                            ${badgeHtml}
-                            <h3>${zone.name}</h3>
-                            ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
-                        </div>
-                    `;
-                });
-
-                if (isLeaderOverviewMode && count === 0) {
-                    html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
-                }
                 }
 
                 html += `</div></div>`;
@@ -1608,7 +1666,6 @@
                 if (completedTasks.has(taskId)) completedCount++;
             });
 
-            // Preclose does not require 100% card flipping before saving
             if (shift.id !== 'preclose' && completedCount < totalTasks) {
                 showStatusMessage(`You must review every card before submitting. (${completedCount}/${totalTasks} completed)`, 'error');
                 return;
@@ -1746,7 +1803,7 @@
                 shift.zones.forEach(zone => {
                     const state = submittedAreas[`${shift.id}::${zone.name}`];
                     if (state) {
-                        entries.push(`${state.teamMember} - ${zone.name}`);
+                        entries.push(`${state.teamMember} - ${zone.name.toLowerCase()}`);
                     }
                 });
                 
@@ -1770,6 +1827,246 @@
             }
         }
 
+        /* --- Overall Shift Log Viewer Functions --- */
+
+        async function openOverallLogModal() {
+            const modal = document.getElementById("overallLogModal");
+            modal.classList.add("active");
+            document.getElementById("overallLogDisplay").innerHTML = '<div class="spinner"></div><p style="text-align: center; color: var(--text-muted);">Fetching log data...</p>';
+            
+            overallLogsData = await fetchOverallLogs();
+            
+            populateFilterDropdowns();
+            filterAndPopulateLogDropdown();
+        }
+
+        function closeOverallLogModal() {
+            document.getElementById("overallLogModal").classList.remove("active");
+        }
+
+        async function fetchOverallLogs() {
+            const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
+            const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Failed to fetch overall log sheet");
+                const text = await res.text();
+                
+                const prefix = "setResponse(";
+                const startIndex = text.indexOf(prefix);
+                if (startIndex === -1) return [];
+                
+                const jsonStart = startIndex + prefix.length;
+                const jsonEnd = text.lastIndexOf(")");
+                const jsonString = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonString);
+
+                const logs = [];
+                if (data.table && data.table.rows) {
+                    data.table.rows.forEach(row => {
+                        if (!row.c || !row.c[0] || !row.c[1]) return;
+                        
+                        const timeCell = row.c[0];
+                        const rawTime = timeCell.f || timeCell.v;
+                        let dateObj = null;
+
+                        if (typeof rawTime === 'string' && rawTime.startsWith('Date(')) {
+                            const parts = rawTime.match(/\d+/g);
+                            if (parts && parts.length >= 3) {
+                                dateObj = new Date(parts[0], parts[1], parts[2], parts[3]||0, parts[4]||0, parts[5]||0);
+                            } else {
+                                dateObj = new Date();
+                            }
+                        } else if (rawTime) {
+                            dateObj = new Date(rawTime);
+                        } else {
+                            dateObj = new Date();
+                        }
+
+                        const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
+                        if (!logText) return;
+
+                        const parts = logText.split(',').map(s => s.trim()).filter(Boolean);
+                        let leader = "Unknown Leader";
+                        const assignments = [];
+                        const namesSet = new Set();
+                        const areasSet = new Set();
+
+                        parts.forEach(part => {
+                            const dashIdx = part.indexOf('-');
+                            if (dashIdx !== -1) {
+                                const person = part.substring(0, dashIdx).trim();
+                                const actionOrArea = part.substring(dashIdx + 1).trim();
+
+                                if (person) namesSet.add(person);
+
+                                if (actionOrArea.toLowerCase() === 'verified') {
+                                    leader = person;
+                                } else if (actionOrArea) {
+                                    assignments.push({ name: person, area: actionOrArea });
+                                    areasSet.add(actionOrArea);
+                                }
+                            }
+                        });
+
+                        logs.push({
+                            timestamp: dateObj,
+                            formattedDate: dateObj.toLocaleDateString(),
+                            formattedTime: dateObj.toLocaleString([], { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                            isoDate: dateObj.toISOString().split('T')[0],
+                            rawText: logText,
+                            leader: leader,
+                            assignments: assignments,
+                            names: Array.from(namesSet),
+                            areas: Array.from(areasSet)
+                        });
+                    });
+                }
+                return logs;
+            } catch(e) {
+                console.error("Error fetching overall logs:", e);
+                return [];
+            }
+        }
+
+        function populateFilterDropdowns() {
+            const nameSelect = document.getElementById("logFilterName");
+            const areaSelect = document.getElementById("logFilterArea");
+
+            const currentSelectedName = nameSelect.value;
+            const currentSelectedArea = areaSelect.value;
+
+            const names = new Set();
+            const areas = new Set();
+
+            Object.values(PIN_DATABASE).forEach(u => names.add(u.name));
+
+            overallLogsData.forEach(log => {
+                log.names.forEach(n => names.add(n));
+                log.areas.forEach(a => areas.add(a));
+            });
+
+            nameSelect.innerHTML = '<option value="">All Team Members</option>';
+            Array.from(names).sort().forEach(n => {
+                const opt = document.createElement("option");
+                opt.value = n;
+                opt.textContent = n;
+                if (n === currentSelectedName) opt.selected = true;
+                nameSelect.appendChild(opt);
+            });
+
+            areaSelect.innerHTML = '<option value="">All Areas</option>';
+            Array.from(areas).sort().forEach(a => {
+                const opt = document.createElement("option");
+                opt.value = a;
+                opt.textContent = a;
+                if (a === currentSelectedArea) opt.selected = true;
+                areaSelect.appendChild(opt);
+            });
+        }
+
+        function filterAndPopulateLogDropdown() {
+            const filterDate = document.getElementById("logFilterDate").value;
+            const filterName = document.getElementById("logFilterName").value.toLowerCase();
+            const filterArea = document.getElementById("logFilterArea").value.toLowerCase();
+
+            filteredLogsData = overallLogsData.filter(log => {
+                if (filterDate && log.isoDate !== filterDate) return false;
+                if (filterName && !log.names.some(n => n.toLowerCase().includes(filterName))) return false;
+                if (filterArea && !log.areas.some(a => a.toLowerCase().includes(filterArea))) return false;
+                return true;
+            });
+
+            const selectEl = document.getElementById("overallLogSelect");
+            selectEl.innerHTML = "";
+
+            if (filteredLogsData.length === 0) {
+                selectEl.innerHTML = '<option value="">No matching logs found</option>';
+                document.getElementById("overallLogDisplay").innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No logs found matching your filter criteria.</p>';
+                return;
+            }
+
+            filteredLogsData.forEach((log, idx) => {
+                const opt = document.createElement("option");
+                opt.value = idx;
+                opt.textContent = `${log.formattedTime} — Verified by ${log.leader} (${log.assignments.length} positions)`;
+                selectEl.appendChild(opt);
+            });
+
+            selectEl.value = 0;
+            renderSelectedLogDetails();
+        }
+
+        function resetLogFilters() {
+            document.getElementById("logFilterDate").value = "";
+            document.getElementById("logFilterName").value = "";
+            document.getElementById("logFilterArea").value = "";
+            filterAndPopulateLogDropdown();
+        }
+
+        function renderSelectedLogDetails() {
+            const selectEl = document.getElementById("overallLogSelect");
+            const idx = parseInt(selectEl.value, 10);
+            const container = document.getElementById("overallLogDisplay");
+
+            if (isNaN(idx) || !filteredLogsData[idx]) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Please select a log entry above.</p>';
+                return;
+            }
+
+            const log = filteredLogsData[idx];
+            const filterName = document.getElementById("logFilterName").value.toLowerCase();
+            const filterArea = document.getElementById("logFilterArea").value.toLowerCase();
+
+            let html = `
+                <div style="background: var(--signin); border: 2px solid var(--border-color); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                        <div>
+                            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">Submission Timestamp</span>
+                            <h4 style="font-size: 1.2rem; color: var(--text-main); font-weight: 700; margin-top: 0.1rem;">${log.formattedTime}</h4>
+                        </div>
+                        <div style="background: var(--leader-gold); color: #1e293b; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.9rem;">
+                            Verified Leader: ${log.leader}
+                        </div>
+                    </div>
+                    
+                    <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
+            `;
+
+            if (log.assignments.length === 0) {
+                html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No specific position records found in entry payload.</p>`;
+            } else {
+                log.assignments.forEach(item => {
+                    const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
+                    const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
+                    const isHighlight = isNameMatch || isAreaMatch;
+
+                    html += `
+                        <div style="background: ${isHighlight ? 'var(--primary-hover)' : 'var(--card-bg)'}; border: 1px solid ${isHighlight ? 'var(--leader-gold)' : 'var(--border-color)'}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-muted)'};">${item.area}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-main)'}; margin-top: 0.2rem;">${item.name}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += `
+                    </div>
+                    
+                    <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color);">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">RAW ENTRY PAYLOAD RECORD</span>
+                        <p style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted); background: var(--bg-color); padding: 0.5rem; border-radius: 0.4rem; margin-top: 0.25rem; word-break: break-all;">${log.rawText}</p>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        /* Sound & Visual Effects */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playChime() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
