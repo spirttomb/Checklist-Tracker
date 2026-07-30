@@ -503,12 +503,12 @@
         }
 
         .card-back {
-            background: linear-gradient(135deg, var(--border-color), #16a34a);
+            background: linear-gradient(135deg, var(--primary), var(--border-color));
             color: white;
             transform: rotateY(180deg);
             justify-content: center;
             align-items: center;
-            border: 2px solid #16a34a;
+            border: 2px solid var(--border-color);
         }
 
         body.leader-mode-active .card-back {
@@ -690,13 +690,12 @@
 
     <!-- Mandatory Initial PIN Authentication Overlay -->
     <div class="modal-overlay" id="authOverlay">
-        <div class="modal-card">
-            <h3>Enter Team Member PIN</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter your PIN to access the checklist dashboard and record submissions.</p>
-            <input type="password" id="authPinInput" placeholder="PIN" maxlength="10">
-            <button onclick="handleLogin()">Access Dashboard</button>
-        </div>
+    <div class="modal-card">
+        <h3>Enter Team Member PIN</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
+        <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
     </div>
+</div>
 
     <!-- Overall Shift Log Viewer Modal -->
     <div class="modal-overlay" id="overallLogModal">
@@ -876,7 +875,7 @@
                 tasks: {
                     "Personal Belongings": "entry.1585656959",
                     "Cleaning Furniture": "entry.1254873848",
-                    "Tms Bags": "entry.1840882147",
+                    "TMS Bags": "entry.1840882147",
                     "Floors": "entry.87698102",
                     "Microwave": "entry.1475384836",
                     "Trash": "entry.336478269",
@@ -1098,7 +1097,7 @@
                         tasks: [
                             { title: "Personal Belongings", steps: ["Throw away all trash on the tables", "Hang all coats, jackets, backbacks", "Place all shoes onto the windowsill"] },
                             { title: "Cleaning Furniture", steps: ["Clean all tables and chairs, flip the chairs up"] },
-                            { title: "Tms Bags", steps: ["Unplug all TMS bags, and place them on the top rack of the tech room"] },
+                            { title: "TMS Bags", steps: ["Unplug all TMS bags, and place them on the top rack of the tech room"] },
                             { title: "Floors", steps: ["Sweep floor, mop with the blue mop bucket and blue mop"] },
                             { title: "Microwave", steps: ["Wipe inside microwave with a sanitizing wipe"] },
                             { title: "Trash", steps: ["Replace and dispose of trash"] },
@@ -1389,37 +1388,41 @@
         }
 
         function handleLogin() {
-            const pin = document.getElementById("authPinInput").value.trim();
-            if (!pin) {
-                showStatusMessage("Please enter a valid PIN.", "error");
-                return;
-            }
+    const pinInput = document.getElementById("authPinInput");
+    const pin = pinInput.value.trim();
 
-            if (!PIN_DATABASE[pin]) {
-                showStatusMessage("Incorrect PIN.", "error");
-                return;
-            }
+    if (!pin) {
+        showStatusMessage("Please enter a valid PIN.", "error");
+        return;
+    }
 
-            currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
+    if (!PIN_DATABASE[pin]) {
+        showStatusMessage("Incorrect PIN.", "error");
+        pinInput.value = ""; // Clears the input so user can instantly type a new PIN
+        return;
+    }
 
-            document.getElementById("activeUserName").innerText = currentUser.name;
-            const leaderBtn = document.getElementById("leaderOverviewToggle");
-            const overallLogBtn = document.getElementById("overallLogBtn");
-            
-            if (currentUser.role === 'leader') {
-                leaderBtn.style.display = "block";
-                overallLogBtn.style.display = "block";
-            } else {
-                leaderBtn.style.display = "none";
-                overallLogBtn.style.display = "none";
-                isLeaderOverviewMode = false;
-                leaderBtn.classList.remove("active-mode");
-            }
+    currentUser = { pin: pin, name: PIN_DATABASE[pin].name, role: PIN_DATABASE[pin].role };
 
-            document.getElementById("authOverlay").classList.remove("active");
-            renderTabs();
-            loadShiftStatusFromCloud();
-        }
+    document.getElementById("activeUserName").innerText = currentUser.name;
+    const leaderBtn = document.getElementById("leaderOverviewToggle");
+    const overallLogBtn = document.getElementById("overallLogBtn");
+    
+    if (currentUser.role === 'leader') {
+        leaderBtn.style.display = "block";
+        overallLogBtn.style.display = "block";
+    } else {
+        leaderBtn.style.display = "none";
+        overallLogBtn.style.display = "none";
+        isLeaderOverviewMode = false;
+        leaderBtn.classList.remove("active-mode");
+    }
+
+    document.getElementById("authOverlay").classList.remove("active");
+    pinInput.value = ""; // Clear for security once logged in
+    renderTabs();
+    loadShiftStatusFromCloud();
+}
 
         function toggleLeaderMode() {
             isLeaderOverviewMode = !isLeaderOverviewMode;
@@ -1484,7 +1487,7 @@
                 if (lockedShifts[shift.id] === today) {
                     appViewport.innerHTML = `
                         <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
-                            <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">🎉 Shift Completed!</h2>
+                            <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
                             <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
                             <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
                         </div>
@@ -2068,64 +2071,59 @@
         }
 
         function renderSelectedLogDetails() {
-            const selectEl = document.getElementById("overallLogSelect");
-            const idx = parseInt(selectEl.value, 10);
-            const container = document.getElementById("overallLogDisplay");
+    const selectEl = document.getElementById("overallLogSelect");
+    const idx = parseInt(selectEl.value, 10);
+    const container = document.getElementById("overallLogDisplay");
 
-            if (isNaN(idx) || !filteredLogsData[idx]) {
-                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Please select a log entry above.</p>';
-                return;
-            }
+    if (isNaN(idx) || !filteredLogsData[idx]) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">Please select a log entry above.</p>';
+        return;
+    }
 
-            const log = filteredLogsData[idx];
-            const filterName = document.getElementById("logFilterName").value.toLowerCase();
-            const filterArea = document.getElementById("logFilterArea").value.toLowerCase();
+    const log = filteredLogsData[idx];
+    const filterName = document.getElementById("logFilterName").value.toLowerCase();
+    const filterArea = document.getElementById("logFilterArea").value.toLowerCase();
 
-            let html = `
-                <div style="background: var(--signin); border: 2px solid var(--border-color); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
-                        <div>
-                            <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">Submission Timestamp</span>
-                            <h4 style="font-size: 1.2rem; color: var(--text-main); font-weight: 700; margin-top: 0.1rem;">${log.formattedTime}</h4>
-                        </div>
-                        <div style="background: var(--leader-gold); color: #1e293b; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.9rem;">
-                            Verified Leader: ${log.leader}
-                        </div>
-                    </div>
-                    
-                    <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
-            `;
+    let html = `
+        <div style="background: var(--signin); border: 2px solid var(--border-color); border-radius: 0.75rem; padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                <div>
+                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 700;">Submission Timestamp</span>
+                    <h4 style="font-size: 1.2rem; color: var(--text-main); font-weight: 700; margin-top: 0.1rem;">${log.formattedTime}</h4>
+                </div>
+                <div style="background: var(--leader-gold); color: #1e293b; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.9rem;">
+                    Verified Leader: ${log.leader}
+                </div>
+            </div>
+            
+            <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
+    `;
 
-            if (log.assignments.length === 0) {
-                html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No specific position records found in entry payload.</p>`;
-            } else {
-                log.assignments.forEach(item => {
-                    const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
-                    const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
-                    const isHighlight = isNameMatch || isAreaMatch;
-
-                    html += `
-                        <div style="background: ${isHighlight ? 'var(--primary-hover)' : 'var(--card-bg)'}; border: 1px solid ${isHighlight ? 'var(--leader-gold)' : 'var(--border-color)'}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-muted)'};">${item.area}</div>
-                            <div style="font-size: 1.1rem; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-main)'}; margin-top: 0.2rem;">${item.name}</div>
-                        </div>
-                    `;
-                });
-            }
+    if (log.assignments.length === 0) {
+        html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No specific position records found in entry payload.</p>`;
+    } else {
+        log.assignments.forEach(item => {
+            const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
+            const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
+            const isHighlight = isNameMatch || isAreaMatch;
 
             html += `
-                    </div>
-                    
-                    <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color);">
-                        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">RAW ENTRY PAYLOAD RECORD</span>
-                        <p style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted); background: var(--bg-color); padding: 0.5rem; border-radius: 0.4rem; margin-top: 0.25rem; word-break: break-all;">${log.rawText}</p>
-                    </div>
+                <div style="background: ${isHighlight ? 'var(--primary-hover)' : 'var(--card-bg)'}; border: 1px solid ${isHighlight ? 'var(--leader-gold)' : 'var(--border-color)'}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-muted)'};">${item.area}</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-main)'}; margin-top: 0.2rem;">${item.name}</div>
                 </div>
             `;
+        });
+    }
 
-            container.innerHTML = html;
-        }
+    html += `
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
 
         /* Sound & Visual Effects */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
