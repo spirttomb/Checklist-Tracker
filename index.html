@@ -1279,6 +1279,10 @@ const OVERALL_LOG_CONFIG = {
         let overallLogsData = [];
         let filteredLogsData = [];
 
+function getLogicalBusinessDate(date = new Date()) {
+    return new Date(date.getTime() - (4 * 60 * 60 * 1000));
+}
+
         function showStatusMessage(message, type = 'info', duration = 4000) {
             const bar = document.getElementById("statusMessageBar");
             bar.innerText = message;
@@ -1294,7 +1298,7 @@ const OVERALL_LOG_CONFIG = {
         function getPreclosedMap() {
             try { 
                 const stored = JSON.parse(localStorage.getItem('preclosedTasks'));
-                const today = new Date().toDateString();
+                const today = getLogicalBusinessDate(new Date()).toDateString();
                 if (stored && stored.date === today) {
                     return stored.tasks || {};
                 }
@@ -1304,8 +1308,10 @@ const OVERALL_LOG_CONFIG = {
 
         async function fetchSheetLatestStatus(sheetId) {
             if (!sheetId) return null;
+            
             const query = encodeURIComponent("SELECT *");
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
+            // Added cache-busting parameter (_cb) so Google Sheets doesn't serve stale data
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}&_cb=${Date.now()}`;
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -1329,7 +1335,10 @@ const OVERALL_LOG_CONFIG = {
                 if (!data.table || !data.table.rows || data.table.rows.length === 0) return null;
 
                 const allRows = data.table.rows;
-                const today = new Date();
+                
+                // Use the logical business date offset for "today"
+                const today = getLogicalBusinessDate(new Date());
+                
                 let teamMember = null;
                 let leaderVerified = false;
                 let leaderName = null;
@@ -1341,16 +1350,22 @@ const OVERALL_LOG_CONFIG = {
                     const dateVal = rowData[0].f || rowData[0].v;
                     if (!dateVal) continue;
 
-                    let dateObj;
+                    let rawDateObj;
                     if (typeof dateVal === 'string' && dateVal.startsWith('Date(')) {
                         const dateArgs = dateVal.match(/\d+/g);
-                        dateObj = (dateArgs && dateArgs.length >= 3) ? new Date(dateArgs[0], dateArgs[1], dateArgs[2]) : new Date();
+                        // Capture hour/minute/second arguments if provided by Google
+                        rawDateObj = (dateArgs && dateArgs.length >= 3) 
+                            ? new Date(dateArgs[0], dateArgs[1], dateArgs[2], dateArgs[3] || 0, dateArgs[4] || 0, dateArgs[5] || 0) 
+                            : new Date();
                     } else {
-                        dateObj = new Date(dateVal);
+                        rawDateObj = new Date(dateVal);
                     }
 
+                    // Apply the logical business date offset to the row's timestamp
+                    const dateObj = getLogicalBusinessDate(rawDateObj);
+
                     if (dateObj.toDateString() !== today.toDateString()) {
-                        break;
+                        break; // Stop looking if we've gone past today's logical shift
                     }
 
                     let rowName = null;
@@ -1433,7 +1448,7 @@ const OVERALL_LOG_CONFIG = {
         }
 
         function cleanOldLocalStorage() {
-            const today = new Date().toDateString();
+            const today = getLogicalBusinessDate(new Date()).toDateString();
             try {
                 const stored = JSON.parse(localStorage.getItem('preclosedTasks'));
                 if (stored && stored.date !== today) {
@@ -1836,7 +1851,7 @@ const OVERALL_LOG_CONFIG = {
                         completedTasks.delete(taskId); 
                     }
                 });
-                localStorage.setItem('preclosedTasks', JSON.stringify({ date: new Date().toDateString(), tasks: preclosedMap }));
+                localStorage.setItem('preclosedTasks', JSON.stringify({ date: getLogicalBusinessDate(new Date()).toDateString(), tasks: preclosedMap }));
 
                 showStatusMessage(`${zone.name} preclose saved successfully!`, 'success');
                 goBackToAreas();
@@ -1993,7 +2008,7 @@ const OVERALL_LOG_CONFIG = {
         async function fetchOverallLogs() {
             const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
             const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}`;
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}&_cb=${Date.now()}`;
 
             try {
                 const res = await fetch(url);
