@@ -686,9 +686,41 @@
                 width: 100%;
             }
 
+            .am-pm-toggle {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .am-pm-btn {
+                flex: 1;
+            }
+
             .main-content-box { padding: 1rem; }
             .task-view-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
             .task-subtitle-badge { margin-left: 0; margin-top: 0.5rem; display: inline-block; }
+        }
+
+        @media (max-width: 480px) {
+            .am-pm-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .leader-controls {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .leader-btn, .btn-switch-user {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.7rem;
+            }
+
+            .nav-tab {
+                padding: 0.5rem 0.85rem;
+                font-size: 0.9rem;
+            }
         }
         
         .spinner {
@@ -737,7 +769,7 @@
     <div class="modal-overlay" id="authOverlay">
         <div class="modal-card">
             <h3>Enter Team Member PIN</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user signin/clockin PIN.</p>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
             <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
         </div>
     </div>
@@ -1266,6 +1298,100 @@ const OVERALL_LOG_CONFIG = {
             }
         ];
 
+        // Separate, consolidated wording shown only in Leader Verify mode.
+        // These do not affect what gets submitted to the Google Forms/Sheets;
+        // executeVerification() still submits against the original checklistsData
+        // tasks and FORM_MAPPINGS entries above, regardless of what's displayed here.
+        const VERIFY_CHECKLISTS = {
+            "close-930": {
+                "Front Counter": [
+                    { title: "Lemonade Machine", steps: ["Lemonade machine has been cleaned and reassembled"] },
+                    { title: "Tea Urns", steps: ["Tea urns have been cleaned and reassembled, including the tea liner and drip tray"] },
+                    { title: "Dishes", steps: ["Strawberry shooter has been cleaned and reassembled"] },
+                    { title: "Drink Towers", steps: ["Drink towers have been cleaned and reassembled"] },
+                    { title: "Swinging Door", steps: ["Swinging door has been cleaned and polished"] },
+                    { title: "Lowboy", steps: ["Lowboy has been cleaned and polished"] },
+                    { title: "Counters", steps: ["All counters have been cleaned and sanitized"] },
+                    { title: "POS Terminals and Card Readers", steps: ["All POS terminals and card readers have been cleaned"] }
+                ],
+                "Dining Room": [
+                    { title: "Rugs", steps: ["All rugs have been vacuumed and rolled up"] },
+                    { title: "Sweeping", steps: ["Dining room and lobby have been swept thoroughly, including under chairs, tables, and booths."] },
+                    { title: "Flowers", steps: ["All flowers have been collected and stored in the walk-in"] },
+                    { title: "Cleaning", steps: ["All tables, chairs, high chairs, and booths have been cleaned", "All trays, table toppers, and unused sauces have been cleaned", "All clean trays, and return trys, table toppers, and unused sauces have been returned to front counter"] },
+                    { title: "Chairs", steps: ["All chairs have been put up"] },
+                    { title: "Blinds", steps: ["All blinds have been put down"] },
+                    { title: "Condiment Stand", steps: ["The condiment stand has been completely stocked"] }
+                ],
+                "Bathrooms": [
+                    { title: "Mirrors", steps: ["Mirrors in both bathrooms are clean and smudge free"] },
+                    { title: "Hand Sinks", steps: ["Hand sinks in both bathrooms are clean"] },
+                    { title: "Changing Station", steps: ["Baby changing stations in both bathrooms are cleaned and sanitized"] },
+                    { title: "Doors", steps: ["Doors, including stall doors, in both bathrooms have been cleaned"] },
+                    { title: "General Cleaning", steps: ["Soap and sanitizing dispensers, paper towel dispensers, and toilet paper dispensers in both bathrooms have been cleaned", "All metal appliances in both bathrooms have been cleaned and are smudge free", "Everything commonly touched (door handle, stall door handle, light switch, toilet flusher) in both bathrooms have been sanitized"] },
+                    { title: "Toilets & Urinals", steps: ["All urinals/toilets in both bathrooms have been cleaned with restroom cleaner and dried"] },
+                    { title: "Stocking", steps: ["Paper towels, toilet paper, hand soap, santizer, and toilet seat covers in both bathrooms have been stocked"] },
+                    { title: "Floors", steps: ["Floors in both bathrooms have been swept and mopped"] },
+                    { title: "Trash", steps: ["Trashes in both bathrooms have been replaced"] }
+                ],
+                "Break Room & Tech": [
+                    { title: "Personal Belongings", steps: ["All coats, jackets, and backbacks have been hung", "All shoes have been placed onto the windowsill"] },
+                    { title: "Cleaning", steps: ["All tables and chairs have been cleaned, and the chairs have been flipped up", "The inside of the microwave has been cleaned"] },
+                    { title: "Trash", steps: ["All trash has been thrown away", "Trash has been taken out and replaced"] },
+                    { title: "Floors", steps: ["The floor has been swept and mopped"] },
+                    { title: "Tech", steps: ["All TMS bags have been unplugged and hung on the top rack of the tech room", "All tech is plugged in", "The tech form qr code has been filled out"] }
+                ],
+                "Floors": [
+                    { title: "Floors", steps: ["Floors have been mopped and are clean", "Chairs have been put back down after mopping"] }
+                ]
+            },
+            "close-1030": {
+                "Desserts": [
+                    { title: "Leftovers", steps: ["Leftover Icedream is in the walk-in with a date label", "Leftover cherries, lemons, oreo, and straberry is in the lowboy with a date label"] },
+                    { title: "Taylor", steps: ["Taylor's exterior is clean", "Taylor's interior is clean", "Taylor is unplugged", "The pieces are out on the white board and there aren't missing any pieces"] },
+                    { title: "Dishes", steps: ["All dishes (machine arm, assembled strawberry shooter, cherry and lemon holder with tongs, strawberry drip tray, metal shakebase drip tray, red shakebase drip tray, taylor lids, taylor drip tray) have been brought back"] },
+                    { title: "Lowboy", steps: ["The lowboy has been cleaned and polished"] }
+                ],
+                "Drinks": [
+                    { title: "Lemonade Machine", steps: ["Lemonade machine has been cleaned and reassembled"] },
+                    { title: "Bring back remaining dishes", steps: ["Bring back disassembled strawberry shooter, sugar scoop, whisks, spoons, tea brewing urns, dump sink insert, tea and coffee brewing inserts"] },
+                    { title: "DT Door", steps: ["The DT window door is clean"] },
+                    { title: "Dumpsink", steps: ["The dumpsink and dumpsink insert are clean"] },
+                    { title: "Coffee Pots", steps: ["Both FC and DT coffee pots are empty and clean"] },
+                    { title: "Drink Towers", steps: ["Drink towers have been cleaned and reassembled"] },
+                    { title: "Tea Urns", steps: ["Tea urns have been cleaned and reassembled, including the tea liner and drip tray", "Tea brewing urns and inserts have been cleaned and brought back"] },
+                    { title: "Lowboy", steps: ["Lowboy has been cleaned and polished"] },
+                    { title: "Counters", steps: ["All counters have been cleaned and sanitized"] },
+                    { title: "Dishes", steps: ["Sugar scoop, whisk, spoon, coffee brewing inserts, and assembled strawberry shooter have been cleaned and brought back"] }
+                ],
+                "Chutes": [
+                    { title: "Fry bin", steps: ["Fry bins have been cleaned and returned"] },
+                    { title: "Chutes", steps: ["Chutes have been cleaned and sanitized", "Faceplates and dividers have been cleaned and sanitized"] },
+                    { title: "Bag Holders", steps: ["Bag holders are cleaned and stocked"] },
+                    { title: "Lowboy", steps: ["Lowboy has been cleaned and polished"] },
+                    { title: "Counters", steps: ["All counters have been cleaned and sanitized"] }
+                ],
+                "Stocking": [
+                    { title: "Lowboys", steps: ["FC, DT, Bagging, and Desserts lowboys are all stocked", "Dates in bagging lowboy have been checked, expired product has been wasted"] },
+                    { title: "Sauce Walls", steps: ["FC and DT sauce walls, including breakfast condiments have been stocked"] },
+                    { title: "Boxed Goods", steps: ["Boxed bags, boxed napkins, boxed straws, boxed ketchup and boxed cup carriers have been brought up and stocked"] },
+                    { title: "Ice Bins", steps: ["FC and DT ice bins have been stocked"] },
+                    { title: "FC and DT Drinks Area", steps: ["FC and DT cups, lids, straws, cup carriers have been stocked"] }
+                ],
+                "Trash": [
+                    { title: "Trash", steps: ["All trash bags, including the one outside of the building by the back door, the one inside of the building by the back door, the two compacting dining room trashes, the trash under the TV, the FC trash, and the DT trash have been replaced"] },
+                    { title: "Lemonade", steps: ["Lemonade has been checked and made if needed"] }
+                ],
+                "Floors": [
+                    { title: "Floors", steps: ["DT area is swept including under drink towers, lowboys, tables, Taylor and the ice machine", "DT area is mopped including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] }
+                ]
+            }
+        };
+
+        function getVerifyCards(shiftId, zoneName) {
+            return (VERIFY_CHECKLISTS[shiftId] && VERIFY_CHECKLISTS[shiftId][zoneName]) || null;
+        }
+
         let currentAmPm = 'PM'; 
         let activeTabIndex = 0; 
         let activeZoneIndex = null; 
@@ -1659,6 +1785,11 @@ function getLogicalBusinessDate(date = new Date()) {
                 const areaKey = `${shift.id}::${zone.name}`;
                 const areaState = submittedAreas[areaKey];
                 const preclosedMap = getPreclosedMap();
+
+                const verifyCards = (isLeaderOverviewMode && shift.id !== 'preclose') ? getVerifyCards(shift.id, zone.name) : null;
+                const usingVerifyCards = !!verifyCards;
+                const displayCards = usingVerifyCards ? verifyCards : zone.tasks;
+                const idPrefix = usingVerifyCards ? 'verify-' : '';
                 
                 let html = `
                     <div class="main-content-box">
@@ -1668,7 +1799,7 @@ function getLogicalBusinessDate(date = new Date()) {
                                     ${zone.name}
                                     ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
                                 </h2>
-                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${shift.title} Tasks</p>
+                                <p style="color: var(--text-muted); margin-top: 0.25rem;">${usingVerifyCards ? shift.title.replace('Close', 'Verify') : `${shift.title} Tasks`}</p>
                             </div>
                             <button class="btn-back" onclick="goBackToAreas()">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -1678,11 +1809,11 @@ function getLogicalBusinessDate(date = new Date()) {
                         <div class="cards-grid">
                 `;
 
-                zone.tasks.forEach((task, tIndex) => {
-                    const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+                displayCards.forEach((task, tIndex) => {
+                    const taskId = `${idPrefix}${shift.id}-${activeZoneIndex}-${tIndex}`;
                     const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
                     
-                    const isPreclosed = shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
+                    const isPreclosed = !usingVerifyCards && shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
                     const preclosedClass = isPreclosed ? 'preclosed' : '';
                     const preclosedBadgeHtml = isPreclosed ? '<span class="preclosed-badge">Preclosed</span>' : '';
 
@@ -1887,19 +2018,22 @@ function getLogicalBusinessDate(date = new Date()) {
         async function verifyArea() {
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[activeZoneIndex];
+            const verifyCards = getVerifyCards(shift.id, zone.name);
+            const cardList = verifyCards || zone.tasks;
+            const idPrefix = verifyCards ? 'verify-' : '';
 
             let completedCount = 0;
-            zone.tasks.forEach((task, tIndex) => {
-                const taskId = `${shift.id}-${activeZoneIndex}-${tIndex}`;
+            cardList.forEach((task, tIndex) => {
+                const taskId = `${idPrefix}${shift.id}-${activeZoneIndex}-${tIndex}`;
                 if (completedTasks.has(taskId)) {
                     completedCount++;
                 }
             });
 
-            if (completedCount < zone.tasks.length) {
+            if (completedCount < cardList.length) {
                 const verifyContainer = document.querySelector('.submit-section');
                 verifyContainer.innerHTML = `
-                    <p style="color: var(--leader-gold); font-weight: bold; margin-bottom: 0.75rem;">Only ${completedCount}/${zone.tasks.length} cards reviewed. Verify anyway?</p>
+                    <p style="color: var(--leader-gold); font-weight: bold; margin-bottom: 0.75rem;">Only ${completedCount}/${cardList.length} cards reviewed. Verify anyway?</p>
                     <button class="btn-submit-area" style="background: var(--leader-gold); color: #1e293b; margin-right: 0.5rem;" onclick="executeVerification()">Yes, Verify</button>
                     <button class="btn-back" style="display: inline-block;" onclick="renderApp()">Cancel</button>
                 `;
