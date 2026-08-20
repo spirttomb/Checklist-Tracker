@@ -666,6 +666,34 @@
 
         .modal-card button:hover { background: var(--primary-hover); }
 
+        .pin-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+
+        .pin-keypad button {
+            padding: 0.9rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: var(--border-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .pin-keypad button:hover {
+            background: var(--primary-hover);
+        }
+
+        .pin-keypad button.pin-key-muted {
+            background: var(--signin);
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
         @media (max-width: 768px) {
             header { padding: 1rem 1rem 0 1rem; }
             .viewport-container { padding: 0 1rem 1rem 1rem; }
@@ -701,6 +729,44 @@
         }
 
         @media (max-width: 480px) {
+            header {
+                /* A sticky header whose height changes after login (leader
+                   buttons appearing) can end up overlapping content below it
+                   on short mobile screens until a scroll forces a
+                   recalculation. Static positioning removes that risk. */
+                position: static;
+            }
+
+            .single-control-box {
+                border-width: 6px;
+                padding: 12px;
+            }
+
+            .main-content-box {
+                border-width: 6px;
+                padding: 0.75rem;
+            }
+
+            .user-info-badge,
+            .leader-controls,
+            .checklist-nav,
+            .center-group {
+                min-width: 0;
+            }
+
+            .areas-grid,
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .view-title {
+                font-size: 1.5rem;
+            }
+
+            .task-zone-title {
+                font-size: 1.3rem;
+            }
+
             .am-pm-btn {
                 padding: 0.5rem 0.75rem;
                 font-size: 0.9rem;
@@ -759,6 +825,8 @@
 
         <div class="leader-controls">
             <button class="leader-btn" id="overallLogBtn" style="display: none; background: var(--border-color);" onclick="openOverallLogModal()">Overall Log</button>
+            <button class="leader-btn" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()">&#8635; Refresh</button>
+            <button class="leader-btn" id="eodBtn" style="display: none; background: var(--leader-gold); color: #1e293b;" onclick="openEODCheck()">EOD</button>
             <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
     </div>
@@ -771,6 +839,35 @@
             <h3>Enter Team Member PIN</h3>
             <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
             <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
+            <div class="pin-keypad">
+                <button type="button" onclick="pressPinDigit('1')">1</button>
+                <button type="button" onclick="pressPinDigit('2')">2</button>
+                <button type="button" onclick="pressPinDigit('3')">3</button>
+                <button type="button" onclick="pressPinDigit('4')">4</button>
+                <button type="button" onclick="pressPinDigit('5')">5</button>
+                <button type="button" onclick="pressPinDigit('6')">6</button>
+                <button type="button" onclick="pressPinDigit('7')">7</button>
+                <button type="button" onclick="pressPinDigit('8')">8</button>
+                <button type="button" onclick="pressPinDigit('9')">9</button>
+                <button type="button" class="pin-key-muted" onclick="pinClear()">Clear</button>
+                <button type="button" onclick="pressPinDigit('0')">0</button>
+                <button type="button" class="pin-key-muted" onclick="pinBackspace()">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <datalist id="allNamesList"></datalist>
+
+    <div class="modal-overlay" id="eodModal">
+        <div class="modal-card" style="max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">End of Day</h3>
+                <button onclick="closeEODModal()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
+            </div>
+            <div id="eodContent">
+                <div class="spinner"></div>
+                <p style="text-align: center; color: var(--text-muted);">Checking today's status...</p>
+            </div>
         </div>
     </div>
 
@@ -901,155 +998,100 @@ const OVERALL_LOG_CONFIG = {
                 formId: "1FAIpQLSct_5hXLVUObY92qrFwfB5XR71tT2_he7-3vpyCs-lPSKJTtA",
                 sheetId: "1hxT_6-JM24NISG2m5jFQ9EreGq7dHS1yIcFLH9TAIoY",
                 nameEntry: "entry.21633315",
-                tasks: {
-                    "Break Down Lemonades": "entry.4296956",
-                    "Transfer And Clean Tea": "entry.413908059",
-                    "Bring Back Remaining Dishes": "entry.1761965454",
-                    "Clean Drink Towers": "entry.1888917489",
-                    "Clean Swinging Door": "entry.871673908",
-                    "Clean Lowboy": "entry.286725968",
-                    "Wipe Down All Counters": "entry.1759044535",
-                    "Clean POS Terminals And Card Readers": "entry.1142316488",
-                    "Reassemble Towers": "entry.834524323",
-                    "Reassemble Dishes": "entry.1863485176"
-                }
+                completedEntry: "entry.4296956"
             },
             "close-930::Dining Room": {
                 formId: "1FAIpQLSfmtZ3LfhYBpzrPVuRTvgn128c1InljnVfX9O3ffPpF81Ojmw",
                 sheetId: "1it44hckl9Gk10v8AMNduJVDgvMGb_LZVVaFtQKd0PlU",
                 nameEntry: "entry.1462016451",
-                tasks: {
-                    "Vacuum Rugs": "entry.626307994",
-                    "Sweep": "entry.1240294498",
-                    "Flowers": "entry.390885381",
-                    "Cleaning Furniture": "entry.276970683",
-                    "Put Up Chairs": "entry.958243505",
-                    "Blinds": "entry.2038394362",
-                    "Cleaning Table Items": "entry.1160699902",
-                    "Return Items": "entry.537812247",
-                    "Condiment Stand": "entry.396870801"
-                }
+                completedEntry: "entry.626307994"
             },
             "close-930::Bathrooms": {
                 formId: "1FAIpQLSdvNTA4ihQuZuyBdoWfDkzZxTD1iOZU_njwfiasLFk8SbAe3Q",
                 sheetId: "1xb6aTuekQUOzqNFDvqgjACPoRxAviu2nWdnu-CoGoKU",
                 nameEntry: "entry.1666408577",
-                tasks: {
-                    "Mirrors And Sink": "entry.1818462714",
-                    "Baby Changing Station": "entry.1769411751",
-                    "Doors": "entry.1213384330",
-                    "Dispensers": "entry.1667675873",
-                    "Metal Appliances": "entry.893137986",
-                    "High-Touch Surfaces": "entry.1535583909",
-                    "Urinals And Toilets": "entry.2118734279",
-                    "Stocking": "entry.1400133087",
-                    "Repeat": "entry.1223569076",
-                    "Floors": "entry.1712465686",
-                    "Trash": "entry.2074825630"
-                }
+                completedEntry: "entry.1818462714"
             },
             "close-930::Break Room & Tech": {
                 formId: "1FAIpQLSd9T0WdnGnno-Wtpoom2jXieA96aE5WePcOs99u4Udq49dHpQ",
                 sheetId: "18RQv-N4sLQt4xJpJnjuO_oJ4ma9gn0rQBR1wj1Cub4g",
                 nameEntry: "entry.748608307",
-                tasks: {
-                    "Personal Belongings": "entry.1585656959",
-                    "Cleaning Furniture": "entry.1254873848",
-                    "TMS Bags": "entry.1840882147",
-                    "Floors": "entry.87698102",
-                    "Microwave": "entry.1475384836",
-                    "Trash": "entry.336478269",
-                    "Tech": "entry.1530636489"
-                }
+                completedEntry: "entry.1585656959"
             },
             "close-930::Floors": {
                 formId: "1FAIpQLSdtBCEktlFYTu2hxJHh8IgpLTGAcetyg0--S81igGSm8qShnQ",
                 sheetId: "1vX4c23rAG-3HLQ45jx6K3H8PCsoiFOAPhdV02uZcXk4",
                 nameEntry: "entry.436027180",
-                tasks: {
-                    "Floor Prep": "entry.1904270649",
-                    "Mopping": "entry.727982962",
-                    "Chairs": "entry.1202343262"
-                }
+                completedEntry: "entry.1904270649"
             },
             "close-1030::Desserts": {
                 formId: "1FAIpQLSdxxnFJIEmDB9xeQOm1d67P4w0ksoZOEXv96M5-96S9vWp-NA",
                 sheetId: "1xHKuHMyI0peZHEDb33uKT0EFw1tYrjVplTrDFEDkTNo",
                 nameEntry: "entry.609807457",
-                tasks: {
-                    "Taylor Wash": "entry.771576326",
-                    "Kay-5 Sanitizer": "entry.1069087250",
-                    "Dishes & Leftovers": "entry.498948150",
-                    "Drain Icedream": "entry.984065864",
-                    "Wash Taylor Inside": "entry.1683751067",
-                    "Clean Exterior": "entry.1969771539",
-                    "Wall & Surroundings": "entry.1253411718",
-                    "Wash & Reassemble": "entry.1491997898",
-                    "Clean Lowboy": "entry.380188848"
-                }
+                completedEntry: "entry.771576326"
             },
             "close-1030::Drinks": {
                 formId: "1FAIpQLSctUcHm0WNShrDxJaUE9wkBNGUgJOVBN60Z6cCvQozqgVnajQ",
                 sheetId: "1GQd1t2i2I73ZBvmyUFai-qVQM_pfFugEFGd4AtZS8Xo",
                 nameEntry: "entry.1769544915",
-                tasks: {
-                    "Break Down Lemonades": "entry.880965357",
-                    "Transfer Tea": "entry.707970743",
-                    "Bring Back Remaining Dishes": "entry.1093113017",
-                    "Clean Drink Tower": "entry.1480788207",
-                    "Wipe Down Counters": "entry.229081274",
-                    "Clean Lowboy": "entry.206701927",
-                    "Dt Window Door": "entry.1435983399",
-                    "Clean Dumpsink": "entry.1487542935",
-                    "Clean Coffee Pots": "entry.1784850478",
-                    "Reassemble Towers": "entry.992710073",
-                    "Reassemble Dishes": "entry.437073424"
-                }
+                completedEntry: "entry.880965357"
             },
             "close-1030::Chutes": {
                 formId: "1FAIpQLSd-Psqg5HVLoHAjawblhotXPFIJkE-8ia-ky8UM6r7fRXDQkA",
                 sheetId: "1AO7f2_pmhbvNsirzfVltyj1EMBf6fHJn0xaeeTfv3gk",
                 nameEntry: "entry.693251095",
-                tasks: {
-                    "Fry Bins": "entry.1831189851",
-                    "Faceplates & Dividers": "entry.1163698153",
-                    "Wipe Down": "entry.1248822629",
-                    "Reassemble": "entry.216194971",
-                    "Clean Lowboy": "entry.2058407943",
-                    "Bag Holders": "entry.524565776",
-                    "Wipe Down Counter": "entry.1240876433",
-                    "Clean Bag Holders": "entry.1002537616",
-                    "Return Fry Bins": "entry.1934980171"
-                }
+                completedEntry: "entry.1831189851"
             },
             "close-1030::Trash": {
                 formId: "1FAIpQLSes4Ah5yVY1_WNXlflEbzq0_abYsVhccAPjqJ88PUZ5lIUEBQ",
                 sheetId: "181faxVl7nbEmz25apadsO8FBIBVK_2x1FhhwTxifu4c",
                 nameEntry: "entry.1435966399",
-                tasks: {
-                    "Trash Removal": "entry.707148952",
-                    "Make Lemonades": "entry.734813260"
-                }
+                completedEntry: "entry.707148952"
             },
             "close-1030::Floors": {
                 formId: "1FAIpQLSeNJK_ew4twj0sXS_lGQBg_QVIiFe3j6U0s-qg6IJnoDCOHyQ",
                 sheetId: "1wTN-i6FbtXl1APWxDW8_aFrm9RS13ApYcdM_Tgn3YSg",
                 nameEntry: "entry.213267544",
-                tasks: {
-                    "Sweep": "entry.1846248131",
-                    "Mop": "entry.329042300"
-                }
-            }, 
+                completedEntry: "entry.1846248131"
+            },
             "close-1030::Stocking": {
                 formId: "1FAIpQLSelkRBBGsL9x5onhovWQ-mhpXHiKE1TvqqQZ6apViKO4fxeVw",
                 sheetId: "12H3yHFteW3ZjfPMnwrTe9ulGQCrOQWQcrCOeaU2sQ4g",
                 nameEntry: "entry.2144443666",
-                tasks: {
-                    "Sauce Wall": "entry.496068327",
-                    "Lowboy": "entry.1277215098",
-                    "Drink Station": "entry.688684061",
-                    "Boxed Goods": "entry.2053686261"
-                }
+                completedEntry: "entry.496068327"
+            },
+
+            // Simplified mappings (no per-task entries) - just a name and a
+            // single completed/verified flag per submission.
+            "opening::6": {
+                formId: "1FAIpQLSfZAgMIHl1nXYRBJrSDLTRrmhyl-c0CRZycJR5lO0k63FfPcQ",
+                sheetId: "1I9FxowD9HHvpa8_XHCMf11JCr2Lf791-u0kpvkl4QVA",
+                nameEntry: "entry.210288742",
+                completedEntry: "entry.391687405"
+            },
+            "opening::615": {
+                formId: "1FAIpQLSe34jOT19DsvJnHPHMMGpszxZ6N57q48jxhl1iM7PnoVfmaOQ",
+                sheetId: "1T5l-pS6AoULgMMYGypCPK01REW3MNQtZEU8sUOQIQOo",
+                nameEntry: "entry.130234696",
+                completedEntry: "entry.304631124"
+            },
+            "leader::Opening": {
+                formId: "1FAIpQLSdwhqwwa2B9ZnpVuJuN-ppx79mZKPXA0VL7P5lZtaCAkTTS0g",
+                sheetId: "1xgvtMvp0KDoIByDzHI-YdiZUSwVoCR1FGDWp7ZC1cjg",
+                nameEntry: "entry.320493749",
+                completedEntry: "entry.462032197"
+            },
+            "leader::Handover": {
+                formId: "1FAIpQLSd_8M1rIxogtF8jWxnwD4YUwiNKiWH8MiFteY81ZtQ_PdAPew",
+                sheetId: "109T0F4Yc77zh0FvccJQE9PkkvyiFsC92x8CRX4T_opY",
+                nameEntry: "entry.286461828",
+                completedEntry: "entry.798491047"
+            },
+            "leader::Closing": {
+                formId: "1FAIpQLSfawCC9SIu2zdsS49XpYWxc8hQxig2rnpYugUFomIqWoE0y5Q",
+                sheetId: "1SVJev6KDkc0_daQ86-tAUO3ql9WEATzrDWTPv9lR42I",
+                nameEntry: "entry.297985323",
+                completedEntry: "entry.1171729320"
             },
         };
 
@@ -1292,6 +1334,87 @@ const OVERALL_LOG_CONFIG = {
                         tasks: [
                             { title: "Sweep", steps: ["Sweep entire DT area, including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] },
                             { title: "Mop", steps: ["Mop using the blue mop from the mobile drinks area to the tea/coffee brewing area, including under drink towers, lowboys, tables, Taylor, the ice machine, etc"] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "opening",
+                title: "Opening",
+                zones: [
+                    {
+                        name: "6",
+                        tasks: [
+                            { title: "Tea", steps: ["Start brewing tea for FC"] },
+                            { title: "Prepare Kay-5", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
+                            { title: "Wash Taylor", steps: ["Plug Taylor in", "Distribute Kay-5 evenly between both sides of Taylor", "Put Taylor on wash for 15 mins"] },
+                            { title: "Setup Taylor", steps: ["Lubricate all plastic and rubber pieces", "Put Taylor together"] },
+                            { title: "Tea", steps: ["Pour FC Tea and brew tea for DT"] },
+                            { title: "Strawberry Shooters", steps: ["Assemble the 3 strawberry shooters", "Ensure they are not making direct contact with a counter, set them in a cup if neccessary"] },
+                            { title: "Cherry and lemon holder", steps: ["Setup the cherry and lemon holder and make sure that it has sufficent ice added"] },
+                            { title: "Leftovers", steps: ["Pull any leftover cherries, lemons, oreo, and chocolate syrup out of the lowboy and put them in their proper location", "Waste any product that is expired", "Cut lemons if neccessary"] },
+                            { title: "Tea & Coffee", steps: ["Pour DT Tea and brew 2 extra batches", "Start brewing a large batch of coffee"] },
+                            { title: "Lemonade", steps: ["Ensure that the lemonade machines are put together", "Pour lemonade in both machines"] }
+                        ]
+                    },
+                    {
+                        name: "615",
+                        tasks: [
+                            { title: "Rugs", steps: ["Lay out all of the rugs"] },
+                            { title: "Blinds", steps: ["Roll up all of the blinds"] },
+                            { title: "Flowers", steps: ["Put all of the flowers out"] },
+                            { title: "Restrooms", steps: ["Make sure the restrooms are clean and stocked"] },
+                            { title: "Lemonade", steps: ["If the lemonade machines have not been filled, ensure they are put together", "Pour lemonade in both machines"] }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "leader",
+                title: "Leader",
+                zones: [
+                    {
+                        name: "Opening",
+                        tasks: [
+                            { title: "Checklists", steps: ["Verify closing checklists from last night were completed"] },
+                            { title: "Caterings", steps: ["Check POS for caterings"] },
+                            { title: "Changefund", steps: ["Count changefund, including tills and bags, and record all counts to the log"] },
+                            { title: "Registers", steps: ["Put a till in each drawer", "Sign yourself in on the window, and sign a generic order taker in on FC"] },
+                            { title: "Inform", steps: ["Fill out opening change fund in inform"] },
+                            { title: "Slack", steps: ["Check Slack for any attendance related changes"] },
+                            { title: "Lineup", steps: ["Write out your lineup", "Create your operational plans for the shift"] },
+                            { title: "Opening the DT", steps: ["Turn the DT lights on", "Ensure menu boards are on", "Open the DT cones"] },
+                            { title: "Opening Doors", steps: ["Unlock the front and back door", "Open the window door and ensure the lights are on"] },
+                            { title: "Tech", steps: ["Bring up two ipads, two walkies, and a saftey vest"] }
+                        ]
+                    },
+                    {
+                        name: "Handover",
+                        tasks: [
+                            { title: "Slack", steps: ["Check Slack for any attendance related changes"] },
+                            { title: "Handover Plan", steps: ["Create a plan for handover that includes any repalcements and breaks that happen at 2pm"] },
+                            { title: "Lemonade", steps: ["Ensure lemonades are being made by 2"] },
+                            { title: "Changefund", steps: ["Count changefund, including tills and bags, and record all counts to the log", "Input any received changefund"] },
+                            { title: "Inform", steps: ["Fill out changeover change fund in inform"] },
+                            { title: "Caterings", steps: ["Inform the night lead of any caterings"] },
+                            { title: "Discuss Lineup", steps: ["Discuss your current lineup with the night lead"] }
+                        ]
+                    },
+                    {
+                        name: "Closing",
+                        tasks: [
+                            { title: "Doors", steps: ["Lock the back door at 8:55pm", "Lock the front door at 9pm"] },
+                            { title: "Positions", steps: ["Ensure that all team members are in position", "Ensure the closing lead is present and ready to verify team members checklists"] },
+                            { title: "Tills & Cash Bags", steps: ["Pull all the tills from FC and DT", "Gather all of your cashier deposits"] },
+                            { title: "Changefund", steps: ["Count changefund, including tills and bags, and record all counts to the log", "Count the pink bag to 200 and input the leftover as deposited changefund in the log and in inform"] },
+                            { title: "Settlements & Deposits", steps: ["Settle all your cashier deposits", "Deposit your cashier deposits and your changefund deposit", "Print an EOD report from LOOMIS and verify it matches inform"] },
+                            { title: "EOS Notes", steps: ["Write out a rough draft of your EOS notes"] },
+                            { title: "DT Closing", steps: ["Close the DT at 10pm"] },
+                            { title: "Checklists", steps: ["Ensure FC floors, Dining Room, Bathroom, Break & Tech Room, and FC checklists have been completed and verified before sending the closing support home"] },
+                            { title: "Final Deposit", steps: ["Count, deposit, and settle the last cash bag", "Do the Daily Processing on the POS"] },
+                            { title: "Final Money", steps: ["Print an EOD report from LOOMIS and verify it matches inform", "Finalize the day on Inform"] },
+                            { title: "EOS Notes", steps: ["Finalize and submit your EOS notes to slack"] },
+                            { title: "Final Checklists", steps: ["Ensure DT floors, DT, Stocking, Chutes, and Trash checklists have been completed and verified before sending the corresponding team members home"] }
                         ]
                     }
                 ]
@@ -1570,7 +1693,6 @@ function getLogicalBusinessDate(date = new Date()) {
             
             isSyncingCloudData = false;
             renderApp();
-            checkDayCompletionCalculated();
         }
 
         function cleanOldLocalStorage() {
@@ -1617,21 +1739,51 @@ function getLogicalBusinessDate(date = new Date()) {
             document.getElementById("activeUserName").innerText = currentUser.name;
             const leaderBtn = document.getElementById("leaderOverviewToggle");
             const overallLogBtn = document.getElementById("overallLogBtn");
+            const refreshDataBtn = document.getElementById("refreshDataBtn");
+            const eodBtn = document.getElementById("eodBtn");
             
             if (currentUser.role === 'leader') {
                 leaderBtn.style.display = "block";
                 overallLogBtn.style.display = "block";
+                refreshDataBtn.style.display = "block";
+                eodBtn.style.display = "block";
             } else {
                 leaderBtn.style.display = "none";
                 overallLogBtn.style.display = "none";
+                refreshDataBtn.style.display = "none";
+                eodBtn.style.display = "none";
                 isLeaderOverviewMode = false;
                 leaderBtn.classList.remove("active-mode");
+
+                // The Leader tab is hidden for non-leaders - don't leave
+                // them stranded on it if it was active for the last user.
+                if (checklistsData[activeTabIndex] && checklistsData[activeTabIndex].id === 'leader') {
+                    activeTabIndex = 0;
+                    activeZoneIndex = null;
+                }
             }
 
             document.getElementById("authOverlay").classList.remove("active");
             pinInput.value = ""; 
             renderTabs();
             loadShiftStatusFromCloud();
+        }
+
+        function pressPinDigit(d) {
+            const input = document.getElementById("authPinInput");
+            if (input.value.length < 4) {
+                input.value += d;
+                if (input.value.length === 4) handleLogin();
+            }
+        }
+
+        function pinBackspace() {
+            const input = document.getElementById("authPinInput");
+            input.value = input.value.slice(0, -1);
+        }
+
+        function pinClear() {
+            document.getElementById("authPinInput").value = "";
         }
 
         function toggleLeaderMode() {
@@ -1664,6 +1816,7 @@ function getLogicalBusinessDate(date = new Date()) {
             
             checklistsData.forEach((shift, index) => {
                 if (isLeaderOverviewMode && shift.id === 'preclose') return;
+                if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return;
 
                 const tab = document.createElement("button");
                 tab.className = `nav-tab ${index === activeTabIndex ? 'active' : ''}`;
@@ -1994,18 +2147,23 @@ function getLogicalBusinessDate(date = new Date()) {
                 const formData = {};
                 formData[formConfig.nameEntry] = currentUser.name;
 
-                const preclosedMap = getPreclosedMap();
-                zone.tasks.forEach((task) => {
-                    const entryId = formConfig.tasks[task.title];
-                    if (entryId) {
-                        const isPreclosed = preclosedMap[`${zone.name}::${task.title}`] === true;
-                        formData[entryId] = isPreclosed ? "preclosed and completed" : "completed";
-                    }
-                });
+                if (formConfig.tasks) {
+                    const preclosedMap = getPreclosedMap();
+                    zone.tasks.forEach((task) => {
+                        const entryId = formConfig.tasks[task.title];
+                        if (entryId) {
+                            const isPreclosed = preclosedMap[`${zone.name}::${task.title}`] === true;
+                            formData[entryId] = isPreclosed ? "preclosed and completed" : "completed";
+                        }
+                    });
+                } else if (formConfig.completedEntry) {
+                    formData[formConfig.completedEntry] = "completed";
+                }
+
                 showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
 
                 if (shift.id !== 'preclose') {
-                    showExplosionPopup(`Congratulations ${currentUser.name.substring(0, currentUser.name.lastIndexOf(' '))} on a successful ${zone.name} close!`);
+                    showExplosionPopup(`Congratulations ${currentUser.name.substring(0, currentUser.name.lastIndexOf(' '))} on completing ${zone.name}!`);
                 }
 
                 await submitToGoogleForm(formConfig.formId, formData);
@@ -2053,12 +2211,16 @@ function getLogicalBusinessDate(date = new Date()) {
         const formData = {};
         formData[formConfig.nameEntry] = currentUser.name;
 
-        zone.tasks.forEach(task => {
-            const entryId = formConfig.tasks[task.title];
-            if (entryId) {
-                formData[entryId] = "verified";
-            }
-        });
+        if (formConfig.tasks) {
+            zone.tasks.forEach(task => {
+                const entryId = formConfig.tasks[task.title];
+                if (entryId) {
+                    formData[entryId] = "verified";
+                }
+            });
+        } else if (formConfig.completedEntry) {
+            formData[formConfig.completedEntry] = "verified";
+        }
 
         // Submit individual zone form
         await submitToGoogleForm(formConfig.formId, formData);
@@ -2067,32 +2229,11 @@ function getLogicalBusinessDate(date = new Date()) {
     completedTasks.clear();
     showStatusMessage(`${zone.name} verified successfully!`, 'success');
     
-    // Refresh cloud status data first so the newly verified zone is registered
+    // Refresh cloud status data so the newly verified zone is registered.
+    // The overall log is no longer auto-submitted here - see EOD button.
     await loadShiftStatusFromCloud();
 
-    // Check if this verification completed the entire shift
-    if (isShiftComplete(shift.id)) {
-        await submitOverallLogForShift(shift);
-    }
-
     goBackToAreas();
-}
-
-        function checkDayCompletionCalculated() {
-    const is930Done = isShiftComplete('close-930');
-    const is1030Done = isShiftComplete('close-1030');
-
-    if (is930Done && is1030Done) {
-        // Prevent the popup from firing repeatedly in the same session
-        if (sessionStorage.getItem('dayCompletionShown') === 'true') return;
-        sessionStorage.setItem('dayCompletionShown', 'true');
-
-        setTimeout(() => {
-            showExplosionPopup(
-                `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed today's close!`
-            );
-        }, 600);
-    }
 }
 
         async function openOverallLogModal() {
@@ -2106,7 +2247,7 @@ function getLogicalBusinessDate(date = new Date()) {
             filterAndPopulateLogDropdown();
         }
 
-        async function submitOverallLogForShift(shift) {
+        async function submitOverallLogForShift(shift, unfinishedOverrides = {}) {
     let logParts = [];
     let leaderName = currentUser ? currentUser.name : "Leader";
 
@@ -2115,6 +2256,11 @@ function getLogicalBusinessDate(date = new Date()) {
 
     // 2. Iterate through all zones in the shift to gather team members and areas
     shift.zones.forEach(zone => {
+        if (unfinishedOverrides[zone.name]) {
+            logParts.push(`${unfinishedOverrides[zone.name]} - unfinished`);
+            return;
+        }
+
         const areaKey = `${shift.id}::${zone.name}`;
         const areaState = cloudSyncedAreas[areaKey];
         
@@ -2134,6 +2280,119 @@ function getLogicalBusinessDate(date = new Date()) {
     // Submit to the overall log form
     await submitToGoogleForm(OVERALL_LOG_CONFIG.formId, overallFormData);
 }
+
+        async function manualRefresh() {
+            showStatusMessage("Refreshing area status...", "info", 2000);
+            await loadShiftStatusFromCloud();
+        }
+
+        let eodIncompleteAreas = [];
+
+        function populateNamesDatalist() {
+            const list = document.getElementById("allNamesList");
+            const names = Object.values(PIN_DATABASE).map(u => u.name).sort((a, b) => a.localeCompare(b));
+            list.innerHTML = names.map(n => `<option value="${n}"></option>`).join("");
+        }
+
+        async function openEODCheck() {
+            const modal = document.getElementById("eodModal");
+            modal.classList.add("active");
+            const container = document.getElementById("eodContent");
+            container.innerHTML = '<div class="spinner"></div><p style="text-align: center; color: var(--text-muted);">Checking today\'s status...</p>';
+
+            populateNamesDatalist();
+
+            // Refresh cloud data first so this check reflects reality, not stale state
+            await loadShiftStatusFromCloud();
+
+            const closingShifts = checklistsData.filter(s => s.id === 'close-930' || s.id === 'close-1030');
+            eodIncompleteAreas = [];
+            closingShifts.forEach(shift => {
+                shift.zones.forEach(zone => {
+                    const areaKey = `${shift.id}::${zone.name}`;
+                    const state = cloudSyncedAreas[areaKey];
+                    if (!state) {
+                        eodIncompleteAreas.push({ shift, zone, status: "Not submitted" });
+                    } else if (!state.leaderVerified) {
+                        eodIncompleteAreas.push({ shift, zone, status: "Not verified" });
+                    }
+                });
+            });
+
+            renderEODContent();
+        }
+
+        function renderEODContent() {
+            const container = document.getElementById("eodContent");
+
+            if (eodIncompleteAreas.length === 0) {
+                container.innerHTML = `
+                    <p style="text-align: center; color: var(--success-dark); font-weight: 700; font-size: 1.1rem; padding: 1rem 0;">All areas are submitted and verified.</p>
+                    <button class="btn-submit-area" style="width: 100%;" onclick="submitEODLog([])">Submit End of Day Log</button>
+                `;
+                return;
+            }
+
+            const rows = eodIncompleteAreas.map((item, idx) => `
+                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-bottom: 1px solid var(--border-color); flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <strong>${item.zone.name}</strong>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">${item.shift.title} — ${item.status}</div>
+                    </div>
+                    <input type="text" list="allNamesList" id="eodName-${idx}" placeholder="Assign name..." style="flex: 1; min-width: 160px; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
+                </div>
+            `).join("");
+
+            container.innerHTML = `
+                <p style="color: var(--leader-gold); font-weight: 700; margin-bottom: 1rem;">${eodIncompleteAreas.length} area(s) still need attention:</p>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 0.5rem; margin-bottom: 1.25rem;">
+                    ${rows}
+                </div>
+                <button class="btn-submit-area" style="width: 100%; background: var(--leader-gold); color: #1e293b;" onclick="attemptPushThroughEOD()">Push Through Anyway</button>
+            `;
+        }
+
+        function attemptPushThroughEOD() {
+            const assignments = [];
+            for (let i = 0; i < eodIncompleteAreas.length; i++) {
+                const input = document.getElementById(`eodName-${i}`);
+                const name = input.value.trim();
+                if (!name) {
+                    showStatusMessage(`Please assign a name for "${eodIncompleteAreas[i].zone.name}" before pushing through.`, "error");
+                    input.focus();
+                    return;
+                }
+                assignments.push(name);
+            }
+            submitEODLog(assignments);
+        }
+
+        async function submitEODLog(pushedThroughNames) {
+            const closingShifts = checklistsData.filter(s => s.id === 'close-930' || s.id === 'close-1030');
+
+            for (const shift of closingShifts) {
+                const overrides = {};
+                eodIncompleteAreas.forEach((item, idx) => {
+                    if (item.shift.id === shift.id) {
+                        overrides[item.zone.name] = pushedThroughNames[idx];
+                    }
+                });
+                await submitOverallLogForShift(shift, overrides);
+            }
+
+            showStatusMessage("End of day log submitted.", "success", 6000);
+            closeEODModal();
+
+            setTimeout(() => {
+                showExplosionPopup(
+                    `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed today's close!`
+                );
+            }, 400);
+        }
+
+        function closeEODModal() {
+            document.getElementById("eodModal").classList.remove("active");
+        }
 
         function closeOverallLogModal() {
             document.getElementById("overallLogModal").classList.remove("active");
@@ -2345,14 +2604,32 @@ function getLogicalBusinessDate(date = new Date()) {
                 html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No entries found.</p>`;
             } else {
                 log.assignments.forEach(item => {
+                    const isUnfinished = item.area.toLowerCase() === 'unfinished';
                     const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
                     const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
                     const isHighlight = isNameMatch || isAreaMatch;
 
+                    let bg = 'var(--card-bg)';
+                    let border = 'var(--border-color)';
+                    let textColor = 'var(--text-muted)';
+                    let nameColor = 'var(--text-main)';
+
+                    if (isUnfinished) {
+                        bg = '#ef4444';
+                        border = '#b91c1c';
+                        textColor = '#ffffff';
+                        nameColor = '#ffffff';
+                    } else if (isHighlight) {
+                        bg = 'var(--primary-hover)';
+                        border = 'var(--leader-gold)';
+                        textColor = '#ffffff';
+                        nameColor = '#ffffff';
+                    }
+
                     html += `
-                        <div style="background: ${isHighlight ? 'var(--primary-hover)' : 'var(--card-bg)'}; border: 1px solid ${isHighlight ? 'var(--leader-gold)' : 'var(--border-color)'}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-muted)'};">${item.area}</div>
-                            <div style="font-size: 1.1rem; font-weight: 700; color: ${isHighlight ? '#ffffff' : 'var(--text-main)'}; margin-top: 0.2rem;">${item.name}</div>
+                        <div style="background: ${bg}; border: 1px solid ${border}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor};">${item.area}</div>
+                            <div style="font-size: 1.1rem; font-weight: 700; color: ${nameColor}; margin-top: 0.2rem;">${item.name}</div>
                         </div>
                     `;
                 });
