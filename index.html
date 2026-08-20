@@ -694,6 +694,50 @@
             font-size: 1rem;
         }
 
+        .eod-name-combo {
+            position: relative;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .eod-name-combo input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.4rem;
+            background: var(--card-bg);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        .eod-name-options {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            max-height: 180px;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.4rem;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            z-index: 50;
+        }
+
+        .eod-name-option {
+            padding: 0.6rem 0.75rem;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .eod-name-option:hover,
+        .eod-name-option.highlighted {
+            background: var(--primary-hover);
+            color: #ffffff;
+        }
+
         @media (max-width: 768px) {
             header { padding: 1rem 1rem 0 1rem; }
             .viewport-container { padding: 0 1rem 1rem 1rem; }
@@ -826,7 +870,6 @@
         <div class="leader-controls">
             <button class="leader-btn" id="overallLogBtn" style="display: none; background: var(--border-color);" onclick="openOverallLogModal()">Overall Log</button>
             <button class="leader-btn" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()">&#8635; Refresh</button>
-            <button class="leader-btn" id="eodBtn" style="display: none; background: var(--leader-gold); color: #1e293b;" onclick="openEODCheck()">EOD</button>
             <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
     </div>
@@ -855,8 +898,6 @@
             </div>
         </div>
     </div>
-
-    <datalist id="allNamesList"></datalist>
 
     <div class="modal-overlay" id="eodModal">
         <div class="modal-card" style="max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
@@ -1099,6 +1140,7 @@ const OVERALL_LOG_CONFIG = {
             {
                 id: "preclose",
                 title: "Preclose",
+                period: "PM",
                 zones: [
                     {
                         name: "Dining Room",
@@ -1177,6 +1219,7 @@ const OVERALL_LOG_CONFIG = {
             {
                 id: "close-930",
                 title: "9:30 Close",
+                period: "PM",
                 zones: [
                     {
                         name: "Front Counter",
@@ -1249,6 +1292,7 @@ const OVERALL_LOG_CONFIG = {
             {
                 id: "close-1030",
                 title: "10:30 Close",
+                period: "PM",
                 zones: [
                     {
                         name: "Desserts",
@@ -1341,9 +1385,11 @@ const OVERALL_LOG_CONFIG = {
             {
                 id: "opening",
                 title: "Opening",
+                period: "AM",
                 zones: [
                     {
                         name: "6",
+                        subtitle: "6:00 AM",
                         tasks: [
                             { title: "Tea", steps: ["Start brewing tea for FC"] },
                             { title: "Prepare Kay-5", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
@@ -1359,6 +1405,7 @@ const OVERALL_LOG_CONFIG = {
                     },
                     {
                         name: "615",
+                        subtitle: "6:15 AM",
                         tasks: [
                             { title: "Rugs", steps: ["Lay out all of the rugs"] },
                             { title: "Blinds", steps: ["Roll up all of the blinds"] },
@@ -1740,18 +1787,15 @@ function getLogicalBusinessDate(date = new Date()) {
             const leaderBtn = document.getElementById("leaderOverviewToggle");
             const overallLogBtn = document.getElementById("overallLogBtn");
             const refreshDataBtn = document.getElementById("refreshDataBtn");
-            const eodBtn = document.getElementById("eodBtn");
             
             if (currentUser.role === 'leader') {
                 leaderBtn.style.display = "block";
                 overallLogBtn.style.display = "block";
                 refreshDataBtn.style.display = "block";
-                eodBtn.style.display = "block";
             } else {
                 leaderBtn.style.display = "none";
                 overallLogBtn.style.display = "none";
                 refreshDataBtn.style.display = "none";
-                eodBtn.style.display = "none";
                 isLeaderOverviewMode = false;
                 leaderBtn.classList.remove("active-mode");
 
@@ -1793,7 +1837,7 @@ function getLogicalBusinessDate(date = new Date()) {
 
             if (isLeaderOverviewMode) {
                 btn.classList.add("active-mode");
-                btn.innerText = "Exit Leader View";
+                btn.innerText = "Close Leader Overview";
                 overallLogBtn.style.display = "block";
                 if (checklistsData[activeTabIndex].id === 'preclose') {
                     activeTabIndex = 1; 
@@ -1817,6 +1861,7 @@ function getLogicalBusinessDate(date = new Date()) {
             checklistsData.forEach((shift, index) => {
                 if (isLeaderOverviewMode && shift.id === 'preclose') return;
                 if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return;
+                if (shift.period && shift.period !== currentAmPm) return;
 
                 const tab = document.createElement("button");
                 tab.className = `nav-tab ${index === activeTabIndex ? 'active' : ''}`;
@@ -1859,11 +1904,13 @@ function getLogicalBusinessDate(date = new Date()) {
                 const currentShiftLocked = shift.id !== 'preclose' ? isShiftComplete(shift.id) : isPrecloseFullyLocked;
                 
                 if (currentShiftLocked) {
+                    const showEODButton = isLeaderOverviewMode && (shift.id === 'preclose' || shift.id === 'close-930' || shift.id === 'close-1030');
                     appViewport.innerHTML = `
                         <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
                             <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
                             <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
                             <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
+                            ${showEODButton ? `<button class="btn-submit-area" style="margin-top: 1.5rem; background: #ef4444;" onclick="openEODCheck()">Submit EOD</button>` : ''}
                         </div>
                     `;
                     return;
@@ -2049,6 +2096,22 @@ function getLogicalBusinessDate(date = new Date()) {
             document.querySelectorAll(".am-pm-btn").forEach(btn => {
                 btn.classList.toggle("active", btn.innerText === val);
             });
+
+            const isVisible = (shift) => {
+                if (shift.period && shift.period !== val) return false;
+                if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return false;
+                return true;
+            };
+
+            const activeShift = checklistsData[activeTabIndex];
+            if (!activeShift || !isVisible(activeShift)) {
+                const fallbackIndex = checklistsData.findIndex(isVisible);
+                activeTabIndex = fallbackIndex !== -1 ? fallbackIndex : 0;
+                activeZoneIndex = null;
+            }
+
+            renderTabs();
+            loadShiftStatusFromCloud();
         }
 
         function toggleCard(cardContainer, taskId) {
@@ -2157,7 +2220,7 @@ function getLogicalBusinessDate(date = new Date()) {
                         }
                     });
                 } else if (formConfig.completedEntry) {
-                    formData[formConfig.completedEntry] = "completed";
+                    formData[formConfig.completedEntry] = (shift.id === 'leader') ? "verified" : "completed";
                 }
 
                 showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
@@ -2282,16 +2345,47 @@ function getLogicalBusinessDate(date = new Date()) {
 }
 
         async function manualRefresh() {
-            showStatusMessage("Refreshing area status...", "info", 2000);
             await loadShiftStatusFromCloud();
         }
 
         let eodIncompleteAreas = [];
 
-        function populateNamesDatalist() {
-            const list = document.getElementById("allNamesList");
-            const names = Object.values(PIN_DATABASE).map(u => u.name).sort((a, b) => a.localeCompare(b));
-            list.innerHTML = names.map(n => `<option value="${n}"></option>`).join("");
+        let eodAllNames = [];
+
+        function getSortedNames() {
+            return Object.values(PIN_DATABASE).map(u => u.name).sort((a, b) => a.localeCompare(b));
+        }
+
+        function filterEODNameOptions(idx) {
+            const input = document.getElementById(`eodName-${idx}`);
+            const optionsBox = document.getElementById(`eodNameOptions-${idx}`);
+            if (!input || !optionsBox) return;
+
+            const query = input.value.trim().toLowerCase();
+            const matches = query ? eodAllNames.filter(n => n.toLowerCase().includes(query)) : eodAllNames;
+
+            if (matches.length === 0) {
+                optionsBox.style.display = "none";
+                optionsBox.innerHTML = "";
+                return;
+            }
+
+            optionsBox.innerHTML = matches.map(n =>
+                `<div class="eod-name-option" onmousedown="event.preventDefault(); selectEODName(${idx}, '${n.replace(/'/g, "\\'")}')">${n}</div>`
+            ).join("");
+            optionsBox.style.display = "block";
+        }
+
+        function selectEODName(idx, name) {
+            const input = document.getElementById(`eodName-${idx}`);
+            const optionsBox = document.getElementById(`eodNameOptions-${idx}`);
+            if (input) input.value = name;
+            if (optionsBox) optionsBox.style.display = "none";
+        }
+
+        function hideEODNameOptions(idx) {
+            const optionsBox = document.getElementById(`eodNameOptions-${idx}`);
+            if (optionsBox) optionsBox.style.display = "none";
         }
 
         async function openEODCheck() {
@@ -2300,7 +2394,7 @@ function getLogicalBusinessDate(date = new Date()) {
             const container = document.getElementById("eodContent");
             container.innerHTML = '<div class="spinner"></div><p style="text-align: center; color: var(--text-muted);">Checking today\'s status...</p>';
 
-            populateNamesDatalist();
+            eodAllNames = getSortedNames();
 
             // Refresh cloud data first so this check reflects reality, not stale state
             await loadShiftStatusFromCloud();
@@ -2339,7 +2433,13 @@ function getLogicalBusinessDate(date = new Date()) {
                         <strong>${item.zone.name}</strong>
                         <div style="font-size: 0.85rem; color: var(--text-muted);">${item.shift.title} — ${item.status}</div>
                     </div>
-                    <input type="text" list="allNamesList" id="eodName-${idx}" placeholder="Assign name..." style="flex: 1; min-width: 160px; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
+                    <div class="eod-name-combo">
+                        <input type="text" id="eodName-${idx}" placeholder="Assign name..." autocomplete="off"
+                            oninput="filterEODNameOptions(${idx})"
+                            onfocus="filterEODNameOptions(${idx})"
+                            onblur="setTimeout(() => hideEODNameOptions(${idx}), 150)">
+                        <div class="eod-name-options" id="eodNameOptions-${idx}"></div>
+                    </div>
                 </div>
             `).join("");
 
