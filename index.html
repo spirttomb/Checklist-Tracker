@@ -213,27 +213,84 @@
 
         .leader-controls {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.35rem;
             align-items: center;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 0.75rem;
+            padding: 0.3rem;
         }
 
         .leader-btn {
-            background: var(--border-color);
-            color: white;
+            background: transparent;
+            color: var(--text-white);
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.55rem 1rem;
             border-radius: 0.5rem;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: background 0.2s;
+            white-space: nowrap;
         }
 
-        .leader-btn:hover { background: var(--primary-hover); }
+        .leader-btn:hover { background: rgba(255, 255, 255, 0.12); }
+
+        .leader-btn-icon {
+            padding: 0.55rem 0.75rem;
+            font-size: 1.15rem;
+            line-height: 1;
+        }
+
+        .leader-btn-primary {
+            background: var(--border-color);
+        }
+
+        .leader-btn-primary:hover { background: var(--primary-hover); }
 
         .leader-btn.active-mode {
             background: var(--leader-gold);
             color: #1e293b;
             box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .eod-bottom-bar {
+            display: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 400;
+            background: var(--signin);
+            border-top: 3px solid #ef4444;
+            padding: 0.85rem 1rem;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.15);
+        }
+
+        .eod-bottom-bar.active {
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-eod-submit {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 0.6rem;
+            cursor: pointer;
+            width: 100%;
+            max-width: 420px;
+            transition: background 0.2s;
+        }
+
+        .btn-eod-submit:hover {
+            background: #dc2626;
+        }
+
+        body.eod-bar-active .viewport-container {
+            padding-bottom: 6rem;
         }
 
         /* Checklist Navigation Tabs */
@@ -694,6 +751,61 @@
             font-size: 1rem;
         }
 
+        .welcome-greeting {
+            font-size: 1.8rem;
+            color: var(--text-main);
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .welcome-greeting.shown {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .welcome-question-area {
+            margin-top: 1.5rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity 0.4s ease, max-height 0.4s ease;
+        }
+
+        .welcome-question-area.shown {
+            opacity: 1;
+            max-height: 300px;
+        }
+
+        .welcome-question {
+            font-size: 1.15rem;
+            color: var(--text-main);
+            font-weight: 600;
+            margin-bottom: 1.1rem;
+        }
+
+        .welcome-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .welcome-option-btn {
+            background: var(--border-color);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.25rem;
+            border-radius: 0.6rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .welcome-option-btn:hover {
+            background: var(--primary-hover);
+        }
+
         .eod-name-combo {
             position: relative;
             flex: 1;
@@ -712,17 +824,14 @@
 
         .eod-name-options {
             display: none;
-            position: absolute;
-            top: calc(100% + 4px);
-            left: 0;
-            right: 0;
+            position: fixed;
             max-height: 180px;
             overflow-y: auto;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 0.4rem;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-            z-index: 50;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            z-index: 2000;
         }
 
         .eod-name-option {
@@ -861,21 +970,25 @@
 
         <div class="center-group">
             <div class="am-pm-toggle">
-                <button class="am-pm-btn active" onclick="setAmPm('AM')">AM</button>
-                <button class="am-pm-btn" onclick="setAmPm('PM')">PM</button>
+                <button class="am-pm-btn" onclick="setAmPm('AM')">AM</button>
+                <button class="am-pm-btn active" onclick="setAmPm('PM')">PM</button>
             </div>
             <div class="checklist-nav" id="checklistNav"></div>
         </div>
 
         <div class="leader-controls">
-            <button class="leader-btn" id="overallLogBtn" style="display: none; background: var(--border-color);" onclick="openOverallLogModal()">Overall Log</button>
-            <button class="leader-btn" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()">&#8635; Refresh</button>
-            <button class="leader-btn" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
+            <button class="leader-btn leader-btn-icon" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()" title="Refresh area status">&#8635;</button>
+            <button class="leader-btn" id="overallLogBtn" style="display: none;" onclick="openOverallLogModal()">Overall Log</button>
+            <button class="leader-btn leader-btn-primary" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
     </div>
 </header>
 
     <div class="viewport-container" id="appViewport"></div>
+
+    <div class="eod-bottom-bar" id="eodBottomBar">
+        <button class="btn-eod-submit" onclick="openEODCheck()">Submit EOD</button>
+    </div>
 
     <div class="modal-overlay" id="authOverlay">
         <div class="modal-card">
@@ -896,6 +1009,13 @@
                 <button type="button" onclick="pressPinDigit('0')">0</button>
                 <button type="button" class="pin-key-muted" onclick="pinBackspace()">⌫</button>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="welcomeOverlay">
+        <div class="modal-card" style="text-align: center;">
+            <h2 id="welcomeGreeting" class="welcome-greeting"></h2>
+            <div id="welcomeQuestionArea" class="welcome-question-area"></div>
         </div>
     </div>
 
@@ -1388,7 +1508,8 @@ const OVERALL_LOG_CONFIG = {
                 period: "AM",
                 zones: [
                     {
-                        name: "6:00 AM",
+                        name: "6",
+                        subtitle: "6:00 AM",
                         tasks: [
                             { title: "Tea", steps: ["Start brewing tea for FC"] },
                             { title: "Prepare Kay-5", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
@@ -1403,7 +1524,8 @@ const OVERALL_LOG_CONFIG = {
                         ]
                     },
                     {
-                        name: "6:15 AM",
+                        name: "615",
+                        subtitle: "6:15 AM",
                         tasks: [
                             { title: "Rugs", steps: ["Lay out all of the rugs"] },
                             { title: "Blinds", steps: ["Roll up all of the blinds"] },
@@ -1790,12 +1912,19 @@ function getLogicalBusinessDate(date = new Date()) {
                 leaderBtn.style.display = "block";
                 overallLogBtn.style.display = "block";
                 refreshDataBtn.style.display = "block";
+                isLeaderOverviewMode = false;
+                leaderBtn.classList.remove("active-mode");
+                leaderBtn.innerText = "Leader Overview";
+                document.getElementById("eodBottomBar").classList.remove("active");
+                document.body.classList.remove("eod-bar-active");
             } else {
                 leaderBtn.style.display = "none";
                 overallLogBtn.style.display = "none";
                 refreshDataBtn.style.display = "none";
                 isLeaderOverviewMode = false;
                 leaderBtn.classList.remove("active-mode");
+                document.getElementById("eodBottomBar").classList.remove("active");
+                document.body.classList.remove("eod-bar-active");
 
                 // The Leader tab is hidden for non-leaders - don't leave
                 // them stranded on it if it was active for the last user.
@@ -1807,6 +1936,131 @@ function getLogicalBusinessDate(date = new Date()) {
 
             document.getElementById("authOverlay").classList.remove("active");
             pinInput.value = ""; 
+            startWelcomeFlow();
+        }
+
+        function startWelcomeFlow() {
+            const firstName = currentUser.name.split(' ')[0];
+            const greeting = document.getElementById("welcomeGreeting");
+            const questionArea = document.getElementById("welcomeQuestionArea");
+
+            greeting.innerText = `Welcome, ${firstName}`;
+            greeting.classList.remove("shown");
+            questionArea.classList.remove("shown");
+            questionArea.innerHTML = "";
+
+            document.getElementById("welcomeOverlay").classList.add("active");
+
+            // Fade the greeting in, then follow up with the first question a
+            // second later.
+            requestAnimationFrame(() => {
+                setTimeout(() => greeting.classList.add("shown"), 30);
+            });
+
+            setTimeout(() => {
+                askShiftPeriodQuestion();
+            }, 1000);
+        }
+
+        function showWelcomeQuestion(html) {
+            const questionArea = document.getElementById("welcomeQuestionArea");
+            questionArea.classList.remove("shown");
+            questionArea.innerHTML = html;
+            requestAnimationFrame(() => {
+                setTimeout(() => questionArea.classList.add("shown"), 30);
+            });
+        }
+
+        function askShiftPeriodQuestion() {
+            showWelcomeQuestion(`
+                <p class="welcome-question">Are you working a morning or night shift?</p>
+                <div class="welcome-options">
+                    <button class="welcome-option-btn" onclick="answerShiftPeriod('AM')">Morning</button>
+                    <button class="welcome-option-btn" onclick="answerShiftPeriod('PM')">Night</button>
+                </div>
+            `);
+        }
+
+        function answerShiftPeriod(period) {
+            currentAmPm = period;
+            document.querySelectorAll(".am-pm-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.innerText === period);
+            });
+
+            if (currentUser.role === 'leader') {
+                askLeaderRoleQuestion();
+            } else {
+                finishWelcomeFlow();
+            }
+        }
+
+        function askLeaderRoleQuestion() {
+            showWelcomeQuestion(`
+                <p class="welcome-question">Are you filling out a checklist or verifying?</p>
+                <div class="welcome-options">
+                    <button class="welcome-option-btn" onclick="answerLeaderRole('checklist')">Filling out a checklist</button>
+                    <button class="welcome-option-btn" onclick="answerLeaderRole('verifying')">Verifying</button>
+                </div>
+            `);
+        }
+
+        function answerLeaderRole(choice) {
+            if (choice === 'verifying') {
+                setLeaderOverviewMode(true);
+                finishWelcomeFlow();
+            } else {
+                setLeaderOverviewMode(false);
+                askLeadingShiftQuestion();
+            }
+        }
+
+        function askLeadingShiftQuestion() {
+            showWelcomeQuestion(`
+                <p class="welcome-question">Are you leading the shift today?</p>
+                <div class="welcome-options">
+                    <button class="welcome-option-btn" onclick="answerLeadingShift(true)">Yes</button>
+                    <button class="welcome-option-btn" onclick="answerLeadingShift(false)">No</button>
+                </div>
+            `);
+        }
+
+        function answerLeadingShift(isLeading) {
+            if (isLeading) {
+                const leaderIdx = checklistsData.findIndex(s => s.id === 'leader');
+                if (leaderIdx !== -1) {
+                    activeTabIndex = leaderIdx;
+                    activeZoneIndex = null;
+                }
+            } else {
+                // They're filling out a normal checklist today, not their
+                // own leader checklist - make sure we're not still sitting
+                // on the Leader tab from a previous login.
+                const nonLeaderIdx = checklistsData.findIndex(s => s.id !== 'leader' && (!s.period || s.period === currentAmPm));
+                if (nonLeaderIdx !== -1) {
+                    activeTabIndex = nonLeaderIdx;
+                    activeZoneIndex = null;
+                }
+            }
+            finishWelcomeFlow();
+        }
+
+        function finishWelcomeFlow() {
+            document.getElementById("welcomeOverlay").classList.remove("active");
+
+            // Make sure the tab we land on is actually valid for the chosen
+            // AM/PM period and the user's role.
+            const isVisible = (shift) => {
+                if (shift.period && shift.period !== currentAmPm) return false;
+                if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return false;
+                return true;
+            };
+            const activeShift = checklistsData[activeTabIndex];
+            if (!activeShift || !isVisible(activeShift)) {
+                const fallbackIndex = checklistsData.findIndex(isVisible);
+                activeTabIndex = fallbackIndex !== -1 ? fallbackIndex : 0;
+                activeZoneIndex = null;
+            }
+
             renderTabs();
             loadShiftStatusFromCloud();
         }
@@ -1828,26 +2082,35 @@ function getLogicalBusinessDate(date = new Date()) {
             document.getElementById("authPinInput").value = "";
         }
 
-        function toggleLeaderMode() {
-            isLeaderOverviewMode = !isLeaderOverviewMode;
+        function setLeaderOverviewMode(enabled) {
+            isLeaderOverviewMode = enabled;
             const btn = document.getElementById("leaderOverviewToggle");
             const overallLogBtn = document.getElementById("overallLogBtn");
+            const eodBar = document.getElementById("eodBottomBar");
 
             if (isLeaderOverviewMode) {
                 btn.classList.add("active-mode");
                 btn.innerText = "Close Leader Overview";
                 overallLogBtn.style.display = "block";
-                if (checklistsData[activeTabIndex].id === 'preclose') {
+                eodBar.classList.add("active");
+                document.body.classList.add("eod-bar-active");
+                if (checklistsData[activeTabIndex] && checklistsData[activeTabIndex].id === 'preclose') {
                     activeTabIndex = 1; 
                 }
             } else {
                 btn.classList.remove("active-mode");
                 btn.innerText = "Leader Overview";
+                eodBar.classList.remove("active");
+                document.body.classList.remove("eod-bar-active");
                 if (currentUser && currentUser.role !== 'leader') {
                     overallLogBtn.style.display = "none";
                 }
             }
             activeZoneIndex = null;
+        }
+
+        function toggleLeaderMode() {
+            setLeaderOverviewMode(!isLeaderOverviewMode);
             renderTabs();
             loadShiftStatusFromCloud();
         }
@@ -1902,13 +2165,11 @@ function getLogicalBusinessDate(date = new Date()) {
                 const currentShiftLocked = shift.id !== 'preclose' ? isShiftComplete(shift.id) : isPrecloseFullyLocked;
                 
                 if (currentShiftLocked) {
-                    const showEODButton = isLeaderOverviewMode && (shift.id === 'preclose' || shift.id === 'close-930' || shift.id === 'close-1030');
                     appViewport.innerHTML = `
                         <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
                             <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
                             <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
                             <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
-                            ${showEODButton ? `<button class="btn-submit-area" style="margin-top: 1.5rem; background: #ef4444;" onclick="openEODCheck()">Submit EOD</button>` : ''}
                         </div>
                     `;
                     return;
@@ -2318,7 +2579,7 @@ function getLogicalBusinessDate(date = new Date()) {
     // 2. Iterate through all zones in the shift to gather team members and areas
     shift.zones.forEach(zone => {
         if (unfinishedOverrides[zone.name]) {
-            logParts.push(`${unfinishedOverrides[zone.name]} - unfinished`);
+            logParts.push(`${unfinishedOverrides[zone.name]} - ${zone.name} (Unfinished)`);
             return;
         }
 
@@ -2358,6 +2619,11 @@ function getLogicalBusinessDate(date = new Date()) {
             const input = document.getElementById(`eodName-${idx}`);
             const optionsBox = document.getElementById(`eodNameOptions-${idx}`);
             if (!input || !optionsBox) return;
+
+            const rect = input.getBoundingClientRect();
+            optionsBox.style.left = rect.left + "px";
+            optionsBox.style.top = (rect.bottom + 4) + "px";
+            optionsBox.style.width = rect.width + "px";
 
             const query = input.value.trim().toLowerCase();
             const matches = query ? eodAllNames.filter(n => n.toLowerCase().includes(query)) : eodAllNames;
@@ -2556,14 +2822,23 @@ function getLogicalBusinessDate(date = new Date()) {
                             const dashIdx = part.indexOf('-');
                             if (dashIdx !== -1) {
                                 const person = part.substring(0, dashIdx).trim();
-                                const actionOrArea = part.substring(dashIdx + 1).trim();
+                                let actionOrArea = part.substring(dashIdx + 1).trim();
 
                                 if (person) namesSet.add(person);
 
                                 if (actionOrArea.toLowerCase() === 'verified') {
                                     leader = person;
                                 } else if (actionOrArea) {
-                                    assignments.push({ name: person, area: actionOrArea });
+                                    let unfinished = false;
+                                    const unfinishedMatch = actionOrArea.match(/^(.*)\(unfinished\)$/i);
+                                    if (unfinishedMatch) {
+                                        unfinished = true;
+                                        actionOrArea = unfinishedMatch[1].trim();
+                                    } else if (actionOrArea.toLowerCase() === 'unfinished') {
+                                        // Legacy entries submitted before area names were preserved
+                                        unfinished = true;
+                                    }
+                                    assignments.push({ name: person, area: actionOrArea, unfinished });
                                     areasSet.add(actionOrArea);
                                 }
                             }
@@ -2702,7 +2977,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No entries found.</p>`;
             } else {
                 log.assignments.forEach(item => {
-                    const isUnfinished = item.area.toLowerCase() === 'unfinished';
+                    const isUnfinished = item.unfinished === true;
                     const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
                     const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
                     const isHighlight = isNameMatch || isAreaMatch;
@@ -2728,6 +3003,7 @@ function getLogicalBusinessDate(date = new Date()) {
                         <div style="background: ${bg}; border: 1px solid ${border}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                             <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor};">${item.area}</div>
                             <div style="font-size: 1.1rem; font-weight: 700; color: ${nameColor}; margin-top: 0.2rem;">${item.name}</div>
+                            ${isUnfinished ? `<div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: #ffffff; margin-top: 0.3rem;">Unfinished</div>` : ''}
                         </div>
                     `;
                 });
@@ -2829,4 +3105,4 @@ function getLogicalBusinessDate(date = new Date()) {
         }
     </script>
 </body>
-</html> 
+</html>
