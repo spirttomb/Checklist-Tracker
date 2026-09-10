@@ -687,6 +687,12 @@
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
+        .modal-card .auth-state {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
         /* --- Explosion Popup Styles --- */
         .explosion-overlay {
             position: fixed;
@@ -1063,16 +1069,16 @@
 
     <div class="modal-overlay" id="authOverlay">
         <div class="modal-card">
-            <div id="authLoadingState">
+            <div id="authLoadingState" class="auth-state">
                 <div class="spinner"></div>
                 <p style="text-align: center; color: var(--text-muted);">Loading staff list...</p>
             </div>
-            <div id="authErrorState" style="display: none; text-align: center;">
+            <div id="authErrorState" class="auth-state" style="display: none; text-align: center;">
                 <h3 style="color: #ef4444;">Couldn't load staff list</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Check your connection and try again.</p>
                 <button type="button" class="btn-submit-area" onclick="retryStaffLoad()">Retry</button>
             </div>
-            <div id="authLoginState" style="display: none;">
+            <div id="authLoginState" class="auth-state" style="display: none;">
                 <h3>Enter Team Member PIN</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
                 <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
@@ -1952,21 +1958,21 @@ function getLogicalBusinessDate(date = new Date()) {
         }
 
         function showAuthLoading() {
-            document.getElementById("authLoadingState").style.display = "block";
+            document.getElementById("authLoadingState").style.display = "flex";
             document.getElementById("authErrorState").style.display = "none";
             document.getElementById("authLoginState").style.display = "none";
         }
 
         function showAuthError() {
             document.getElementById("authLoadingState").style.display = "none";
-            document.getElementById("authErrorState").style.display = "block";
+            document.getElementById("authErrorState").style.display = "flex";
             document.getElementById("authLoginState").style.display = "none";
         }
 
         function showAuthLogin() {
             document.getElementById("authLoadingState").style.display = "none";
             document.getElementById("authErrorState").style.display = "none";
-            document.getElementById("authLoginState").style.display = "block";
+            document.getElementById("authLoginState").style.display = "flex";
         }
 
         function retryStaffLoad() {
