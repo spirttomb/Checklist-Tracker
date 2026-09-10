@@ -1070,7 +1070,7 @@
             <div id="authErrorState" style="display: none; text-align: center;">
                 <h3 style="color: #ef4444;">Couldn't load staff list</h3>
                 <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Check your connection and try again.</p>
-                <button type="button" class="btn-submit-area" onclick="initializeStaffDatabase()">Retry</button>
+                <button type="button" class="btn-submit-area" onclick="retryStaffLoad()">Retry</button>
             </div>
             <div id="authLoginState" style="display: none;">
                 <h3>Enter Team Member PIN</h3>
@@ -1175,7 +1175,7 @@
         // The staff PIN database lives in an external Google Sheet now
         // (name, pin, role, house columns) instead of being hardcoded here,
         // so it's easier to maintain the staff list. Populated by
-        // loadPinDatabase() before login is possible - see initializeStaffDatabase().
+        // loadPinDatabase() before login is possible - see loadStaffDatabaseInBackground().
         let PIN_DATABASE = {};
 
         const STAFF_SHEET_ID = "1Y1alfXEMbRiIWTbllZTQ4_K4-O5bhTnOiRn8DxN5QqY";
@@ -1927,27 +1927,53 @@ function getLogicalBusinessDate(date = new Date()) {
             localStorage.removeItem('precloseLocks');
         }
 
+        let staffDatabaseReady = false;
+        let staffDatabaseLoadPromise = null;
+
         document.addEventListener("DOMContentLoaded", () => {
             cleanOldLocalStorage();
-            initializeStaffDatabase();
+
+            // Show the PIN screen immediately so people can start typing
+            // right away - the staff list loads silently behind it. We only
+            // ever show a wait state if someone submits before it's ready.
+            showAuthLogin();
+            document.getElementById("authOverlay").classList.add("active");
+            document.getElementById("authPinInput").value = "";
+            document.getElementById("authPinInput").focus();
+
+            staffDatabaseLoadPromise = loadStaffDatabaseInBackground();
         });
 
-        async function initializeStaffDatabase() {
-            document.getElementById("authOverlay").classList.add("active");
+        async function loadStaffDatabaseInBackground() {
+            staffDatabaseReady = false;
+            const success = await loadPinDatabase();
+            staffDatabaseReady = success;
+            return success;
+        }
+
+        function showAuthLoading() {
             document.getElementById("authLoadingState").style.display = "block";
             document.getElementById("authErrorState").style.display = "none";
             document.getElementById("authLoginState").style.display = "none";
+        }
 
-            const success = await loadPinDatabase();
-
+        function showAuthError() {
             document.getElementById("authLoadingState").style.display = "none";
+            document.getElementById("authErrorState").style.display = "block";
+            document.getElementById("authLoginState").style.display = "none";
+        }
 
-            if (success) {
-                document.getElementById("authLoginState").style.display = "block";
-                promptLogin();
-            } else {
-                document.getElementById("authErrorState").style.display = "block";
-            }
+        function showAuthLogin() {
+            document.getElementById("authLoadingState").style.display = "none";
+            document.getElementById("authErrorState").style.display = "none";
+            document.getElementById("authLoginState").style.display = "block";
+        }
+
+        function retryStaffLoad() {
+            showAuthLogin();
+            document.getElementById("authPinInput").value = "";
+            document.getElementById("authPinInput").focus();
+            staffDatabaseLoadPromise = loadStaffDatabaseInBackground();
         }
 
         async function loadPinDatabase() {
@@ -1991,18 +2017,31 @@ function getLogicalBusinessDate(date = new Date()) {
         }
 
         function promptLogin() {
+            showAuthLogin();
             document.getElementById("authOverlay").classList.add("active");
             document.getElementById("authPinInput").value = "";
             document.getElementById("authPinInput").focus();
         }
 
-        function handleLogin() {
+        async function handleLogin() {
             const pinInput = document.getElementById("authPinInput");
             const pin = pinInput.value.trim();
 
             if (!pin) {
                 showStatusMessage("Please enter a valid PIN.", "error");
                 return;
+            }
+
+            if (!staffDatabaseReady) {
+                // They submitted before the background load finished - this
+                // is the only time we actually make them wait.
+                showAuthLoading();
+                const success = await staffDatabaseLoadPromise;
+                if (!success) {
+                    showAuthError();
+                    return;
+                }
+                showAuthLogin();
             }
 
             if (!PIN_DATABASE[pin]) {
