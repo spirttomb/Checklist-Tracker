@@ -247,6 +247,28 @@
 
         .leader-btn-primary:hover { background: var(--primary-hover); }
 
+        #overallLogTabs .overall-log-tab {
+            background: var(--signin);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 0.55rem 1.1rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        #overallLogTabs .overall-log-tab:hover {
+            background: var(--border-color);
+            color: white;
+        }
+
+        #overallLogTabs .overall-log-tab.active {
+            background: var(--border-color);
+            color: white;
+        }
+
         .leader-btn.active-mode {
             background: var(--leader-gold);
             color: #1e293b;
@@ -271,17 +293,25 @@
             justify-content: center;
         }
 
+        .eod-bottom-bar-inner {
+            display: flex;
+            gap: 0.75rem;
+            width: 100%;
+            max-width: 700px;
+            flex-wrap: wrap;
+        }
+
         .btn-eod-submit {
             background: #ef4444;
             color: white;
             border: none;
-            padding: 0.9rem 2.5rem;
-            font-size: 1.1rem;
+            padding: 0.9rem 1.5rem;
+            font-size: 1rem;
             font-weight: 700;
             border-radius: 0.6rem;
             cursor: pointer;
-            width: 100%;
-            max-width: 420px;
+            flex: 1;
+            min-width: 140px;
             transition: background 0.2s;
         }
 
@@ -1024,27 +1054,42 @@
     <div class="viewport-container" id="appViewport"></div>
 
     <div class="eod-bottom-bar" id="eodBottomBar">
-        <button class="btn-eod-submit" onclick="openEODCheck()">Submit EOD</button>
+        <div class="eod-bottom-bar-inner">
+            <button class="btn-eod-submit" onclick="openEODCheck('am')">Submit AM EOD</button>
+            <button class="btn-eod-submit" onclick="openEODCheck('pm')">Submit PM EOD</button>
+            <button class="btn-eod-submit" onclick="openEODCheck('leader')">Submit Leader EOD</button>
+        </div>
     </div>
 
     <div class="modal-overlay" id="authOverlay">
         <div class="modal-card">
-            <h3>Enter Team Member PIN</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
-            <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
-            <div class="pin-keypad">
-                <button type="button" onclick="pressPinDigit('1')">1</button>
-                <button type="button" onclick="pressPinDigit('2')">2</button>
-                <button type="button" onclick="pressPinDigit('3')">3</button>
-                <button type="button" onclick="pressPinDigit('4')">4</button>
-                <button type="button" onclick="pressPinDigit('5')">5</button>
-                <button type="button" onclick="pressPinDigit('6')">6</button>
-                <button type="button" onclick="pressPinDigit('7')">7</button>
-                <button type="button" onclick="pressPinDigit('8')">8</button>
-                <button type="button" onclick="pressPinDigit('9')">9</button>
-                <button type="button" class="pin-key-muted" onclick="pinClear()">Clear</button>
-                <button type="button" onclick="pressPinDigit('0')">0</button>
-                <button type="button" class="pin-key-muted" onclick="pinBackspace()">⌫</button>
+            <div id="authLoadingState">
+                <div class="spinner"></div>
+                <p style="text-align: center; color: var(--text-muted);">Loading staff list...</p>
+            </div>
+            <div id="authErrorState" style="display: none; text-align: center;">
+                <h3 style="color: #ef4444;">Couldn't load staff list</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Check your connection and try again.</p>
+                <button type="button" class="btn-submit-area" onclick="initializeStaffDatabase()">Retry</button>
+            </div>
+            <div id="authLoginState" style="display: none;">
+                <h3>Enter Team Member PIN</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Please enter the first 4 digits of your user PIN.</p>
+                <input type="password" id="authPinInput" placeholder="****" maxlength="4" oninput="if (this.value.length === 4) handleLogin()">
+                <div class="pin-keypad">
+                    <button type="button" onclick="pressPinDigit('1')">1</button>
+                    <button type="button" onclick="pressPinDigit('2')">2</button>
+                    <button type="button" onclick="pressPinDigit('3')">3</button>
+                    <button type="button" onclick="pressPinDigit('4')">4</button>
+                    <button type="button" onclick="pressPinDigit('5')">5</button>
+                    <button type="button" onclick="pressPinDigit('6')">6</button>
+                    <button type="button" onclick="pressPinDigit('7')">7</button>
+                    <button type="button" onclick="pressPinDigit('8')">8</button>
+                    <button type="button" onclick="pressPinDigit('9')">9</button>
+                    <button type="button" class="pin-key-muted" onclick="pinClear()">Clear</button>
+                    <button type="button" onclick="pressPinDigit('0')">0</button>
+                    <button type="button" class="pin-key-muted" onclick="pinBackspace()">⌫</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1060,7 +1105,7 @@
     <div class="modal-overlay" id="eodModal">
         <div class="modal-card" style="max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
-                <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">End of Day</h3>
+                <h3 id="eodModalTitle" style="font-size: 1.5rem; color: var(--text-main); margin: 0;">End of Day</h3>
                 <button onclick="closeEODModal()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
             </div>
             <div id="eodContent">
@@ -1075,6 +1120,13 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
                 <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">Overall Shift Log Viewer</h3>
                 <button onclick="closeOverallLogModal()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
+            </div>
+
+            <div class="overall-log-tabs" id="overallLogTabs" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+                <button class="overall-log-tab" data-cat="am" onclick="switchOverallLogCategory('am')">AM</button>
+                <button class="overall-log-tab" data-cat="pm" onclick="switchOverallLogCategory('pm')">PM</button>
+                <button class="overall-log-tab" data-cat="leader" onclick="switchOverallLogCategory('leader')">Leader</button>
+                <button class="overall-log-tab" data-cat="day" onclick="switchOverallLogCategory('day')">Full Day</button>
             </div>
             
             <div style="background: var(--signin); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; align-items: end;">
@@ -1120,79 +1172,40 @@
     </div>
 
     <script>
-        const PIN_DATABASE = {
-            "4834": { name: "Fawn C", role: "leader" },
-"8793": { name: "Josh E", role: "leader" },
-"1107": { name: "Chloe J", role: "leader" },
-"1757": { name: "Niah I", role: "leader" },
-"3871": { name: "Emma R", role: "leader" },
-"9439": { name: "Kendal S", role: "leader" },
-"2553": { name: "Jaida W", role: "leader" },
-"1728": { name: "Cassidy F", role: "leader" },
+        // The staff PIN database lives in an external Google Sheet now
+        // (name, pin, role, house columns) instead of being hardcoded here,
+        // so it's easier to maintain the staff list. Populated by
+        // loadPinDatabase() before login is possible - see initializeStaffDatabase().
+        let PIN_DATABASE = {};
 
-"3896": { name: "Chace A", role: "member" },
-"7457": { name: "Riley A", role: "member" },
-"9973": { name: "Chimere A", role: "member" },
-"3187": { name: "Karlton A", role: "member" },
-"5674": { name: "Ania A", role: "member" },
-"3168": { name: "Lay A", role: "member" },
-"1190": { name: "Mikyah A", role: "member" },
-"2861": { name: "Marcus B", role: "member" },
-"6007": { name: "Carmen B", role: "member" },
-"5308": { name: "Anthony B", role: "member" },
-"1124": { name: "Ariane B", role: "member" },
-"9305": { name: "London B", role: "member" },
-"4852": { name: "Kennedi B", role: "member" },
-"4586": { name: "Latecia C", role: "member" },
-"5376": { name: "Kadashya C", role: "member" },
-"7636": { name: "Andrew D", role: "member" },
-"9690": { name: "Brooklyn E", role: "member" },
-"4032": { name: "Anthony G", role: "member" },
-"6554": { name: "Jamarr G", role: "member" },
-"2010": { name: "Destiny G", role: "member" },
-"8672": { name: "Akira H", role: "member" },
-"6176": { name: "Millie H", role: "member" },
-"6638": { name: "Ken H", role: "member" },
-"7564": { name: "Kianna H", role: "member" },
-"8088": { name: "Taylor H", role: "member" },
-"5926": { name: "Presten H", role: "member" },
-"3454": { name: "Mara J", role: "member" },
-"5117": { name: "Kaitlyn J", role: "member" },
-"9681": { name: "Karrington J", role: "member" },
-"5064": { name: "Nicolette J", role: "member" },
-"2516": { name: "Kayla K", role: "member" },
-"5372": { name: "Kaleil L", role: "member" },
-"1929": { name: "Rolland L", role: "member" },
-"3659": { name: "Chloe M", role: "member" },
-"5705": { name: "Jeremie M", role: "member" },
-"5738": { name: "Kennedy M", role: "member" },
-"3526": { name: "Amor M", role: "member" },
-"4246": { name: "Aniyah M", role: "member" },
-"3104": { name: "Kiarra M", role: "member" },
-"9997": { name: "Madison M", role: "member" },
-"1263": { name: "Nique M", role: "member" },
-"9203": { name: "Kenneth P", role: "member" },
-"9826": { name: "Bailey R", role: "member" },
-"6250": { name: "Madison R", role: "member" },
-"4632": { name: "Pey R", role: "member" },
-"4043": { name: "Yasmin S", role: "member" },
-"7710": { name: "Will S", role: "member" },
-"9201": { name: "Johnathon S", role: "member" },
-"1759": { name: "Alana T", role: "member" },
-"4047": { name: "Tracy T", role: "member" },
-"8647": { name: "Kendall T", role: "member" },
-"2218": { name: "Lundyn T", role: "member" },
-"8947": { name: "Bobby W", role: "member" },
-"5322": { name: "Erin W", role: "member" },
-"5613": { name: "Teyre W", role: "member" },
-"6280": { name: "Boyd W", role: "member" },
-"7875": { name: "Adriene W", role: "member" },
-"7307": { name: "ZahCorey W", role: "member" }
+        const STAFF_SHEET_ID = "1Y1alfXEMbRiIWTbllZTQ4_K4-O5bhTnOiRn8DxN5QqY";
+
+        const OVERALL_LOG_CONFIGS = {
+            am: {
+                label: "AM (Opening)",
+                formId: "1FAIpQLSeqlq4QqmqM5vOhnk-9iysGu5J5FE9l4950B7h2Dfyrqln3mA",
+                entryKey: "entry.960358531",
+                sheetId: "1RBw4aFt7bhbKx0mODO4Zpi_mkQzQMbQv0V282rUo5Mg"
+            },
+            pm: {
+                label: "PM (Closing)",
+                formId: "1FAIpQLSdHFRRt4Lu4DdtzsnNoeVIZClZoS7_HxE4OIQQx--vVNmrJIw",
+                entryKey: "entry.629425722",
+                sheetId: "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E"
+            },
+            leader: {
+                label: "Leader",
+                formId: "1FAIpQLSeEoEYcvBlUJmaKI4MTAcNyP1IMr2c3-Y1SGyFEbyDr9msHcA",
+                entryKey: "entry.703595417",
+                sheetId: "15dd_K7JQVcX2Y7cp_OlrTURF7kiF6rDen0TgIxMWgEA"
+            },
+            day: {
+                label: "Full Day",
+                formId: "1FAIpQLSfpzMNsqcl9hISbxwKJbMRDzsgKDnU81hcwu5VmRLOUGBr7hQ",
+                entryKey: "entry.2120832756",
+                sheetId: "1CX-BFpJP4KpI9B1cx134yuyywCs6uG6kkfGO-gIcX_Y"
+            }
         };
-const OVERALL_LOG_CONFIG = {
-    formId: "1FAIpQLSdHFRRt4Lu4DdtzsnNoeVIZClZoS7_HxE4OIQQx--vVNmrJIw",
-    entryKey: "entry.629425722"
-};
         const FORM_MAPPINGS = {
             "close-930::Front Counter": {
                 formId: "1FAIpQLSct_5hXLVUObY92qrFwfB5XR71tT2_he7-3vpyCs-lPSKJTtA",
@@ -1916,8 +1929,66 @@ function getLogicalBusinessDate(date = new Date()) {
 
         document.addEventListener("DOMContentLoaded", () => {
             cleanOldLocalStorage();
-            promptLogin();
+            initializeStaffDatabase();
         });
+
+        async function initializeStaffDatabase() {
+            document.getElementById("authOverlay").classList.add("active");
+            document.getElementById("authLoadingState").style.display = "block";
+            document.getElementById("authErrorState").style.display = "none";
+            document.getElementById("authLoginState").style.display = "none";
+
+            const success = await loadPinDatabase();
+
+            document.getElementById("authLoadingState").style.display = "none";
+
+            if (success) {
+                document.getElementById("authLoginState").style.display = "block";
+                promptLogin();
+            } else {
+                document.getElementById("authErrorState").style.display = "block";
+            }
+        }
+
+        async function loadPinDatabase() {
+            try {
+                const query = encodeURIComponent("SELECT A, B, C, D");
+                const url = `https://docs.google.com/spreadsheets/d/${STAFF_SHEET_ID}/gviz/tq?tqx=out:json&tq=${query}&_cb=${Date.now()}`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Failed to fetch staff sheet");
+                const text = await res.text();
+
+                const prefix = "setResponse(";
+                const startIndex = text.indexOf(prefix);
+                if (startIndex === -1) throw new Error("Unexpected staff sheet response");
+
+                const jsonStart = startIndex + prefix.length;
+                const jsonEnd = text.lastIndexOf(")");
+                const data = JSON.parse(text.substring(jsonStart, jsonEnd));
+
+                const newDb = {};
+                if (data.table && data.table.rows) {
+                    data.table.rows.forEach(row => {
+                        if (!row.c) return;
+                        const name = (row.c[0] && row.c[0].v) ? row.c[0].v.toString().trim() : "";
+                        const pin = (row.c[1] && row.c[1].v) ? row.c[1].v.toString().trim() : "";
+                        const role = (row.c[2] && row.c[2].v) ? row.c[2].v.toString().trim().toLowerCase() : "member";
+                        const house = (row.c[3] && row.c[3].v) ? row.c[3].v.toString().trim().toLowerCase() : "foh";
+                        if (pin && name) {
+                            newDb[pin] = { name, role, house };
+                        }
+                    });
+                }
+
+                if (Object.keys(newDb).length === 0) throw new Error("No staff records found in sheet");
+
+                PIN_DATABASE = newDb;
+                return true;
+            } catch (e) {
+                console.error("Error loading staff database:", e);
+                return false;
+            }
+        }
 
         function promptLogin() {
             document.getElementById("authOverlay").classList.add("active");
@@ -2623,50 +2694,87 @@ function getLogicalBusinessDate(date = new Date()) {
     goBackToAreas();
 }
 
+        let currentOverallLogCategory = 'pm';
+
         async function openOverallLogModal() {
+            currentOverallLogCategory = 'pm';
+            updateOverallLogTabs();
+            await loadOverallLogCategory();
+        }
+
+        function updateOverallLogTabs() {
+            document.querySelectorAll('.overall-log-tab').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.cat === currentOverallLogCategory);
+            });
+        }
+
+        async function switchOverallLogCategory(category) {
+            currentOverallLogCategory = category;
+            updateOverallLogTabs();
+            await loadOverallLogCategory();
+        }
+
+        async function loadOverallLogCategory() {
             const modal = document.getElementById("overallLogModal");
             modal.classList.add("active");
             document.getElementById("overallLogDisplay").innerHTML = '<div class="spinner"></div><p style="text-align: center; color: var(--text-muted);">Fetching log data...</p>';
-            
-            overallLogsData = await fetchOverallLogs();
-            
+
+            const config = OVERALL_LOG_CONFIGS[currentOverallLogCategory];
+            overallLogsData = await fetchOverallLogs(config.sheetId, currentOverallLogCategory === 'day');
+
             populateFilterDropdowns();
             filterAndPopulateLogDropdown();
         }
 
-        async function submitOverallLogForShift(shift, unfinishedOverrides = {}) {
-    let logParts = [];
-    let leaderName = currentUser ? currentUser.name : "Leader";
+        const EOD_CATEGORIES = {
+            am: { shiftIds: ['opening'], configKey: 'am', label: 'AM' },
+            pm: { shiftIds: ['close-930', 'close-1030'], configKey: 'pm', label: 'PM' },
+            leader: { shiftIds: ['leader'], configKey: 'leader', label: 'Leader' }
+        };
 
-    // 1. Add the leader verification part
-    logParts.push(`${leaderName} - verified`);
+        let eodCurrentCategory = 'pm';
 
-    // 2. Iterate through all zones in the shift to gather team members and areas
-    shift.zones.forEach(zone => {
-        if (unfinishedOverrides[zone.name]) {
-            logParts.push(`${unfinishedOverrides[zone.name]} - ${zone.name} (Unfinished)`);
-            return;
+        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm') {
+            let logParts = [];
+            let leaderName = currentUser ? currentUser.name : "Leader";
+
+            // 1. Add the leader verification part
+            logParts.push(`${leaderName} - verified`);
+
+            // 2. Iterate through all zones in the shift to gather team members and areas
+            shift.zones.forEach(zone => {
+                const override = unfinishedOverrides[zone.name];
+                if (override) {
+                    logParts.push(`${override.name} - ${zone.name} (${override.tag})`);
+                    return;
+                }
+
+                const areaKey = `${shift.id}::${zone.name}`;
+                const areaState = cloudSyncedAreas[areaKey];
+
+                // Use the team member who completed it; fall back to whoever
+                // verified it (leader-shift zones submit+verify in one step
+                // so teamMember is never separately captured for those), and
+                // only fall back to the current EOD-runner as a last resort.
+                const memberName = (areaState && areaState.teamMember)
+                    ? areaState.teamMember
+                    : (areaState && areaState.leaderName)
+                        ? areaState.leaderName
+                        : leaderName;
+
+                logParts.push(`${memberName} - ${zone.name}`);
+            });
+
+            // Combine into the requested format: "Josh E - verified, Josh E - Front Counter, ..."
+            const formattedLogString = logParts.join(", ");
+
+            // Prepare payload for the correct category's overall log Google Form
+            const config = OVERALL_LOG_CONFIGS[configKey];
+            const overallFormData = {};
+            overallFormData[config.entryKey] = formattedLogString;
+
+            await submitToGoogleForm(config.formId, overallFormData);
         }
-
-        const areaKey = `${shift.id}::${zone.name}`;
-        const areaState = cloudSyncedAreas[areaKey];
-        
-        // Use the team member who completed it, fallback to leader if verified directly
-        const memberName = (areaState && areaState.teamMember) ? areaState.teamMember : leaderName;
-        
-        logParts.push(`${memberName} - ${zone.name}`);
-    });
-
-    // Combine into the requested format: "Josh E - verified, Josh E - Front Counter, ..."
-    const formattedLogString = logParts.join(", ");
-
-    // Prepare payload for the overall log Google Form
-    const overallFormData = {};
-    overallFormData[OVERALL_LOG_CONFIG.entryKey] = formattedLogString;
-
-    // Submit to the overall log form
-    await submitToGoogleForm(OVERALL_LOG_CONFIG.formId, overallFormData);
-}
 
         async function manualRefresh() {
             await loadShiftStatusFromCloud();
@@ -2717,9 +2825,13 @@ function getLogicalBusinessDate(date = new Date()) {
             if (optionsBox) optionsBox.style.display = "none";
         }
 
-        async function openEODCheck() {
+        async function openEODCheck(category) {
+            eodCurrentCategory = category;
+            const catInfo = EOD_CATEGORIES[category];
+
             const modal = document.getElementById("eodModal");
             modal.classList.add("active");
+            document.getElementById("eodModalTitle").innerText = `End of Day — ${catInfo.label}`;
             const container = document.getElementById("eodContent");
             container.innerHTML = '<div class="spinner"></div><p style="text-align: center; color: var(--text-muted);">Checking today\'s status...</p>';
 
@@ -2728,16 +2840,18 @@ function getLogicalBusinessDate(date = new Date()) {
             // Refresh cloud data first so this check reflects reality, not stale state
             await loadShiftStatusFromCloud();
 
-            const closingShifts = checklistsData.filter(s => s.id === 'close-930' || s.id === 'close-1030');
+            const relevantShifts = checklistsData.filter(s => catInfo.shiftIds.includes(s.id));
             eodIncompleteAreas = [];
-            closingShifts.forEach(shift => {
+            relevantShifts.forEach(shift => {
                 shift.zones.forEach(zone => {
                     const areaKey = `${shift.id}::${zone.name}`;
                     const state = cloudSyncedAreas[areaKey];
                     if (!state) {
-                        eodIncompleteAreas.push({ shift, zone, status: "Not submitted" });
+                        // Nobody has submitted this area's checklist at all yet.
+                        eodIncompleteAreas.push({ shift, zone, status: "Not submitted", defaultTag: "Unfinished" });
                     } else if (!state.leaderVerified) {
-                        eodIncompleteAreas.push({ shift, zone, status: "Not verified" });
+                        // The checklist was submitted, just not verified yet.
+                        eodIncompleteAreas.push({ shift, zone, status: "Not verified", defaultTag: "Incomplete" });
                     }
                 });
             });
@@ -2762,6 +2876,10 @@ function getLogicalBusinessDate(date = new Date()) {
                         <strong>${item.zone.name}</strong>
                         <div style="font-size: 0.85rem; color: var(--text-muted);">${item.shift.title} — ${item.status}</div>
                     </div>
+                    <select id="eodTag-${idx}" title="Didn't finish their area/checklist at all, or finished the area but it's not verified yet?" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
+                        <option value="Unfinished" ${item.defaultTag === 'Unfinished' ? 'selected' : ''}>Unfinished</option>
+                        <option value="Incomplete" ${item.defaultTag === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
+                    </select>
                     <div class="eod-name-combo">
                         <input type="text" id="eodName-${idx}" placeholder="Assign name..." autocomplete="off"
                             oninput="filterEODNameOptions(${idx})"
@@ -2773,7 +2891,8 @@ function getLogicalBusinessDate(date = new Date()) {
             `).join("");
 
             container.innerHTML = `
-                <p style="color: var(--leader-gold); font-weight: 700; margin-bottom: 1rem;">${eodIncompleteAreas.length} area(s) still need attention:</p>
+                <p style="color: var(--leader-gold); font-weight: 700; margin-bottom: 0.35rem;">${eodIncompleteAreas.length} area(s) still need attention:</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;"><b>Unfinished</b> = didn't finish the area/checklist. <b>Incomplete</b> = finished the area, just not verified yet.</p>
                 <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 0.5rem; margin-bottom: 1.25rem;">
                     ${rows}
                 </div>
@@ -2785,38 +2904,101 @@ function getLogicalBusinessDate(date = new Date()) {
             const assignments = [];
             for (let i = 0; i < eodIncompleteAreas.length; i++) {
                 const input = document.getElementById(`eodName-${i}`);
+                const tagSelect = document.getElementById(`eodTag-${i}`);
                 const name = input.value.trim();
                 if (!name) {
                     showStatusMessage(`Please assign a name for "${eodIncompleteAreas[i].zone.name}" before pushing through.`, "error");
                     input.focus();
                     return;
                 }
-                assignments.push(name);
+                assignments.push({ name, tag: tagSelect.value });
             }
             submitEODLog(assignments);
         }
 
-        async function submitEODLog(pushedThroughNames) {
-            const closingShifts = checklistsData.filter(s => s.id === 'close-930' || s.id === 'close-1030');
+        async function submitEODLog(pushedThroughAssignments) {
+            const catInfo = EOD_CATEGORIES[eodCurrentCategory];
+            const relevantShifts = checklistsData.filter(s => catInfo.shiftIds.includes(s.id));
 
-            for (const shift of closingShifts) {
+            for (const shift of relevantShifts) {
                 const overrides = {};
                 eodIncompleteAreas.forEach((item, idx) => {
                     if (item.shift.id === shift.id) {
-                        overrides[item.zone.name] = pushedThroughNames[idx];
+                        overrides[item.zone.name] = pushedThroughAssignments[idx];
                     }
                 });
-                await submitOverallLogForShift(shift, overrides);
+                await submitOverallLogForShift(shift, overrides, catInfo.configKey);
             }
 
-            showStatusMessage("End of day log submitted.", "success", 6000);
+            showStatusMessage(`${catInfo.label} end of day log submitted.`, "success", 6000);
             closeEODModal();
 
             setTimeout(() => {
                 showExplosionPopup(
-                    `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed today's close!`
+                    `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed the ${catInfo.label} close!`
                 );
             }, 400);
+
+            // Once AM, PM, and Leader have all been submitted for today,
+            // automatically compile and submit the full-day conglomerate log.
+            checkAndSubmitDayLog();
+        }
+
+        let dayLogSubmittedToday = false;
+
+        async function fetchLatestLogTextForToday(sheetId) {
+            try {
+                const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}&_cb=${Date.now()}`;
+                const res = await fetch(url);
+                if (!res.ok) return null;
+                const text = await res.text();
+                const prefix = "setResponse(";
+                const startIndex = text.indexOf(prefix);
+                if (startIndex === -1) return null;
+                const jsonStart = startIndex + prefix.length;
+                const jsonEnd = text.lastIndexOf(")");
+                const data = JSON.parse(text.substring(jsonStart, jsonEnd));
+                if (!data.table || !data.table.rows) return null;
+
+                const today = new Date();
+                for (const row of data.table.rows) {
+                    if (!row.c || !row.c[0] || !row.c[1]) continue;
+                    const dateVal = row.c[0].v ? row.c[0].v.toString() : "";
+                    let dateObj = null;
+                    if (dateVal.startsWith('Date(')) {
+                        const parts = dateVal.match(/\d+/g);
+                        if (parts && parts.length >= 3) dateObj = new Date(parts[0], parts[1], parts[2]);
+                    }
+                    if (!dateObj) continue;
+                    if (dateObj.toDateString() === today.toDateString()) {
+                        return row.c[1].v ? row.c[1].v.toString() : null;
+                    }
+                }
+                return null;
+            } catch (e) {
+                console.error("Error checking day log source:", e);
+                return null;
+            }
+        }
+
+        async function checkAndSubmitDayLog() {
+            if (dayLogSubmittedToday) return;
+
+            const [amText, pmText, leaderText] = await Promise.all([
+                fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.am.sheetId),
+                fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.pm.sheetId),
+                fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.leader.sheetId)
+            ]);
+
+            if (amText && pmText && leaderText) {
+                dayLogSubmittedToday = true;
+                const combined = `AM: ${amText} | PM: ${pmText} | LEADER: ${leaderText}`;
+                const formData = {};
+                formData[OVERALL_LOG_CONFIGS.day.entryKey] = combined;
+                await submitToGoogleForm(OVERALL_LOG_CONFIGS.day.formId, formData);
+                showStatusMessage("Full day log compiled and submitted!", "success", 6000);
+            }
         }
 
         function closeEODModal() {
@@ -2827,8 +3009,42 @@ function getLogicalBusinessDate(date = new Date()) {
             document.getElementById("overallLogModal").classList.remove("active");
         }
 
-        async function fetchOverallLogs() {
-            const sheetId = "1BT6jCPCFKqeq4dTVpKaVugZ2VUxWuJqXMEcC8i8x-6E";
+        // Parses one "Name - verified, Name - Area, Name - Area (Tag), ..."
+        // segment into a leader name and a list of assignments. Reused for
+        // both a normal single-segment log and each AM/PM/LEADER section of
+        // a compiled full-day log.
+        function parseLogSegment(segmentText) {
+            const parts = segmentText.split(',').map(s => s.trim()).filter(Boolean);
+            let leader = null;
+            const assignments = [];
+
+            parts.forEach(part => {
+                const dashIdx = part.indexOf('-');
+                if (dashIdx === -1) return;
+                const person = part.substring(0, dashIdx).trim();
+                let actionOrArea = part.substring(dashIdx + 1).trim();
+                if (!person || !actionOrArea) return;
+
+                if (actionOrArea.toLowerCase() === 'verified') {
+                    leader = person;
+                } else {
+                    let tag = null;
+                    const tagMatch = actionOrArea.match(/^(.*)\((Unfinished|Incomplete)\)$/i);
+                    if (tagMatch) {
+                        tag = tagMatch[2].charAt(0).toUpperCase() + tagMatch[2].slice(1).toLowerCase();
+                        actionOrArea = tagMatch[1].trim();
+                    } else if (actionOrArea.toLowerCase() === 'unfinished') {
+                        // Legacy entries submitted before area names were preserved
+                        tag = 'Unfinished';
+                    }
+                    assignments.push({ name: person, area: actionOrArea, unfinished: !!tag, tag });
+                }
+            });
+
+            return { leader, assignments };
+        }
+
+        async function fetchOverallLogs(sheetId, isDayLog = false) {
             const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
             const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}&_cb=${Date.now()}`;
 
@@ -2877,37 +3093,29 @@ function getLogicalBusinessDate(date = new Date()) {
                         const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
                         if (!logText) return;
 
-                        const parts = logText.split(',').map(s => s.trim()).filter(Boolean);
                         let leader = "Unknown Leader";
-                        const assignments = [];
-                        const namesSet = new Set();
-                        const areasSet = new Set();
+                        let assignments = [];
 
-                        parts.forEach(part => {
-                            const dashIdx = part.indexOf('-');
-                            if (dashIdx !== -1) {
-                                const person = part.substring(0, dashIdx).trim();
-                                let actionOrArea = part.substring(dashIdx + 1).trim();
+                        if (isDayLog) {
+                            // Full-day log format: "AM: <segment> | PM: <segment> | LEADER: <segment>"
+                            const sectionLeaders = [];
+                            logText.split('|').map(s => s.trim()).filter(Boolean).forEach(section => {
+                                const labelMatch = section.match(/^(AM|PM|LEADER):\s*(.*)$/i);
+                                const label = labelMatch ? labelMatch[1].toUpperCase() : null;
+                                const body = labelMatch ? labelMatch[2] : section;
+                                const parsed = parseLogSegment(body);
+                                if (parsed.leader) sectionLeaders.push(label ? `${label}: ${parsed.leader}` : parsed.leader);
+                                parsed.assignments.forEach(a => assignments.push({ ...a, section: label }));
+                            });
+                            leader = sectionLeaders.length ? sectionLeaders.join(', ') : "Unknown Leader";
+                        } else {
+                            const parsed = parseLogSegment(logText);
+                            leader = parsed.leader || "Unknown Leader";
+                            assignments = parsed.assignments;
+                        }
 
-                                if (person) namesSet.add(person);
-
-                                if (actionOrArea.toLowerCase() === 'verified') {
-                                    leader = person;
-                                } else if (actionOrArea) {
-                                    let unfinished = false;
-                                    const unfinishedMatch = actionOrArea.match(/^(.*)\(unfinished\)$/i);
-                                    if (unfinishedMatch) {
-                                        unfinished = true;
-                                        actionOrArea = unfinishedMatch[1].trim();
-                                    } else if (actionOrArea.toLowerCase() === 'unfinished') {
-                                        // Legacy entries submitted before area names were preserved
-                                        unfinished = true;
-                                    }
-                                    assignments.push({ name: person, area: actionOrArea, unfinished });
-                                    areasSet.add(actionOrArea);
-                                }
-                            }
-                        });
+                        const namesSet = new Set(assignments.map(a => a.name));
+                        const areasSet = new Set(assignments.map(a => a.area));
 
                         const isoDateString = !isNaN(dateObj.getTime()) 
                             ? dateObj.toISOString().split('T')[0] 
@@ -2922,7 +3130,8 @@ function getLogicalBusinessDate(date = new Date()) {
                             leader: leader,
                             assignments: assignments,
                             names: Array.from(namesSet),
-                            areas: Array.from(areasSet)
+                            areas: Array.from(areasSet),
+                            isDayLog: isDayLog
                         });
                     });
                 }
@@ -3008,6 +3217,44 @@ function getLogicalBusinessDate(date = new Date()) {
             filterAndPopulateLogDropdown();
         }
 
+        function renderAssignmentBox(item, filterName, filterArea) {
+            const isUnfinished = item.tag === 'Unfinished';
+            const isIncomplete = item.tag === 'Incomplete';
+            const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
+            const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
+            const isHighlight = isNameMatch || isAreaMatch;
+
+            let bg = 'var(--card-bg)';
+            let border = 'var(--border-color)';
+            let textColor = 'var(--text-muted)';
+            let nameColor = 'var(--text-main)';
+
+            if (isUnfinished) {
+                bg = '#ef4444';
+                border = '#b91c1c';
+                textColor = '#ffffff';
+                nameColor = '#ffffff';
+            } else if (isIncomplete) {
+                bg = '#f59e0b';
+                border = '#b45309';
+                textColor = '#1e293b';
+                nameColor = '#1e293b';
+            } else if (isHighlight) {
+                bg = 'var(--primary-hover)';
+                border = 'var(--leader-gold)';
+                textColor = '#ffffff';
+                nameColor = '#ffffff';
+            }
+
+            return `
+                <div style="background: ${bg}; border: 1px solid ${border}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor};">${item.area}</div>
+                    <div style="font-size: 1.1rem; font-weight: 700; color: ${nameColor}; margin-top: 0.2rem;">${item.name}</div>
+                    ${item.tag ? `<div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: ${textColor}; margin-top: 0.3rem;">${item.tag}</div>` : ''}
+                </div>
+            `;
+        }
+
         function renderSelectedLogDetails() {
             const selectEl = document.getElementById("overallLogSelect");
             const idx = parseInt(selectEl.value, 10);
@@ -3033,51 +3280,31 @@ function getLogicalBusinessDate(date = new Date()) {
                             Verified Leader: ${log.leader}
                         </div>
                     </div>
-                    
-                    <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
             `;
 
             if (log.assignments.length === 0) {
-                html += `<p style="color: var(--text-muted); grid-column: 1/-1;">No entries found.</p>`;
-            } else {
-                log.assignments.forEach(item => {
-                    const isUnfinished = item.unfinished === true;
-                    const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
-                    const isAreaMatch = filterArea && item.area.toLowerCase().includes(filterArea);
-                    const isHighlight = isNameMatch || isAreaMatch;
-
-                    let bg = 'var(--card-bg)';
-                    let border = 'var(--border-color)';
-                    let textColor = 'var(--text-muted)';
-                    let nameColor = 'var(--text-main)';
-
-                    if (isUnfinished) {
-                        bg = '#ef4444';
-                        border = '#b91c1c';
-                        textColor = '#ffffff';
-                        nameColor = '#ffffff';
-                    } else if (isHighlight) {
-                        bg = 'var(--primary-hover)';
-                        border = 'var(--leader-gold)';
-                        textColor = '#ffffff';
-                        nameColor = '#ffffff';
-                    }
-
+                html += `<p style="color: var(--text-muted);">No entries found.</p>`;
+            } else if (log.isDayLog) {
+                ['AM', 'PM', 'LEADER'].forEach(section => {
+                    const items = log.assignments.filter(a => a.section === section);
+                    if (items.length === 0) return;
                     html += `
-                        <div style="background: ${bg}; border: 1px solid ${border}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor};">${item.area}</div>
-                            <div style="font-size: 1.1rem; font-weight: 700; color: ${nameColor}; margin-top: 0.2rem;">${item.name}</div>
-                            ${isUnfinished ? `<div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: #ffffff; margin-top: 0.3rem;">Unfinished</div>` : ''}
+                        <h5 style="font-size: 1rem; color: var(--text-main); margin: 1rem 0 0.75rem 0;">${section} (${items.length})</h5>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
+                            ${items.map(item => renderAssignmentBox(item, filterName, filterArea)).join('')}
                         </div>
                     `;
                 });
+            } else {
+                html += `
+                    <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
+                        ${log.assignments.map(item => renderAssignmentBox(item, filterName, filterArea)).join('')}
+                    </div>
+                `;
             }
 
-            html += `
-                    </div>
-                </div>
-            `;
+            html += `</div>`;
 
             container.innerHTML = html;
         }
