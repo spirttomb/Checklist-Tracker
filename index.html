@@ -504,6 +504,9 @@
             border: 2px solid var(--border-color);
             justify-content: flex-start;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+            transform: translateZ(0);
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
@@ -658,8 +661,7 @@
         .explosion-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(11, 19, 31, 0.85);
-            backdrop-filter: blur(4px);
+            background: #0b131f;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -690,6 +692,12 @@
             animation: explosionPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
+        .explosion-overlay.submitting .explosion-shape {
+            animation: none;
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+        }
+
         @keyframes explosionPop {
             0% { transform: scale(0) rotate(-20deg); opacity: 0; }
             50% { transform: scale(1.1) rotate(5deg); opacity: 1; }
@@ -704,6 +712,14 @@
             letter-spacing: 1.5px;
             line-height: 1;
             white-space: pre-line;
+        }
+
+        .explosion-text.waiting-text {
+            font-size: 1.3rem;
+            font-weight: 500;
+            text-transform: none;
+            letter-spacing: normal;
+            line-height: 1.4;
         }
 
         .modal-card h3 { font-size: 1.5rem; color: var(--text-main); }
@@ -804,6 +820,22 @@
 
         .welcome-option-btn:hover {
             background: var(--primary-hover);
+        }
+
+        .welcome-skip-btn {
+            display: block;
+            margin: 1.5rem auto 0 auto;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .welcome-skip-btn:hover {
+            color: var(--text-main);
         }
 
         .eod-name-combo {
@@ -940,6 +972,11 @@
                 padding: 0.5rem 0.85rem;
                 font-size: 0.9rem;
             }
+
+            .checklist-nav {
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
         }
         
         .spinner {
@@ -977,8 +1014,8 @@
         </div>
 
         <div class="leader-controls">
-            <button class="leader-btn leader-btn-icon" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()" title="Refresh area status">&#8635;</button>
-            <button class="leader-btn" id="overallLogBtn" style="display: none;" onclick="openOverallLogModal()">Overall Log</button>
+            <button class="leader-btn leader-btn-primary leader-btn-icon" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()" title="Refresh area status">&#8635;</button>
+            <button class="leader-btn leader-btn-primary" id="overallLogBtn" style="display: none;" onclick="openOverallLogModal()">Overall Log</button>
             <button class="leader-btn leader-btn-primary" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
         </div>
     </div>
@@ -1016,6 +1053,7 @@
         <div class="modal-card" style="text-align: center;">
             <h2 id="welcomeGreeting" class="welcome-greeting"></h2>
             <div id="welcomeQuestionArea" class="welcome-question-area"></div>
+            <button type="button" class="welcome-skip-btn" onclick="skipWelcomeFlow()">Skip</button>
         </div>
     </div>
 
@@ -1076,6 +1114,7 @@
 
     <div id="explosionPopupOverlay" class="explosion-overlay">
         <div class="explosion-shape">
+            <div id="explosionSpinner" class="spinner" style="display: none; margin-bottom: 1.5rem;"></div>
             <h2 id="explosionMessage" class="explosion-text"></h2>
         </div>
     </div>
@@ -2044,6 +2083,10 @@ function getLogicalBusinessDate(date = new Date()) {
             finishWelcomeFlow();
         }
 
+        function skipWelcomeFlow() {
+            finishWelcomeFlow();
+        }
+
         function finishWelcomeFlow() {
             document.getElementById("welcomeOverlay").classList.remove("active");
 
@@ -2280,7 +2323,7 @@ function getLogicalBusinessDate(date = new Date()) {
                     const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
 
                     html += `
-                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onclick="toggleCard(this, '${taskId}')">
+                        <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onpointerdown="handleCardPointerDown(event)" onpointerup="handleCardPointerUp(event, this, '${taskId}')">
                             <div class="task-card-inner">
                                 <div class="card-face card-front">
                                     <div class="card-header-wrapper">
@@ -2371,6 +2414,24 @@ function getLogicalBusinessDate(date = new Date()) {
 
             renderTabs();
             loadShiftStatusFromCloud();
+        }
+
+        let cardPointerStart = null;
+
+        function handleCardPointerDown(e) {
+            cardPointerStart = { x: e.clientX, y: e.clientY };
+        }
+
+        function handleCardPointerUp(e, cardContainer, taskId) {
+            const start = cardPointerStart;
+            cardPointerStart = null;
+            if (start) {
+                const dx = Math.abs(e.clientX - start.x);
+                const dy = Math.abs(e.clientY - start.y);
+                // A real scroll/drag gesture, not a tap - don't flip the card.
+                if (dx > 10 || dy > 10) return;
+            }
+            toggleCard(cardContainer, taskId);
         }
 
         function toggleCard(cardContainer, taskId) {
@@ -2482,13 +2543,17 @@ function getLogicalBusinessDate(date = new Date()) {
                     formData[formConfig.completedEntry] = (shift.id === 'leader') ? "verified" : "completed";
                 }
 
+                if (shift.id !== 'preclose') {
+                    showSubmittingOverlay();
+                }
+
+                await submitToGoogleForm(formConfig.formId, formData);
+
                 showStatusMessage(`${zone.name} checklist successfully submitted!`, 'success');
 
                 if (shift.id !== 'preclose') {
                     showExplosionPopup(`Congratulations ${currentUser.name.substring(0, currentUser.name.lastIndexOf(' '))} on completing ${zone.name}!`);
                 }
-
-                await submitToGoogleForm(formConfig.formId, formData);
             }
 
             await loadShiftStatusFromCloud();
@@ -3036,15 +3101,71 @@ function getLogicalBusinessDate(date = new Date()) {
             });
         }
 
+        // A fuller, distinct fanfare for whole-area completion - an ascending
+        // arpeggio followed by a held chord - so it doesn't sound like the
+        // same quick chime used for flipping a single card.
+        function playCongratsSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const melody = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+            melody.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                const startTime = audioCtx.currentTime + (i * 0.11);
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0, startTime);
+                gain.gain.linearRampToValueAtTime(0.18, startTime + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.45);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + 0.45);
+            });
+
+            const chordFreqs = [523.25, 659.25, 783.99, 1046.5];
+            const chordStart = audioCtx.currentTime + melody.length * 0.11 + 0.05;
+            chordFreqs.forEach(freq => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, chordStart);
+                gain.gain.setValueAtTime(0, chordStart);
+                gain.gain.linearRampToValueAtTime(0.12, chordStart + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, chordStart + 0.8);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(chordStart);
+                osc.stop(chordStart + 0.8);
+            });
+        }
+
+        function showSubmittingOverlay() {
+            const overlay = document.getElementById('explosionPopupOverlay');
+            const msgEl = document.getElementById('explosionMessage');
+            const spinner = document.getElementById('explosionSpinner');
+
+            spinner.style.display = 'block';
+            msgEl.classList.add('waiting-text');
+            msgEl.innerText = "Please wait while the checklist is submitted...";
+
+            overlay.classList.add('submitting');
+            overlay.classList.add('active');
+        }
+
         function showExplosionPopup(message) {
             const overlay = document.getElementById('explosionPopupOverlay');
             const msgEl = document.getElementById('explosionMessage');
+            const spinner = document.getElementById('explosionSpinner');
+
+            spinner.style.display = 'none';
+            msgEl.classList.remove('waiting-text');
             msgEl.innerText = message;
-            
+
+            overlay.classList.remove('submitting');
             overlay.classList.add('active');
             
-            playChime();
-            setTimeout(playChime, 250);
+            playCongratsSound();
 
             triggerConfettiCenter();
 
