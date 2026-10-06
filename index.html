@@ -874,6 +874,23 @@
             color: var(--text-main);
         }
 
+        .eod-comment-toggle {
+            background: var(--signin);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .eod-comment-toggle:hover {
+            background: var(--border-color);
+            color: white;
+        }
+
         .eod-name-combo {
             position: relative;
             flex: 1;
@@ -1409,7 +1426,9 @@
                             { title: "Clean Drink Towers", steps: ["Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down all metal splash guards with a sanitizing wipe", "Clean all drip trays with hot water followed by a sanitizing wipe"] },
                             { title: "Clean Swinging Door", steps: ["Spray door on including window with blue spray, wipe clean with a paper towel, clean both sides", "Spray only the metal part of the door with stainless steel polish, polish in circular motions with a paper towel"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Lowboy Deep Clean", steps: ["For Wednesday and Saturday only, pull the lowboy out and deep clean it, including underneath and behind it"] },
                             { title: "Wipe Down All Counters", steps: ["Spray all white surfaces with blue spray, dry with a paper towel", "Follow up with a sanitizing wipe"] },
+                            { title: "Stock Paper Towels", steps: ["Make sure paper towels are stocked at the front counter"] },
                             { title: "Clean POS Terminals And Card Readers", steps: ["Wipe down all card readers with a sanitizing wipe", "Clean all terminals with blue spray, and dry with a paper towel"] },
                             { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
                             { title: "Reassemble Dishes", steps: ["Retrieve clean dishes and reassemble strawberry shooter, tea urns, lemonade machine"] }
@@ -1491,7 +1510,8 @@
                             { title: "Clean Exterior", steps: ["Clean the outside of the machine including the spindles", "Unplug Taylor"] },
                             { title: "Wall & Surroundings", steps: ["Pull Taylor out and clean the wall behind and to the left of Taylor, as well as any mess that might have been made to the right of the machine as well"] },
                             { title: "Wash & Reassemble", steps: ["Disaasemble Taylor, and wash the pieces", "Lay the pieces out on the white board and ensure you aren't missing any pieces", "Return your dishes and reassemble them"] },
-                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] }
+                            { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Lowboy Deep Clean", steps: ["For Wednesday and Saturday only, pull the lowboy out and deep clean it, including underneath and behind it"] }
                         ]
                     },
                     {
@@ -1503,10 +1523,12 @@
                             { title: "Prepare Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
                             { title: "Clean Drink Tower", steps: ["Remove all nozzles and diffusers and place them into the Kay-5 solution", "Wipe down the metal splash guard with a sanitizing wipe", "Clean the drip tray with hot water followed by a sanitizing wipe"] },
                             { title: "Wipe Down Counters", steps: ["Wipe down all drinks area counters including the tea/coffee brewing area and the team member drink rack with a sanitizing wipe"] },
+                            { title: "Stock Paper Towels", steps: ["Make sure paper towels are stocked in the drinks area"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Lowboy Deep Clean", steps: ["For Wednesday and Saturday only, pull the lowboy out and deep clean it, including underneath and behind it"] },
                             { title: "Dt Window Door", steps: ["Spray DT Window door with blue spray and wipe dry with paper towels"] },
                             { title: "Clean Dumpsink", steps: ["Clean the dumpsink"] },
-                            { title: "Clean Coffee Pots", steps: ["Starting with the FC coffee pot, empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station", "Repeat with DT coffee pot"] },
+                            { title: "Clean Coffee Pot", steps: ["Empty pot into dump sink", "Place pot back into the brewer, put a clean new filter and a cleaning tab into the brew cone", "Run a small brew cycle", "Remove and discard filter and tab", "Remove the coffee pot lid, and use the white scrub brush to thoroughly clean the inside of the pot", "Rinse white brush and return it to dish", "Empty cleaning solution from coffee pot into dump sink", "Place coffee pot back into brewer, run a rinse cycle with no filter or tab", "Drain rinse water into dump sink", "Place the lid on the coffee pot and return it to its station"] },
                             { title: "Reassemble Towers", steps: ["Put drink towers back together"] },
                             { title: "Bring Back Dishes", steps: ["Return sugar scoop, whisk, spoon, tea brewing urns, dump sink insert, tea and coffee brewing inserts, tea drip tray and reassemble strawberry shooter, tea urns, lemonade machine"] },
                             { title: "Reassemble Dishes", steps: ["Reassemble strawberry shooter, tea urns, lemonade machine"] }
@@ -1520,6 +1542,7 @@
                             { title: "Wipe Down", steps: ["Wipe chutes down with a sanitizing wipe", "Wipe down all pieces with a santizing wipe"] },
                             { title: "Reassemble", steps: ["Put the chutes back together"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
+                            { title: "Lowboy Deep Clean", steps: ["For Wednesday and Saturday only, pull the lowboy out and deep clean it, including underneath and behind it"] },
                             { title: "Bag Holders", steps: ["Pull out metal bag holders and set them aside"] },
                             { title: "Wipe Down Counter", steps: ["Wipe down the entire counter area with a sanitizing wipe"] },
                             { title: "Clean Bag Holders", steps: ["Empty the bag holders and wipe them down thoroughly", "After they dry, refill them with bags and place them back"] },
@@ -1566,7 +1589,7 @@
                 period: "AM",
                 zones: [
                     {
-                        name: "6:00 AM Team Member",
+                        name: "6",
                         subtitle: "6:00 AM",
                         tasks: [
                             { title: "Tea", steps: ["Start brewing tea for FC"] },
@@ -1582,8 +1605,7 @@
                         ]
                     },
                     {
-                        
-                        name: "6:15 AM Team Member",
+                        name: "615",
                         subtitle: "6:15 AM",
                         tasks: [
                             { title: "Rugs", steps: ["Lay out all of the rugs"] },
@@ -1661,6 +1683,7 @@
                     { title: "Swinging Door", steps: ["Swinging door has been cleaned and polished"] },
                     { title: "Lowboy", steps: ["Lowboy has been cleaned and polished"] },
                     { title: "Counters", steps: ["All counters have been cleaned and sanitized"] },
+                    { title: "Paper Towels", steps: ["Paper towels are stocked at the front counter"] },
                     { title: "POS Terminals and Card Readers", steps: ["All POS terminals and card readers have been cleaned"] }
                 ],
                 "Dining Room": [
@@ -1706,11 +1729,12 @@
                     { title: "Bring back remaining dishes", steps: ["Bring back disassembled strawberry shooter, sugar scoop, whisks, spoons, tea brewing urns, dump sink insert, tea and coffee brewing inserts"] },
                     { title: "DT Door", steps: ["The DT window door is clean"] },
                     { title: "Dumpsink", steps: ["The dumpsink and dumpsink insert are clean"] },
-                    { title: "Coffee Pots", steps: ["Both FC and DT coffee pots are empty and clean"] },
+                    { title: "Coffee Pot", steps: ["The coffee pot is empty and clean"] },
                     { title: "Drink Towers", steps: ["Drink towers have been cleaned and reassembled"] },
                     { title: "Tea Urns", steps: ["Tea urns have been cleaned and reassembled, including the tea liner and drip tray", "Tea brewing urns and inserts have been cleaned and brought back"] },
                     { title: "Lowboy", steps: ["Lowboy has been cleaned and polished"] },
                     { title: "Counters", steps: ["All counters have been cleaned and sanitized"] },
+                    { title: "Paper Towels", steps: ["Paper towels are stocked in the drinks area"] },
                     { title: "Dishes", steps: ["Sugar scoop, whisk, spoon, coffee brewing inserts, and assembled strawberry shooter have been cleaned and brought back"] }
                 ],
                 "Chutes": [
@@ -1768,6 +1792,18 @@ function getLogicalBusinessDate(date = new Date()) {
             window.statusTimeout = setTimeout(() => {
                 bar.style.display = "none";
             }, duration);
+        }
+
+        function showSubmitNudge() {
+            const bar = document.getElementById("statusMessageBar");
+            bar.innerHTML = `<div>Would you like to submit the checklist?</div><div style="font-size: 0.8em; font-weight: 400; margin-top: 0.2rem;">If not, please tap the submit button at the bottom.</div>`;
+            bar.className = "info";
+            bar.style.display = "block";
+
+            if (window.statusTimeout) clearTimeout(window.statusTimeout);
+            window.statusTimeout = setTimeout(() => {
+                bar.style.display = "none";
+            }, 6000);
         }
 
         function getPreclosedMap() {
@@ -1912,6 +1948,7 @@ function getLogicalBusinessDate(date = new Date()) {
                         }
                     }
                 }
+                fetchPromises.push(refreshEodSubmittedStatus());
                 await Promise.all(fetchPromises);
             } catch (error) {
                 console.error("Critical error during cloud sync:", error);
@@ -2319,10 +2356,14 @@ function getLogicalBusinessDate(date = new Date()) {
             }
             
             if (activeZoneIndex === null) {
-                const is930Locked = isShiftComplete('close-930');
-                const is1030Locked = isShiftComplete('close-1030');
+                const SHIFT_EOD_CATEGORY = { 'close-930': 'pm', 'close-1030': 'pm', 'opening': 'am', 'leader': 'leader' };
+                const is930Locked = isShiftComplete('close-930') || eodSubmittedToday.pm;
+                const is1030Locked = isShiftComplete('close-1030') || eodSubmittedToday.pm;
                 const isPrecloseFullyLocked = shift.id === 'preclose' && is930Locked && is1030Locked;
-                const currentShiftLocked = shift.id !== 'preclose' ? isShiftComplete(shift.id) : isPrecloseFullyLocked;
+                const eodCategoryForShift = SHIFT_EOD_CATEGORY[shift.id];
+                const currentShiftLocked = shift.id !== 'preclose'
+                    ? (isShiftComplete(shift.id) || (eodCategoryForShift && eodSubmittedToday[eodCategoryForShift]))
+                    : isPrecloseFullyLocked;
                 
                 if (currentShiftLocked) {
                     appViewport.innerHTML = `
@@ -2371,15 +2412,21 @@ function getLogicalBusinessDate(date = new Date()) {
                         const isSubmitted = !!areaState;
                         const isVerified = areaState && areaState.leaderVerified;
 
-                        if (isLeaderOverviewMode && !isSubmitted) {
-                            return; 
-                        }
-
                         let badgeHtml = '';
                         if (isVerified) {
                             badgeHtml = `<div class="submitted-badge" style="background: var(--leader-gold); color: #1e293b;">Verified</div>`;
                         } else if (isSubmitted) {
                             badgeHtml = `<div class="submitted-badge">Completed</div>`;
+                        } else if (isLeaderOverviewMode) {
+                            badgeHtml = `<div class="submitted-badge" style="background: #475569; color: #e2e8f0;">Not Started</div>`;
+                        }
+
+                        // Who actually did the work, shown so a leader doesn't
+                        // have to click in just to see who completed an area.
+                        let completedByHtml = '';
+                        if (isLeaderOverviewMode && isSubmitted) {
+                            const completedByName = areaState.teamMember || areaState.leaderName || 'Unknown';
+                            completedByHtml = `<p class="area-subtitle" style="margin-top: 0.4rem;">Completed by ${completedByName}</p>`;
                         }
 
                         count++;
@@ -2388,12 +2435,13 @@ function getLogicalBusinessDate(date = new Date()) {
                                 ${badgeHtml}
                                 <h3>${zone.name}</h3>
                                 ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                                ${completedByHtml}
                             </div>
                         `;
                     });
 
                     if (isLeaderOverviewMode && count === 0) {
-                        html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No submitted areas found for ${shift.title}.</p>`;
+                        html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No areas found for ${shift.title}.</p>`;
                     }
                 }
 
@@ -2568,6 +2616,15 @@ function getLogicalBusinessDate(date = new Date()) {
                 setTimeout(() => {
                     cardContainer.classList.add('bounce');
                 }, 550);
+
+                // If that was the last card, nudge them to actually hit
+                // Submit - people were finishing every card but still not
+                // tapping the submit button afterward.
+                const activeShift = checklistsData[activeTabIndex];
+                const activeZone = (activeShift && activeZoneIndex !== null) ? activeShift.zones[activeZoneIndex] : null;
+                if (activeZone && completedTasks.size === activeZone.tasks.length) {
+                    showSubmitNudge();
+                }
             }
         }
 
@@ -2674,6 +2731,22 @@ function getLogicalBusinessDate(date = new Date()) {
             }
 
             await loadShiftStatusFromCloud();
+
+            // Google's backend doesn't always have the new row queryable
+            // the instant our fixed submission wait finishes - if our own
+            // submission isn't showing up yet, retry a few times rather
+            // than silently leaving the area looking un-submitted (which
+            // just invites someone to submit it again).
+            if (shift.id !== 'preclose' && formConfig && !cloudSyncedAreas[areaKey]) {
+                for (let attempt = 0; attempt < 4 && !cloudSyncedAreas[areaKey]; attempt++) {
+                    await new Promise(r => setTimeout(r, 1500));
+                    const status = await fetchSheetLatestStatus(formConfig.sheetId);
+                    if (status) {
+                        cloudSyncedAreas[areaKey] = status;
+                    }
+                }
+            }
+
             goBackToAreas();
         }
 
@@ -2726,8 +2799,12 @@ function getLogicalBusinessDate(date = new Date()) {
             formData[formConfig.completedEntry] = "verified";
         }
 
-        // Submit individual zone form
+        // Same safeguard as regular checklist submission: show a blocking
+        // "please wait" screen and actually wait for the submission to
+        // finish, so closing the tab right after tapping Verify can't lose it.
+        showSubmittingOverlay("Please wait while the verification is submitted...");
         await submitToGoogleForm(formConfig.formId, formData);
+        hideSubmittingOverlay();
     }
 
     completedTasks.clear();
@@ -2736,6 +2813,18 @@ function getLogicalBusinessDate(date = new Date()) {
     // Refresh cloud status data so the newly verified zone is registered.
     // The overall log is no longer auto-submitted here - see EOD button.
     await loadShiftStatusFromCloud();
+
+    // Same race-condition guard as submission: Google's backend can take
+    // longer than our fixed wait to make the new "verified" row queryable.
+    if (formConfig && (!cloudSyncedAreas[areaKey] || !cloudSyncedAreas[areaKey].leaderVerified)) {
+        for (let attempt = 0; attempt < 4 && (!cloudSyncedAreas[areaKey] || !cloudSyncedAreas[areaKey].leaderVerified); attempt++) {
+            await new Promise(r => setTimeout(r, 1500));
+            const status = await fetchSheetLatestStatus(formConfig.sheetId);
+            if (status) {
+                cloudSyncedAreas[areaKey] = status;
+            }
+        }
+    }
 
     goBackToAreas();
 }
@@ -2780,18 +2869,27 @@ function getLogicalBusinessDate(date = new Date()) {
 
         let eodCurrentCategory = 'pm';
 
-        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm') {
+        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm', comments = {}) {
             let logParts = [];
             let leaderName = currentUser ? currentUser.name : "Leader";
+
+            // A comment is embedded as {the comment} at the end of an
+            // assignment's segment. The whole log line is comma-delimited,
+            // so any comma inside a comment would break parsing - sanitize
+            // it out rather than risk that.
+            const sanitizeComment = (text) => text.replace(/,/g, ';').replace(/[{}]/g, '').trim();
 
             // 1. Add the leader verification part
             logParts.push(`${leaderName} - verified`);
 
             // 2. Iterate through all zones in the shift to gather team members and areas
             shift.zones.forEach(zone => {
+                const rawComment = comments[zone.name];
+                const commentSuffix = rawComment ? ` {${sanitizeComment(rawComment)}}` : '';
+
                 const override = unfinishedOverrides[zone.name];
                 if (override) {
-                    logParts.push(`${override.name} - ${zone.name} (${override.tag})`);
+                    logParts.push(`${override.name} - ${zone.name} (${override.tag})${commentSuffix}`);
                     return;
                 }
 
@@ -2808,7 +2906,7 @@ function getLogicalBusinessDate(date = new Date()) {
                         ? areaState.leaderName
                         : leaderName;
 
-                logParts.push(`${memberName} - ${zone.name}`);
+                logParts.push(`${memberName} - ${zone.name}${commentSuffix}`);
             });
 
             // Combine into the requested format: "Josh E - verified, Josh E - Front Counter, ..."
@@ -2826,7 +2924,7 @@ function getLogicalBusinessDate(date = new Date()) {
             await loadShiftStatusFromCloud();
         }
 
-        let eodIncompleteAreas = [];
+        let eodAllAreas = [];
 
         let eodAllNames = [];
 
@@ -2886,18 +2984,20 @@ function getLogicalBusinessDate(date = new Date()) {
             // Refresh cloud data first so this check reflects reality, not stale state
             await loadShiftStatusFromCloud();
 
+            // Every area for this category gets listed now (not just the
+            // incomplete ones), so a comment can be attached to any of them.
             const relevantShifts = checklistsData.filter(s => catInfo.shiftIds.includes(s.id));
-            eodIncompleteAreas = [];
+            eodAllAreas = [];
             relevantShifts.forEach(shift => {
                 shift.zones.forEach(zone => {
                     const areaKey = `${shift.id}::${zone.name}`;
                     const state = cloudSyncedAreas[areaKey];
                     if (!state) {
-                        // Nobody has submitted this area's checklist at all yet.
-                        eodIncompleteAreas.push({ shift, zone, status: "Not submitted", defaultTag: "Unfinished" });
+                        eodAllAreas.push({ shift, zone, status: "Not submitted", defaultTag: "Unfinished", incomplete: true, completedBy: null });
                     } else if (!state.leaderVerified) {
-                        // The checklist was submitted, just not verified yet.
-                        eodIncompleteAreas.push({ shift, zone, status: "Not verified", defaultTag: "Incomplete" });
+                        eodAllAreas.push({ shift, zone, status: "Not verified", defaultTag: "Incomplete", incomplete: true, completedBy: state.teamMember || state.leaderName || null });
+                    } else {
+                        eodAllAreas.push({ shift, zone, status: "Verified", defaultTag: null, incomplete: false, completedBy: state.teamMember || state.leaderName || null });
                     }
                 });
             });
@@ -2908,23 +3008,13 @@ function getLogicalBusinessDate(date = new Date()) {
         function renderEODContent() {
             const container = document.getElementById("eodContent");
 
-            if (eodIncompleteAreas.length === 0) {
-                container.innerHTML = `
-                    <p style="text-align: center; color: var(--success-dark); font-weight: 700; font-size: 1.1rem; padding: 1rem 0;">All areas are submitted and verified.</p>
-                    <button class="btn-submit-area" style="width: 100%;" onclick="submitEODLog([])">Submit End of Day Log</button>
-                `;
-                return;
-            }
+            const incompleteCount = eodAllAreas.filter(a => a.incomplete).length;
 
-            const rows = eodIncompleteAreas.map((item, idx) => `
-                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-bottom: 1px solid var(--border-color); flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 150px;">
-                        <strong>${item.zone.name}</strong>
-                        <div style="font-size: 0.85rem; color: var(--text-muted);">${item.shift.title} — ${item.status}</div>
-                    </div>
+            const rows = eodAllAreas.map((item, idx) => {
+                const rightSideHtml = item.incomplete ? `
                     <select id="eodTag-${idx}" title="Didn't finish their area/checklist at all, or finished the area but it's not verified yet?" style="padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main);">
-                        <option value="Unfinished" ${item.defaultTag === 'Unfinished' ? 'selected' : ''}>Unfinished</option>
-                        <option value="Incomplete" ${item.defaultTag === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
+                        <option value="Unfinished" ${item.defaultTag === 'Unfinished' ? 'selected' : ''}>Area Unfinished - Checklist Unfinished</option>
+                        <option value="Incomplete" ${item.defaultTag === 'Incomplete' ? 'selected' : ''}>Area Finished - Checklist Unfinished</option>
                     </select>
                     <div class="eod-name-combo">
                         <input type="text" id="eodName-${idx}" placeholder="Assign name..." autocomplete="off"
@@ -2933,64 +3023,146 @@ function getLogicalBusinessDate(date = new Date()) {
                             onblur="setTimeout(() => hideEODNameOptions(${idx}), 150)">
                         <div class="eod-name-options" id="eodNameOptions-${idx}"></div>
                     </div>
-                </div>
-            `).join("");
+                ` : `
+                    <div style="flex: 1; min-width: 140px; font-size: 0.9rem; color: var(--text-muted);">${item.completedBy ? `Completed by <b style="color: var(--text-main);">${item.completedBy}</b>` : ''}</div>
+                `;
+
+                return `
+                    <div style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 150px;">
+                                <strong>${item.zone.name}</strong>
+                                <div style="font-size: 0.85rem; color: var(--text-muted);">${item.shift.title} — ${item.status}</div>
+                            </div>
+                            ${rightSideHtml}
+                            <button type="button" class="eod-comment-toggle" onclick="toggleEODComment(${idx})">+ Add Comment</button>
+                        </div>
+                        <div class="eod-comment-area" id="eodCommentArea-${idx}" style="display: none; margin-top: 0.6rem;">
+                            <textarea id="eodComment-${idx}" placeholder="e.g. didn't deep clean lowboy" rows="2" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main); resize: vertical; box-sizing: border-box;"></textarea>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            const introHtml = incompleteCount > 0 ? `
+                <p style="color: var(--leader-gold); font-weight: 700; margin-bottom: 0.35rem;">${incompleteCount} area(s) still need attention:</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;"><b>Area Unfinished - Checklist Unfinished</b> = they never finished the area at all. <b>Area Finished - Checklist Unfinished</b> = they finished the area, it just never got verified.</p>
+            ` : `
+                <p style="text-align: center; color: var(--success-dark); font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem;">All areas are submitted and verified.</p>
+            `;
+
+            const btnLabel = incompleteCount > 0 ? "Push Through Anyway" : "Submit End of Day Log";
+            const btnStyle = incompleteCount > 0 ? "background: var(--leader-gold); color: #1e293b;" : "";
 
             container.innerHTML = `
-                <p style="color: var(--leader-gold); font-weight: 700; margin-bottom: 0.35rem;">${eodIncompleteAreas.length} area(s) still need attention:</p>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1rem;"><b>Unfinished</b> = didn't finish the area/checklist. <b>Incomplete</b> = finished the area, just not verified yet.</p>
-                <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 0.5rem; margin-bottom: 1.25rem;">
+                ${introHtml}
+                <div style="max-height: 340px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 0.5rem; margin-bottom: 1.25rem;">
                     ${rows}
                 </div>
-                <button class="btn-submit-area" style="width: 100%; background: var(--leader-gold); color: #1e293b;" onclick="attemptPushThroughEOD()">Push Through Anyway</button>
+                <button class="btn-submit-area" style="width: 100%; ${btnStyle}" onclick="attemptSubmitEOD()">${btnLabel}</button>
             `;
         }
 
-        function attemptPushThroughEOD() {
+        function toggleEODComment(idx) {
+            const area = document.getElementById(`eodCommentArea-${idx}`);
+            if (!area) return;
+            const showing = area.style.display !== 'none';
+            area.style.display = showing ? 'none' : 'block';
+            if (!showing) {
+                const textarea = document.getElementById(`eodComment-${idx}`);
+                if (textarea) textarea.focus();
+            }
+        }
+
+        function attemptSubmitEOD() {
             const assignments = [];
-            for (let i = 0; i < eodIncompleteAreas.length; i++) {
-                const input = document.getElementById(`eodName-${i}`);
-                const tagSelect = document.getElementById(`eodTag-${i}`);
-                const name = input.value.trim();
-                if (!name) {
-                    showStatusMessage(`Please assign a name for "${eodIncompleteAreas[i].zone.name}" before pushing through.`, "error");
-                    input.focus();
-                    return;
+            for (let i = 0; i < eodAllAreas.length; i++) {
+                const item = eodAllAreas[i];
+                const commentEl = document.getElementById(`eodComment-${i}`);
+                const comment = commentEl ? commentEl.value.trim() : '';
+
+                if (item.incomplete) {
+                    const input = document.getElementById(`eodName-${i}`);
+                    const tagSelect = document.getElementById(`eodTag-${i}`);
+                    const name = input.value.trim();
+                    if (!name) {
+                        showStatusMessage(`Please assign a name for "${item.zone.name}" before submitting.`, "error");
+                        input.focus();
+                        return;
+                    }
+                    assignments.push({ name, tag: tagSelect.value, comment: comment || null });
+                } else {
+                    assignments.push(comment ? { comment } : null);
                 }
-                assignments.push({ name, tag: tagSelect.value });
             }
             submitEODLog(assignments);
         }
 
-        async function submitEODLog(pushedThroughAssignments) {
-            const catInfo = EOD_CATEGORIES[eodCurrentCategory];
-            const relevantShifts = checklistsData.filter(s => catInfo.shiftIds.includes(s.id));
+        let eodSubmissionInProgress = false;
 
-            for (const shift of relevantShifts) {
-                const overrides = {};
-                eodIncompleteAreas.forEach((item, idx) => {
-                    if (item.shift.id === shift.id) {
-                        overrides[item.zone.name] = pushedThroughAssignments[idx];
-                    }
-                });
-                await submitOverallLogForShift(shift, overrides, catInfo.configKey);
+        const EOD_FINISH_TEXT = {
+            am: "You successfully completed the AM shift checklists!",
+            pm: "You successfully completed the PM shift checklists!",
+            leader: "You successfully completed the Leader checklist!"
+        };
+
+        async function submitEODLog(assignments) {
+            // Guards against a double-click/double-tap firing this twice,
+            // which was causing both a duplicate log entry and the congrats
+            // sound stacking on top of itself.
+            if (eodSubmissionInProgress) return;
+            eodSubmissionInProgress = true;
+            document.querySelectorAll('#eodContent button').forEach(b => b.disabled = true);
+
+            try {
+                const catInfo = EOD_CATEGORIES[eodCurrentCategory];
+                const relevantShifts = checklistsData.filter(s => catInfo.shiftIds.includes(s.id));
+
+                for (const shift of relevantShifts) {
+                    const overrides = {};
+                    const comments = {};
+                    eodAllAreas.forEach((item, idx) => {
+                        if (item.shift.id !== shift.id) return;
+                        const a = assignments[idx];
+                        if (!a) return;
+                        if (item.incomplete) {
+                            overrides[item.zone.name] = { name: a.name, tag: a.tag };
+                            if (a.comment) comments[item.zone.name] = a.comment;
+                        } else if (a.comment) {
+                            comments[item.zone.name] = a.comment;
+                        }
+                    });
+                    await submitOverallLogForShift(shift, overrides, catInfo.configKey, comments);
+                }
+
+                showStatusMessage(`${catInfo.label} end of day log submitted.`, "success", 6000);
+                closeEODModal();
+
+                setTimeout(() => {
+                    showExplosionPopup(
+                        `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\n${EOD_FINISH_TEXT[eodCurrentCategory] || "You successfully completed EOD!"}`
+                    );
+                }, 400);
+
+                // Once AM, PM, and Leader have all been submitted for today,
+                // automatically compile and submit the full-day conglomerate log.
+                checkAndSubmitDayLog();
+            } finally {
+                eodSubmissionInProgress = false;
             }
-
-            showStatusMessage(`${catInfo.label} end of day log submitted.`, "success", 6000);
-            closeEODModal();
-
-            setTimeout(() => {
-                showExplosionPopup(
-                    `Congratulations ${currentUser ? currentUser.name.substring(0, currentUser.name.lastIndexOf(' ')) : ''}! \n\nYou successfully completed the ${catInfo.label} close!`
-                );
-            }, 400);
-
-            // Once AM, PM, and Leader have all been submitted for today,
-            // automatically compile and submit the full-day conglomerate log.
-            checkAndSubmitDayLog();
         }
 
         let dayLogSubmittedToday = false;
+        let eodSubmittedToday = { am: false, pm: false, leader: false };
+
+        async function refreshEodSubmittedStatus() {
+            const [amText, pmText, leaderText] = await Promise.all([
+                fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.am.sheetId),
+                fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.pm.sheetId),
+                fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.leader.sheetId)
+            ]);
+            eodSubmittedToday = { am: !!amText, pm: !!pmText, leader: !!leaderText };
+        }
 
         async function fetchLatestLogTextForToday(sheetId) {
             try {
@@ -3007,14 +3179,14 @@ function getLogicalBusinessDate(date = new Date()) {
                 const data = JSON.parse(text.substring(jsonStart, jsonEnd));
                 if (!data.table || !data.table.rows) return null;
 
-                const today = new Date();
+                const today = getLogicalBusinessDate(new Date());
                 for (const row of data.table.rows) {
                     if (!row.c || !row.c[0] || !row.c[1]) continue;
                     const dateVal = row.c[0].v ? row.c[0].v.toString() : "";
                     let dateObj = null;
                     if (dateVal.startsWith('Date(')) {
                         const parts = dateVal.match(/\d+/g);
-                        if (parts && parts.length >= 3) dateObj = new Date(parts[0], parts[1], parts[2]);
+                        if (parts && parts.length >= 3) dateObj = getLogicalBusinessDate(new Date(parts[0], parts[1], parts[2], parts[3] || 0, parts[4] || 0, parts[5] || 0));
                     }
                     if (!dateObj) continue;
                     if (dateObj.toDateString() === today.toDateString()) {
@@ -3065,10 +3237,19 @@ function getLogicalBusinessDate(date = new Date()) {
             const assignments = [];
 
             parts.forEach(part => {
-                const dashIdx = part.indexOf('-');
+                // Pull off a trailing {comment} first, if present
+                let comment = null;
+                let workingPart = part;
+                const commentMatch = part.match(/^(.*)\{(.*)\}\s*$/);
+                if (commentMatch) {
+                    workingPart = commentMatch[1].trim();
+                    comment = commentMatch[2].trim() || null;
+                }
+
+                const dashIdx = workingPart.indexOf('-');
                 if (dashIdx === -1) return;
-                const person = part.substring(0, dashIdx).trim();
-                let actionOrArea = part.substring(dashIdx + 1).trim();
+                const person = workingPart.substring(0, dashIdx).trim();
+                let actionOrArea = workingPart.substring(dashIdx + 1).trim();
                 if (!person || !actionOrArea) return;
 
                 if (actionOrArea.toLowerCase() === 'verified') {
@@ -3083,7 +3264,7 @@ function getLogicalBusinessDate(date = new Date()) {
                         // Legacy entries submitted before area names were preserved
                         tag = 'Unfinished';
                     }
-                    assignments.push({ name: person, area: actionOrArea, unfinished: !!tag, tag });
+                    assignments.push({ name: person, area: actionOrArea, unfinished: !!tag, tag, comment });
                 }
             });
 
@@ -3263,6 +3444,11 @@ function getLogicalBusinessDate(date = new Date()) {
             filterAndPopulateLogDropdown();
         }
 
+        const TAG_DISPLAY_TEXT = {
+            'Unfinished': 'Area Unfinished - Checklist Unfinished',
+            'Incomplete': 'Area Finished - Checklist Unfinished'
+        };
+
         function renderAssignmentBox(item, filterName, filterArea) {
             const isUnfinished = item.tag === 'Unfinished';
             const isIncomplete = item.tag === 'Incomplete';
@@ -3292,13 +3478,24 @@ function getLogicalBusinessDate(date = new Date()) {
                 nameColor = '#ffffff';
             }
 
+            const hasComment = !!item.comment;
+            const escapedComment = hasComment ? item.comment.replace(/"/g, '&quot;') : '';
+
             return `
-                <div style="background: ${bg}; border: 1px solid ${border}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor};">${item.area}</div>
+                <div style="position: relative; background: ${bg}; border: 1px solid ${border}; padding: 0.85rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05); ${hasComment ? 'cursor: pointer;' : ''}" ${hasComment ? `onclick="toggleLogComment(this)"` : ''}>
+                    ${hasComment ? `<div style="position: absolute; top: 0.6rem; right: 0.6rem; font-size: 0.95rem;" title="Has a comment">💬</div>` : ''}
+                    <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor}; ${hasComment ? 'padding-right: 1.25rem;' : ''}">${item.area}</div>
                     <div style="font-size: 1.1rem; font-weight: 700; color: ${nameColor}; margin-top: 0.2rem;">${item.name}</div>
-                    ${item.tag ? `<div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: ${textColor}; margin-top: 0.3rem;">${item.tag}</div>` : ''}
+                    ${item.tag ? `<div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: ${textColor}; margin-top: 0.3rem;">${TAG_DISPLAY_TEXT[item.tag] || item.tag}</div>` : ''}
+                    ${hasComment ? `<div class="log-comment-text" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid ${textColor}; opacity: 0.85; font-size: 0.85rem; font-style: italic; color: ${textColor};">"${escapedComment}"</div>` : ''}
                 </div>
             `;
+        }
+
+        function toggleLogComment(el) {
+            const commentDiv = el.querySelector('.log-comment-text');
+            if (!commentDiv) return;
+            commentDiv.style.display = commentDiv.style.display === 'none' ? 'block' : 'none';
         }
 
         function renderSelectedLogDetails() {
@@ -3413,17 +3610,23 @@ function getLogicalBusinessDate(date = new Date()) {
             });
         }
 
-        function showSubmittingOverlay() {
+        function showSubmittingOverlay(message) {
             const overlay = document.getElementById('explosionPopupOverlay');
             const msgEl = document.getElementById('explosionMessage');
             const spinner = document.getElementById('explosionSpinner');
 
             spinner.style.display = 'block';
             msgEl.classList.add('waiting-text');
-            msgEl.innerText = "Please wait while the checklist is submitted...";
+            msgEl.innerText = message || "Please wait while the checklist is submitted...";
 
             overlay.classList.add('submitting');
             overlay.classList.add('active');
+        }
+
+        function hideSubmittingOverlay() {
+            const overlay = document.getElementById('explosionPopupOverlay');
+            overlay.classList.remove('submitting');
+            overlay.classList.remove('active');
         }
 
         function showExplosionPopup(message) {
