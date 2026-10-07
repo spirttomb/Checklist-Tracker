@@ -932,6 +932,94 @@
             color: #ffffff;
         }
 
+
+        /* --- Headcount / assignment modal --- */
+        .modal-card.hc-card { max-width: 600px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem; }
+        .hc-card-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.25rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; }
+        .hc-help { color: var(--text-muted); font-size: 0.95rem; line-height: 1.45; margin-bottom: 1.25rem; }
+        .hc-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0.75rem; margin-bottom: 0.75rem; background: var(--card-bg); }
+        .hc-row-label { font-size: 1.05rem; }
+        .hc-stepper { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+        .modal-card .hc-step-btn { width: 3rem; height: 3rem; padding: 0; font-size: 1.6rem; line-height: 1; border-radius: 0.6rem; }
+        .hc-count { min-width: 2.6rem; text-align: center; font-size: 1.8rem; font-weight: 800; }
+        .modal-card .hc-primary { width: 100%; margin-top: 1rem; padding: 1rem; font-size: 1.1rem; }
+        .modal-card .hc-secondary { margin-top: 1rem; padding: 1rem 1.5rem; background: transparent; border: 2px solid var(--border-color); color: var(--text-main); }
+        .modal-card .hc-secondary:hover { background: var(--primary-hover); color: #fff; }
+        .modal-card button:disabled { opacity: 0.55; cursor: not-allowed; }
+        .hc-actions { display: flex; gap: 0.75rem; }
+        .hc-period-title { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--leader-gold); margin: 1.25rem 0 0.5rem; }
+        .hc-assign-row { padding: 0.85rem; border: 1px solid var(--border-color); border-radius: 0.75rem; margin-bottom: 0.6rem; background: var(--card-bg); }
+        .hc-assign-area { font-weight: 700; margin-bottom: 0.5rem; }
+        .hc-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .hc-chips:not(:empty) { margin-bottom: 0.5rem; }
+        .hc-chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.3rem 0.4rem 0.3rem 0.7rem; border-radius: 999px; background: var(--leader-gold); color: #1e293b; font-size: 0.9rem; font-weight: 700; }
+        .hc-chip-x { cursor: pointer; width: 1.4rem; height: 1.4rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,0.15); font-size: 0.7rem; }
+        .modal-card input.hc-name-input { width: 100%; box-sizing: border-box; text-align: left; letter-spacing: normal; font-size: 1rem; padding: 0.6rem 0.75rem; }
+        .hc-assign-btn { margin-top: 0.75rem; padding: 0.5rem 1rem; background: var(--leader-gold); color: #1e293b; border: none; border-radius: 0.5rem; font-weight: 700; cursor: pointer; }
+        .assigned-line { color: var(--text-main); font-weight: 600; margin-top: 0.4rem; }
+        .assigned-line.assigned-by { font-weight: 400; margin-top: 0.1rem; opacity: 0.8; }
+        @media (max-width: 480px) {
+            .modal-card.hc-card { padding: 1.25rem; }
+            .hc-row { flex-direction: column; align-items: stretch; text-align: center; }
+            .hc-stepper { justify-content: center; }
+        }
+
+
+        /* --- Settings --- */
+        .set-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border-color); }
+        .set-row:last-child { border-bottom: none; }
+        .set-label { font-weight: 700; font-size: 1.05rem; }
+        .set-label span { display: block; font-weight: 400; font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .modal-card .set-seg { display: flex; border: 2px solid var(--border-color); border-radius: 0.6rem; overflow: hidden; flex-shrink: 0; }
+        .modal-card .set-seg button { border-radius: 0; background: transparent; color: var(--text-main); padding: 0.55rem 1rem; }
+        .modal-card .set-seg button.on { background: var(--leader-gold); color: #1e293b; }
+        .set-scale { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+        .modal-card .set-scale button { padding: 0.5rem 0.8rem; }
+        .modal-card .set-scale button.set-auto { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); }
+        .modal-card .set-scale button.set-auto.on { background: var(--leader-gold); color: #1e293b; border-color: var(--leader-gold); }
+        .set-scale-val { min-width: 3.4rem; text-align: center; font-weight: 800; }
+        .modal-card .set-switch { position: relative; width: 3.2rem; height: 1.8rem; padding: 0; border-radius: 999px; background: #64748b; flex-shrink: 0; transition: background 0.2s; }
+        .modal-card .set-switch i { position: absolute; top: 0.2rem; left: 0.2rem; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+        .modal-card .set-switch.on { background: var(--leader-gold); }
+        .modal-card .set-switch.on i { transform: translateX(1.4rem); }
+        @media (max-width: 480px) { .set-row { flex-direction: column; align-items: stretch; } .set-seg, .set-scale { align-self: flex-start; } }
+
+        /* --- Centered nudge + preclose prompt --- */
+        .nudge-overlay { z-index: 1500; }
+        .modal-card .pc-yes { background: var(--leader-gold); color: #1e293b; padding: 1rem; font-size: 1.1rem; }
+        .modal-card .pc-yes:hover { background: #fbbf24; }
+        .modal-card .pc-no { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); padding: 0.85rem; }
+        .modal-card .pc-no:hover { background: var(--primary-hover); color: #fff; }
+
+        /* --- Area cards that cannot be opened yet (verify mode, not started) --- */
+        .area-card.blocked-card { opacity: 0.45; cursor: not-allowed; }
+        .area-card.blocked-card:hover { transform: none; }
+
+        /* --- Paper checklist (list view) --- */
+        .paper-sheet {
+            background-color: #fdfbf3;
+            background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(80, 140, 200, 0.22) 31px, rgba(80, 140, 200, 0.22) 32px);
+            color: #1f2937;
+            border-radius: 0.35rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.15);
+            padding: 1.5rem 1.5rem 1.5rem 4rem;
+            position: relative;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+        .paper-sheet::before { content: ""; position: absolute; top: 0; bottom: 0; left: 2.8rem; width: 2px; background: rgba(220, 70, 70, 0.55); }
+        .paper-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; font-size: 1.7rem; font-weight: 800; border-bottom: 2px solid #1f2937; padding-bottom: 0.4rem; margin-bottom: 0.9rem; }
+        .paper-date { font-size: 0.95rem; font-weight: 500; color: #4b5563; }
+        .paper-task { display: flex; gap: 0.9rem; padding: 0.7rem 0; cursor: pointer; border-bottom: 1px dashed rgba(31,41,55,0.18); -webkit-tap-highlight-color: transparent; }
+        .paper-task:last-child { border-bottom: none; }
+        .paper-box { flex: 0 0 1.7rem; width: 1.7rem; height: 1.7rem; border: 2.5px solid #1f2937; border-radius: 0.2rem; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 900; color: #15803d; margin-top: 0.1rem; }
+        .paper-task-title { font-weight: 800; font-size: 1.15rem; }
+        .paper-task ul { margin: 0.35rem 0 0 1.1rem; padding: 0; font-size: 0.98rem; line-height: 1.45; color: #374151; }
+        .paper-task.checked .paper-task-title { text-decoration: line-through; text-decoration-thickness: 2px; color: #6b7280; }
+        .paper-task.checked ul { color: #9ca3af; }
+        .paper-pre { margin-left: 0.5rem; font-size: 0.7rem; background: #f59e0b; color: #1e293b; padding: 0.1rem 0.45rem; border-radius: 999px; vertical-align: middle; }
+        @media (max-width: 480px) { .paper-sheet { padding: 1rem 0.9rem 1rem 2.9rem; } .paper-sheet::before { left: 2rem; } .paper-head { font-size: 1.35rem; } }
+
         @media (max-width: 768px) {
             header { padding: 1rem 1rem 0 1rem; }
             .viewport-container { padding: 0 1rem 1rem 1rem; }
@@ -1070,6 +1158,9 @@
             <button class="leader-btn leader-btn-primary leader-btn-icon" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()" title="Refresh area status">&#8635;</button>
             <button class="leader-btn leader-btn-primary" id="overallLogBtn" style="display: none;" onclick="openOverallLogModal()">Overall Log</button>
             <button class="leader-btn leader-btn-primary" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
+            <button class="leader-btn leader-btn-primary leader-btn-icon" id="settingsBtn" onclick="openSettings()" title="Settings" aria-label="Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
         </div>
     </div>
 </header>
@@ -1135,6 +1226,43 @@
                 <div class="spinner"></div>
                 <p style="text-align: center; color: var(--text-muted);">Checking today's status...</p>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal" onclick="if(event.target===this) closeSettings()">
+        <div class="modal-card hc-card" style="max-width: 520px;">
+            <div class="hc-card-header">
+                <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">Settings</h3>
+                <button type="button" onclick="closeSettings()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
+            </div>
+            <div id="settingsContent"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay nudge-overlay" id="nudgeOverlay" onclick="if(event.target===this) nudgeDismiss()">
+        <div class="modal-card">
+            <h3 id="nudgeTitle">Would you like to submit the checklist?</h3>
+            <button type="button" class="pc-yes" id="nudgeConfirmBtn" onclick="nudgeConfirm()">Submit</button>
+            <button type="button" class="pc-no" onclick="nudgeDismiss()">Not yet</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="precloseModal" onclick="if(event.target===this) cancelPrecloseChoice()">
+        <div class="modal-card">
+            <h3>Would you like to preclose your area?</h3>
+            <p id="precloseSub" style="color: var(--text-muted); font-weight: 700;"></p>
+            <button type="button" class="pc-yes" onclick="precloseChoose(true)">Yes, preclose</button>
+            <button type="button" class="pc-no" onclick="precloseChoose(false)">No, start closing checklist</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="headcountModal">
+        <div class="modal-card hc-card">
+            <div class="hc-card-header">
+                <h3 id="hcModalTitle" style="font-size: 1.5rem; color: var(--text-main); margin: 0;">Today's Headcount</h3>
+                <button type="button" onclick="closeHeadcountFlow()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
+            </div>
+            <div id="hcContent"></div>
         </div>
     </div>
 
@@ -1331,7 +1459,7 @@
             },
         };
 
-        const checklistsData = [
+        const CHECKLISTS_FALLBACK = [
             {
                 id: "preclose",
                 title: "Preclose",
@@ -1668,12 +1796,15 @@
                 ]
             }
         ];
+        // Preclose is no longer a tab: it is offered from each area's menu.
+        // Keep it last so it can never be the default tab.
+        CHECKLISTS_FALLBACK.push(CHECKLISTS_FALLBACK.shift());
 
         // Separate, consolidated wording shown only in Leader Verify mode.
         // These do not affect what gets submitted to the Google Forms/Sheets;
         // executeVerification() still submits against the original checklistsData
         // tasks and FORM_MAPPINGS entries above, regardless of what's displayed here.
-        const VERIFY_CHECKLISTS = {
+        const VERIFY_CHECKLISTS_FALLBACK = {
             "close-930": {
                 "Front Counter": [
                     { title: "Lemonade Machine", steps: ["Lemonade machine has been cleaned and reassembled"] },
@@ -1761,9 +1892,803 @@
             }
         };
 
-        function getVerifyCards(shiftId, zoneName) {
-            return (VERIFY_CHECKLISTS[shiftId] && VERIFY_CHECKLISTS[shiftId][zoneName]) || null;
+        // Live copies. They start as the built-in content and are swapped for the
+        // Google Sheets versions as soon as those load.
+        let checklistsData = JSON.parse(JSON.stringify(CHECKLISTS_FALLBACK));
+        let VERIFY_CHECKLISTS = JSON.parse(JSON.stringify(VERIFY_CHECKLISTS_FALLBACK));
+
+        function zoneLabel(zone) {
+            return (zone && (zone.displayName || zone.name)) || "";
         }
+
+        function getVerifyCards(shiftId, zoneName) {
+            const base = (VERIFY_CHECKLISTS[shiftId] && VERIFY_CHECKLISTS[shiftId][zoneName]) || null;
+            if (!base) return null;
+            // Work moved in by headcount redistribution also needs verifying
+            const shiftObj = checklistsData.find(sh => sh.id === shiftId);
+            const zoneObj = shiftObj && shiftObj.zones.find(z => z.name === zoneName);
+            let extras = [];
+            if (zoneObj) {
+                (zoneObj.movedFrom || []).forEach(m => {
+                    const v = VERIFY_CHECKLISTS[m.shiftId] && VERIFY_CHECKLISTS[m.shiftId][m.zone];
+                    if (v) extras = extras.concat(v.map(c => ({ title: `${m.zone}: ${c.title}`, steps: c.steps.slice() })));
+                });
+                zoneObj.tasks.filter(t => t.extra && !t.moved).forEach(t => extras.push({ title: t.title, steps: t.steps.slice() }));
+            }
+            return extras.length ? base.concat(extras) : base;
+        }
+
+
+        // =====================================================================
+        // SHEET-DRIVEN CHECKLISTS, HEADCOUNT, REDISTRIBUTION, ASSIGNMENTS
+        // Every ID below that starts with PASTE_ is a placeholder. While a
+        // placeholder is in place that feature quietly stays off and the app
+        // behaves exactly as before (built-in checklists, no headcount gate).
+        // =====================================================================
+        const CHECKLIST_SHEET_IDS = {
+            "preclose":   "PASTE_PRECLOSE_SHEET_ID_HERE",
+            "close-930":  "PASTE_930_SHEET_ID_HERE",
+            "close-1030": "PASTE_1030_SHEET_ID_HERE",
+            "opening":    "PASTE_AM_SHEET_ID_HERE",
+            "leader":     "PASTE_LEADER_SHEET_ID_HERE"
+        };
+
+        // Sheet with columns: Period | Headcount | Hidden Zone | Absorbing Zone | Extra Task | Extra Step
+        const REDISTRIBUTION_SHEET_ID = "1VqaVtG8IV_wVhVxDZNM68G-Q-JFhYvFx55oB3L1koM4";
+
+        // One form + response sheet per period. Form questions (in this order):
+        //   1) Headcount (short answer)   2) Submitted by (short answer, optional)
+        const HEADCOUNT_FORM_ID = "1FAIpQLSdHfE0kyGBxUmWA7hRHmCrLfz-8TtFCAsl1ddHmwbVSGpPVhw";
+        const HEADCOUNT_SHEET_ID = "1Ue7URrq1F150JV8A0iqMRawUr4tGWuHJxs9zlQBa5Bo";
+        const HEADCOUNT_NAME_ENTRY = "entry.PASTE_HEADCOUNT_NAME_ENTRY";
+        const HEADCOUNT_CONFIGS = {
+            "close-930": {
+                label: "9-10",
+                min: 3, max: 7, defaultCount: 5, col: 1,
+                formId: HEADCOUNT_FORM_ID,
+                sheetId: HEADCOUNT_SHEET_ID,
+                countEntry: "entry.965837583",
+                nameEntry: HEADCOUNT_NAME_ENTRY
+            },
+            "close-1030": {
+                label: "10-10:30",
+                min: 3, max: 8, defaultCount: 6, col: 2,
+                formId: HEADCOUNT_FORM_ID,
+                sheetId: HEADCOUNT_SHEET_ID,
+                countEntry: "entry.949164911",
+                nameEntry: HEADCOUNT_NAME_ENTRY
+            }
+        };
+
+        // One form + response sheet per period. One form question (short answer):
+        //   "Josh E - verified, Marcus B - Dining Room, Emily - Front Counter"
+        const ASSIGNMENTS_FORM_ID = "1FAIpQLSf9sbSwtw9sjVc5NuQACeK8SRvW2wDZqzZroPUvqsn4Q4EYDA";
+        const ASSIGNMENTS_SHEET_ID = "1-SXsyoGpFmBVrSNiwEXrzhmUeKlIVL2klUg2zs3aXMM";
+        const ASSIGNMENTS_CONFIGS = {
+            "close-930": {
+                col: 1,
+                formId: ASSIGNMENTS_FORM_ID,
+                sheetId: ASSIGNMENTS_SHEET_ID,
+                entryKey: "entry.949116749"
+            },
+            "close-1030": {
+                col: 2,
+                formId: ASSIGNMENTS_FORM_ID,
+                sheetId: ASSIGNMENTS_SHEET_ID,
+                entryKey: "entry.1340767126"
+            }
+        };
+
+        // One Google Sheet per area. Each holds that area's checklist (see
+        // parseZoneSheetRows for the accepted column layouts). Areas that are
+        // missing or fail to load keep their built-in content.
+        const CHECKLIST_ZONE_SHEETS = {
+            "close-930": {
+                "Front Counter":     "1Cn_uzQ5pSE05Z-ZQNiTxYE9kAhKMU72lN4Ev7as_eDU",
+                "Dining Room":       "1C11a1veW6dxVEZ26IABx7d0fSDmIfcnan1q4iiWhW4c",
+                "Bathrooms":         "1xlYAGHjbucEqjm2dR39VU-SE-IMiofa-RY5lPitWNSQ",
+                "Break Room & Tech": "1ni177H0ZmNCjrQA1wuKQdz3Rx77EJWmaPvwjIh2x6eo",
+                "Floors":            "1y-rF7moo-sv_NAPtkCfDSWqka95utq8EpaUMCWMRrt4"
+            },
+            "close-1030": {
+                "Desserts": "1Ce84B2K4CvkUwdCaBBVD072feX2r__17QtIvmxOPVuY",
+                "Drinks":   "1hvFBJ94JTBBsQzSWQyEWHrAozfh0dLdG5RtKKgtvVns",
+                "Chutes":   "1j37JbCgwM_5ZKxDm9R2uPeUTkyYUsDLPWgHXY8DPxMw",
+                "Stocking": "1P5tIH7dBhbQHzV47b91xBDXNVyDI0eMpfLTOJjOFlMI",
+                "Trash":    "1UzI9d3VyGQPrGjM66ZKmguSJ5PYhRNTVnjfzCytxsm0",
+                "Floors":   "1twif2-sM0LOD-UuiJvNYsJaHyVnpPLUkVP5scARg6HA"
+            },
+            "opening": {
+                "6":   "1B1YpNYMgcAueDhEDf535P_oyWORwCU_nVArbyPZTT3Q",
+                "615": "1ypeXhpHAeyGg71Lv3OLCkUtsii41Ref_q9foZlki6UU"
+            },
+            "leader": {
+                "Opening":  "17-Vv3Cx1V3jOTGNRVxw76b0CoHTLi0B49DOhNjLiKS0",
+                "Handover": "1rvhXsDC7fINI6MvbGy4lD_ujxwKJOPblg_a35sD6310",
+                "Closing":  "1D-vYs8RzmUQ_FKRJO0VfhSTX-DrwvE-X3q8ZxAEa1xU"
+            }
+        };
+
+        function isPlaceholderSheetId(id) {
+            return !id || String(id).startsWith("PASTE_");
+        }
+
+        function headcountEnabled(shiftId) {
+            const c = HEADCOUNT_CONFIGS[shiftId];
+            return !!c && !isPlaceholderSheetId(c.sheetId) && !isPlaceholderSheetId(c.formId) && !isPlaceholderSheetId(c.countEntry.replace("entry.", ""));
+        }
+
+        function assignmentsEnabled(shiftId) {
+            const c = ASSIGNMENTS_CONFIGS[shiftId];
+            return !!c && !isPlaceholderSheetId(c.sheetId) && !isPlaceholderSheetId(c.formId) && !isPlaceholderSheetId(c.entryKey.replace("entry.", ""));
+        }
+
+        async function gvizRows(sheetId, queryText, timeoutMs = 8000) {
+            if (isPlaceholderSheetId(sheetId)) return null;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${encodeURIComponent(queryText)}&_cb=${Date.now()}`;
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!res.ok) return null;
+                const text = await res.text();
+                const prefix = "setResponse(";
+                const startIndex = text.indexOf(prefix);
+                if (startIndex === -1) return null;
+                const data = JSON.parse(text.substring(startIndex + prefix.length, text.lastIndexOf(")")));
+                if (!data.table) return null;
+                return data.table.rows || [];
+            } catch (e) {
+                clearTimeout(timeoutId);
+                return null;
+            }
+        }
+
+        function cellText(cell) {
+            if (!cell) return "";
+            const raw = (cell.f !== undefined && cell.f !== null) ? cell.f : cell.v;
+            if (raw === undefined || raw === null) return "";
+            return String(raw).trim();
+        }
+
+        // Business-date key for a gviz timestamp cell ("Date(y,m,d,h,mi,s)")
+        function gvizCellBusinessDay(cell) {
+            if (!cell || cell.v === undefined || cell.v === null) return null;
+            const val = cell.v.toString();
+            let d = null;
+            if (val.startsWith('Date(')) {
+                const p = val.match(/\d+/g);
+                if (p && p.length >= 3) d = new Date(p[0], p[1], p[2], p[3] || 0, p[4] || 0, p[5] || 0);
+            } else {
+                const t = new Date(val);
+                if (!isNaN(t)) d = t;
+            }
+            return d ? getLogicalBusinessDate(d).toDateString() : null;
+        }
+
+        // ---------- Checklists from sheets ----------
+        // Columns: Area | Subtitle | Task | Step | Type ("Do" or "Verify")
+        function parseChecklistRows(rows) {
+            let start = 0;
+            if (rows.length) {
+                const r0 = rows[0].c || [];
+                if (cellText(r0[0]).toLowerCase() === "area" && cellText(r0[2]).toLowerCase() === "task") start = 1;
+            }
+            const zones = [];
+            const zoneMap = {};
+            const verifyByZone = {};
+            const precloseByZone = {};
+
+            const addStep = (taskList, title, step) => {
+                let t = taskList.find(x => x.title === title);
+                if (!t) { t = { title, steps: [] }; taskList.push(t); }
+                t.steps.push(step);
+            };
+
+            for (let i = start; i < rows.length; i++) {
+                const c = rows[i].c || [];
+                const area = cellText(c[0]);
+                const subtitle = cellText(c[1]);
+                const task = cellText(c[2]);
+                const step = cellText(c[3]);
+                const type = cellText(c[4]).toLowerCase();
+                if (!area || !task || !step) continue;
+
+                if (type === "verify") {
+                    if (!verifyByZone[area]) verifyByZone[area] = [];
+                    addStep(verifyByZone[area], task, step);
+                } else if (type === "preclose") {
+                    // Preclose rows live at the bottom of the area's own sheet
+                    if (!precloseByZone[area]) precloseByZone[area] = { subtitle: "", tasks: [] };
+                    if (subtitle && !precloseByZone[area].subtitle) precloseByZone[area].subtitle = subtitle;
+                    addStep(precloseByZone[area].tasks, task, step);
+                } else {
+                    if (!zoneMap[area]) {
+                        zoneMap[area] = { name: area, subtitle: "", tasks: [] };
+                        zones.push(zoneMap[area]);
+                    }
+                    if (subtitle && !zoneMap[area].subtitle) zoneMap[area].subtitle = subtitle;
+                    addStep(zoneMap[area].tasks, task, step);
+                }
+            }
+            return { zones, verifyByZone, precloseByZone };
+        }
+
+        // One sheet = one area. Accepted layouts (a header row is optional):
+        //   Area | Subtitle | Task | Step | Type      (same as the category sheets)
+        //   Subtitle | Task | Step | Type
+        //   Task | Step | Type
+        //   Task | Step
+        // Type is "Do" (default) or "Verify".
+        function parseZoneSheetRows(rows, zoneName) {
+            const isType = v => ["do", "verify", "preclose"].includes(String(v || "").trim().toLowerCase());
+            let typeCol = -1;
+            for (const col of [4, 3, 2]) {
+                if (rows.some(r => isType(cellText((r.c || [])[col])))) { typeCol = col; break; }
+            }
+            const layout = typeCol === 4 ? { sub: 1, task: 2, step: 3, type: 4 }
+                : typeCol === 3 ? { sub: 0, task: 1, step: 2, type: 3 }
+                : typeCol === 2 ? { sub: -1, task: 0, step: 1, type: 2 }
+                : { sub: -1, task: 0, step: 1, type: -1 };
+
+            const synthetic = [];
+            rows.forEach(r => {
+                const c = r.c || [];
+                const task = cellText(c[layout.task]);
+                const step = cellText(c[layout.step]);
+                if (task.toLowerCase() === "task" && step.toLowerCase() === "step") return; // header row
+                const sub = layout.sub >= 0 ? cellText(c[layout.sub]) : "";
+                const type = layout.type >= 0 ? cellText(c[layout.type]) : "Do";
+                synthetic.push({ c: [{ v: zoneName }, { v: sub }, { v: task }, { v: step }, { v: type || "Do" }] });
+            });
+            return parseChecklistRows(synthetic);
+        }
+
+        // Copies preclose rows found in an area sheet onto the hidden Preclose list
+        function applyPrecloseRows(newData, precloseByZone) {
+            const pre = newData.find(sh => sh.id === 'preclose');
+            if (!pre) return false;
+            let any = false;
+            Object.keys(precloseByZone).forEach(zoneName => {
+                const loaded = precloseByZone[zoneName];
+                if (!loaded.tasks.length) return;
+                const existing = pre.zones.find(z => z.name === zoneName);
+                if (existing) {
+                    existing.tasks = loaded.tasks;
+                    if (loaded.subtitle) existing.subtitle = loaded.subtitle;
+                } else {
+                    pre.zones.push({ name: zoneName, subtitle: loaded.subtitle, tasks: loaded.tasks });
+                }
+                any = true;
+            });
+            return any;
+        }
+
+        async function loadChecklistsFromSheets() {
+            const newData = JSON.parse(JSON.stringify(CHECKLISTS_FALLBACK));
+            const newVerify = JSON.parse(JSON.stringify(VERIFY_CHECKLISTS_FALLBACK));
+            let changed = false;
+
+            await Promise.all(newData.map(async shift => {
+                const zoneMap = CHECKLIST_ZONE_SHEETS[shift.id];
+                if (zoneMap) {
+                    // One sheet per area
+                    await Promise.all(Object.keys(zoneMap).map(async zoneName => {
+                        const rows = await gvizRows(zoneMap[zoneName], "SELECT A, B, C, D, E");
+                        if (!rows) return;
+                        const parsed = parseZoneSheetRows(rows, zoneName);
+                        if (applyPrecloseRows(newData, parsed.precloseByZone)) changed = true;
+                        const loaded = parsed.zones[0];
+                        if (!loaded) return;
+                        const existing = shift.zones.find(z => z.name === zoneName);
+                        if (existing) {
+                            existing.tasks = loaded.tasks;
+                            if (loaded.subtitle) existing.subtitle = loaded.subtitle;
+                        } else {
+                            shift.zones.push(loaded);
+                        }
+                        if (parsed.verifyByZone[zoneName]) {
+                            if (!newVerify[shift.id]) newVerify[shift.id] = {};
+                            newVerify[shift.id][zoneName] = parsed.verifyByZone[zoneName];
+                        }
+                        changed = true;
+                    }));
+                    return;
+                }
+
+                // One sheet for the whole category
+                const sheetId = CHECKLIST_SHEET_IDS[shift.id];
+                if (isPlaceholderSheetId(sheetId)) return;
+                const rows = await gvizRows(sheetId, "SELECT A, B, C, D, E");
+                if (!rows) return;
+                const parsed = parseChecklistRows(rows);
+                if (applyPrecloseRows(newData, parsed.precloseByZone)) changed = true;
+                if (!parsed.zones.length) return;
+                shift.zones = parsed.zones;
+                changed = true;
+                if (Object.keys(parsed.verifyByZone).length) newVerify[shift.id] = parsed.verifyByZone;
+            }));
+
+            if (changed) {
+                checklistsData = newData;
+                VERIFY_CHECKLISTS = newVerify;
+                activeZoneIndex = null;
+            }
+            return changed;
+        }
+
+        // ---------- Headcount + redistribution ----------
+        let todayHeadcounts = { "close-930": null, "close-1030": null };
+        let localHeadcounts = {};   // optimistic copy right after a submit: {shiftId: {day, value}}
+        let baseZonesByShift = {};
+        let redistributionRules = {}; // [shiftId][headcount] = [{hiddenZone, absorbingZone, extraTask, extraStep}]
+
+        function snapshotBaseZones() {
+            checklistsData.forEach(s => {
+                if (HEADCOUNT_CONFIGS[s.id]) baseZonesByShift[s.id] = s.zones;
+            });
+        }
+
+        // Rules sheet columns:
+        //   Period | Headcount | Hidden Zone | Absorbing Period | Absorbing Zone | Extra Task | Extra Step | Display Name
+        // Period/Absorbing Period are 930 or 1030 (blank absorbing period = same as Period).
+        // Extra Task "*" moves the hidden zone's entire checklist into the absorbing zone.
+        // For 930 the Headcount is the effective count (9s plus any spare 10s);
+        // for 1030 it is the 10s count.
+        function periodToShiftId(raw) {
+            const d = String(raw || "").replace(/\D/g, "");
+            return d === "930" ? "close-930" : (d === "1030" ? "close-1030" : null);
+        }
+
+        async function loadRedistributionRules() {
+            const rows = await gvizRows(REDISTRIBUTION_SHEET_ID, "SELECT A, B, C, D, E, F, G, H");
+            if (!rows) return false;
+            const rules = {};
+            rows.forEach((row, i) => {
+                const c = row.c || [];
+                const periodRaw = cellText(c[0]);
+                if (i === 0 && periodRaw.toLowerCase() === "period") return;
+                const shiftId = periodToShiftId(periodRaw);
+                const hc = parseInt(cellText(c[1]), 10);
+                const hiddenZone = cellText(c[2]);
+                if (!shiftId || isNaN(hc) || !hiddenZone) return;
+                if (!rules[shiftId]) rules[shiftId] = {};
+                if (!rules[shiftId][hc]) rules[shiftId][hc] = [];
+                rules[shiftId][hc].push({
+                    hiddenZone,
+                    absorbingShift: periodToShiftId(cellText(c[3])) || shiftId,
+                    absorbingZone: cellText(c[4]),
+                    extraTask: cellText(c[5]),
+                    extraStep: cellText(c[6]),
+                    displayName: cellText(c[7])
+                });
+            });
+            redistributionRules = rules;
+            applyRedistributionToChecklistsData();
+            return true;
+        }
+
+        // 9:30 coverage = the 9s plus any 10s beyond what the 10:30 zones need.
+        function getEffectiveHeadcounts() {
+            const eff = { "close-930": todayHeadcounts["close-930"], "close-1030": todayHeadcounts["close-1030"] };
+            const n9 = todayHeadcounts["close-930"], n10 = todayHeadcounts["close-1030"];
+            const base10 = baseZonesByShift["close-1030"];
+            if (n9 !== null && n10 !== null && base10 && n10 > base10.length) {
+                eff["close-930"] = n9 + (n10 - base10.length);
+            }
+            return eff;
+        }
+
+        function buildRedistributedZones() {
+            const eff = getEffectiveHeadcounts();
+            const shiftIds = Object.keys(HEADCOUNT_CONFIGS).filter(id => baseZonesByShift[id]);
+            const work = {};
+            shiftIds.forEach(id => {
+                work[id] = baseZonesByShift[id].map(z => ({
+                    ...z, movedFrom: [],
+                    tasks: z.tasks.map(t => ({ ...t, steps: t.steps.slice() }))
+                }));
+            });
+
+            const rules = [];
+            shiftIds.forEach(id => {
+                const hc = eff[id];
+                if (hc === null || hc === undefined) return;
+                ((redistributionRules[id] || {})[hc] || []).forEach(r => rules.push({ ...r, hiddenShift: id }));
+            });
+            if (!rules.length) return work;
+
+            rules.forEach(r => {
+                const zone = (work[r.absorbingShift] || []).find(z => z.name === r.absorbingZone);
+                if (!zone) return;
+                if (r.displayName) zone.displayName = r.displayName;
+                if (!r.extraTask) return;
+
+                if (r.extraTask === "*") {
+                    const hidden = (baseZonesByShift[r.hiddenShift] || []).find(z => z.name === r.hiddenZone);
+                    if (!hidden) return;
+                    hidden.tasks.forEach(t => zone.tasks.push({
+                        title: `${hidden.name}: ${t.title}`, steps: t.steps.slice(), extra: true, moved: true
+                    }));
+                    if (!zone.movedFrom.some(m => m.shiftId === r.hiddenShift && m.zone === hidden.name)) {
+                        zone.movedFrom.push({ shiftId: r.hiddenShift, zone: hidden.name });
+                    }
+                    return;
+                }
+
+                let task = zone.tasks.find(t => t.extra && !t.moved && t.title === r.extraTask);
+                if (!task) {
+                    task = { title: r.extraTask, steps: [], extra: true };
+                    zone.tasks.push(task);
+                }
+                task.steps.push(r.extraStep || r.extraTask);
+            });
+
+            shiftIds.forEach(id => {
+                const hiddenNames = new Set(rules.filter(r => r.hiddenShift === id).map(r => r.hiddenZone));
+                work[id] = work[id].filter(z => !hiddenNames.has(z.name));
+            });
+            return work;
+        }
+
+        function applyRedistributionToChecklistsData() {
+            const work = buildRedistributedZones();
+            let zonesChanged = false;
+            checklistsData.forEach(shift => {
+                if (!HEADCOUNT_CONFIGS[shift.id]) return;
+                if (!baseZonesByShift[shift.id]) baseZonesByShift[shift.id] = shift.zones;
+            });
+            const rebuilt = buildRedistributedZones();
+            checklistsData.forEach(shift => {
+                if (!HEADCOUNT_CONFIGS[shift.id] || !rebuilt[shift.id]) return;
+                const sig = z => z.map(x => x.name + ":" + x.tasks.length).join("|");
+                if (sig(shift.zones) !== sig(rebuilt[shift.id])) zonesChanged = true;
+                shift.zones = rebuilt[shift.id];
+            });
+            if (zonesChanged) activeZoneIndex = null;
+        }
+
+        async function fetchTodayHeadcount(shiftId) {
+            const cfg = HEADCOUNT_CONFIGS[shiftId];
+            const rows = await gvizRows(cfg.sheetId, "SELECT A, B, C ORDER BY A DESC");
+            if (!rows) return undefined; // could not read: keep what we have
+            const today = getLogicalBusinessDate(new Date()).toDateString();
+            for (const row of rows) {
+                const c = row.c || [];
+                if (gvizCellBusinessDay(c[0]) !== today) continue;
+                const n = parseInt(cellText(c[cfg.col]), 10);
+                if (!isNaN(n)) return n;
+            }
+            return null;
+        }
+
+        async function refreshHeadcounts() {
+            const today = getLogicalBusinessDate(new Date()).toDateString();
+            await Promise.all(Object.keys(HEADCOUNT_CONFIGS).map(async shiftId => {
+                if (!headcountEnabled(shiftId)) { todayHeadcounts[shiftId] = null; return; }
+                const v = await fetchTodayHeadcount(shiftId);
+                const local = localHeadcounts[shiftId];
+                if (v === undefined) return;
+                if (v === null && local && local.day === today) todayHeadcounts[shiftId] = local.value;
+                else todayHeadcounts[shiftId] = v;
+            }));
+            applyRedistributionToChecklistsData();
+        }
+
+        // ---------- Assignments ----------
+        let todayAssignments = { "close-930": null, "close-1030": null }; // {leader, byArea:{area:[names]}}
+        let localAssignments = {};
+
+        function buildAssignmentInfo(parsed) {
+            const byArea = {};
+            parsed.assignments.forEach(a => {
+                if (!byArea[a.area]) byArea[a.area] = [];
+                if (!byArea[a.area].includes(a.name)) byArea[a.area].push(a.name);
+            });
+            return { leader: parsed.leader, byArea };
+        }
+
+        // Latest non-empty value for today in a given column (A is the timestamp)
+        async function fetchLatestColumnTextForToday(sheetId, colIdx) {
+            const rows = await gvizRows(sheetId, "SELECT A, B, C ORDER BY A DESC");
+            if (!rows) return null;
+            const today = getLogicalBusinessDate(new Date()).toDateString();
+            for (const row of rows) {
+                const c = row.c || [];
+                if (gvizCellBusinessDay(c[0]) !== today) continue;
+                const t = cellText(c[colIdx]);
+                if (t) return t;
+            }
+            return null;
+        }
+
+        function assignmentText(info) {
+            const parts = [`${info.leader || "Leader"} - verified`];
+            Object.keys(info.byArea).forEach(area => info.byArea[area].forEach(n => parts.push(`${n} - ${area}`)));
+            return parts.join(", ");
+        }
+
+        async function refreshAssignments(shiftId) {
+            if (!assignmentsEnabled(shiftId)) { todayAssignments[shiftId] = null; return; }
+            const today = getLogicalBusinessDate(new Date()).toDateString();
+            const text = await fetchLatestColumnTextForToday(ASSIGNMENTS_CONFIGS[shiftId].sheetId, ASSIGNMENTS_CONFIGS[shiftId].col);
+            const local = localAssignments[shiftId];
+            if (text) todayAssignments[shiftId] = buildAssignmentInfo(parseLogSegment(text));
+            else if (local && local.day === today) todayAssignments[shiftId] = local.value;
+            else todayAssignments[shiftId] = null;
+        }
+
+        // ---------- Headcount + assignment flow (leader) ----------
+        let hcFlow = { open: false, step: 'count', shiftIds: [], counts: {}, assignments: {}, busy: false };
+        let hcPromptDismissed = false;
+
+        function maybePromptHeadcount() {
+            if (hcFlow.open || hcPromptDismissed || isSyncingCloudData) return;
+            if (!isLeaderOverviewMode || !currentUser) return;
+            if (document.querySelector('.modal-overlay.active')) return;
+            const shift = checklistsData[activeTabIndex];
+            if (!shift || !headcountEnabled(shift.id)) return;
+            if (todayHeadcounts[shift.id] !== null) return;
+            if (activeZoneIndex !== null) return;
+            openHeadcountFlow(shift.id);
+        }
+
+        function openHeadcountFlow(shiftId, forceAssignOnly) {
+            const missing = Object.keys(HEADCOUNT_CONFIGS).filter(id => headcountEnabled(id) && todayHeadcounts[id] === null);
+            hcFlow = { open: true, step: 'count', shiftIds: missing, counts: {}, assignments: {}, busy: false };
+
+            if (forceAssignOnly || missing.length === 0) {
+                if (!assignmentsEnabled(shiftId)) { hcFlow.open = false; return; }
+                hcFlow.step = 'assign';
+                hcFlow.shiftIds = [shiftId];
+                initAssignmentDraft();
+            } else {
+                missing.forEach(id => { hcFlow.counts[id] = HEADCOUNT_CONFIGS[id].defaultCount; });
+            }
+            document.getElementById("headcountModal").classList.add("active");
+            renderHcFlow();
+        }
+
+        function closeHeadcountFlow() {
+            hcFlow.open = false;
+            hcPromptDismissed = true;
+            document.getElementById("headcountModal").classList.remove("active");
+            hideAllAsgOptions();
+        }
+
+        function hcAdjust(shiftId, delta) {
+            if (hcFlow.busy) return;
+            const cfg = HEADCOUNT_CONFIGS[shiftId];
+            hcFlow.counts[shiftId] = Math.max(cfg.min, Math.min(cfg.max, (hcFlow.counts[shiftId] || cfg.defaultCount) + delta));
+            renderHcFlow();
+        }
+
+        function hcTitleFor(shiftId) {
+            return HEADCOUNT_CONFIGS[shiftId] ? HEADCOUNT_CONFIGS[shiftId].label : shiftId;
+        }
+
+        function renderHcFlow() {
+            const title = document.getElementById("hcModalTitle");
+            const box = document.getElementById("hcContent");
+            if (hcFlow.step === 'count') {
+                title.innerText = "Today's Headcount";
+                let html = `<p class="hc-help">How many people are working each period? Areas are redistributed automatically if you have fewer people than areas.</p>`;
+                hcFlow.shiftIds.forEach(id => {
+                    html += `
+                        <div class="hc-row">
+                            <div class="hc-row-label">How many <b>${hcTitleFor(id)}</b> people?</div>
+                            <div class="hc-stepper">
+                                <button type="button" class="hc-step-btn" onclick="hcAdjust('${id}', -1)" ${hcFlow.busy || hcFlow.counts[id] <= HEADCOUNT_CONFIGS[id].min ? 'disabled' : ''}>−</button>
+                                <div class="hc-count">${hcFlow.counts[id]}</div>
+                                <button type="button" class="hc-step-btn" onclick="hcAdjust('${id}', 1)" ${hcFlow.busy || hcFlow.counts[id] >= HEADCOUNT_CONFIGS[id].max ? 'disabled' : ''}>+</button>
+                            </div>
+                        </div>`;
+                });
+                // Spare 10s cover 9:30 zones when the 9s are short
+                const c9 = hcFlow.counts["close-930"], c10 = hcFlow.counts["close-1030"];
+                const b9 = (baseZonesByShift["close-930"] || []).length, b10 = (baseZonesByShift["close-1030"] || []).length;
+                if (c9 !== undefined && c10 !== undefined && b9 && b10) {
+                    const covers = Math.min(Math.max(0, b9 - c9), Math.max(0, c10 - b10));
+                    if (covers > 0) {
+                        html += `<p class="hc-help" style="color: var(--leader-gold); font-weight: 700;">${covers} of your 10s ${covers === 1 ? 'will' : 'will'} cover 9:30 areas. Assign ${covers === 1 ? 'a 10s person' : 'them'} to a 9:30 area on the next screen.</p>`;
+                    }
+                }
+                html += `<button type="button" class="hc-primary" onclick="submitHeadcounts()" ${hcFlow.busy ? 'disabled' : ''}>${hcFlow.busy ? 'Submitting...' : 'Submit Headcount'}</button>`;
+                box.innerHTML = html;
+            } else {
+                title.innerText = "Assign Areas";
+                let html = `<p class="hc-help">Who is working each area? Add one or more names per area. Everyone will see this on the area cards. You can skip this.</p>`;
+                hcFlow.shiftIds.forEach(id => {
+                    const shift = checklistsData.find(s => s.id === id);
+                    if (!shift) return;
+                    html += `<div class="hc-period-title">${hcTitleFor(id)}</div>`;
+                    shift.zones.forEach((zone, zi) => {
+                        const key = `${id}::${zone.name}`;
+                        const chosen = hcFlow.assignments[key] || [];
+                        html += `
+                            <div class="hc-assign-row">
+                                <div class="hc-assign-area">${zoneLabel(zone)}</div>
+                                <div class="hc-chips">
+                                    ${chosen.map((n, ni) => `<span class="hc-chip">${n}<span class="hc-chip-x" onclick="asgRemove('${id}', ${zi}, ${ni})">✕</span></span>`).join("")}
+                                </div>
+                                <input type="text" class="hc-name-input" id="asgInput-${id}-${zi}" placeholder="Type a name..." autocomplete="off"
+                                    oninput="asgFilter('${id}', ${zi})" onfocus="asgFilter('${id}', ${zi})" onblur="setTimeout(hideAllAsgOptions, 150)"
+                                    onkeydown="asgKey(event, '${id}', ${zi})">
+                                <div class="eod-name-options" id="asgOptions-${id}-${zi}"></div>
+                            </div>`;
+                    });
+                });
+                html += `
+                    <div class="hc-actions">
+                        <button type="button" class="hc-secondary" onclick="closeHeadcountFlow()" ${hcFlow.busy ? 'disabled' : ''}>Skip</button>
+                        <button type="button" class="hc-primary" style="flex:1;" onclick="submitAssignments()" ${hcFlow.busy ? 'disabled' : ''}>${hcFlow.busy ? 'Submitting...' : 'Submit Assignments'}</button>
+                    </div>`;
+                box.innerHTML = html;
+            }
+        }
+
+        async function submitHeadcounts() {
+            if (hcFlow.busy) return;
+            hcFlow.busy = true;
+            renderHcFlow();
+            const leaderName = currentUser ? currentUser.name : "Leader";
+            const today = getLogicalBusinessDate(new Date()).toDateString();
+
+            // One form carries both periods, so every submission includes the
+            // count for each period (the new answer, or today's existing one).
+            const posts = {};
+            Object.keys(HEADCOUNT_CONFIGS).forEach(id => {
+                const cfg = HEADCOUNT_CONFIGS[id];
+                if (!headcountEnabled(id)) return;
+                if (!posts[cfg.formId]) posts[cfg.formId] = {};
+                const value = hcFlow.counts[id] !== undefined ? hcFlow.counts[id] : todayHeadcounts[id];
+                if (value !== null && value !== undefined) posts[cfg.formId][cfg.countEntry] = String(value);
+                if (!isPlaceholderSheetId(cfg.nameEntry.replace("entry.", ""))) posts[cfg.formId][cfg.nameEntry] = leaderName;
+            });
+            await Promise.all(Object.keys(posts).map(formId => submitToGoogleForm(formId, posts[formId])));
+
+            hcFlow.shiftIds.forEach(id => {
+                todayHeadcounts[id] = hcFlow.counts[id];
+                localHeadcounts[id] = { day: today, value: hcFlow.counts[id] };
+            });
+            applyRedistributionToChecklistsData();
+            renderApp();
+
+            hcFlow.busy = false;
+            const assignable = hcFlow.shiftIds.filter(assignmentsEnabled);
+            if (assignable.length) {
+                hcFlow.shiftIds = assignable;
+                hcFlow.step = 'assign';
+                initAssignmentDraft();
+                renderHcFlow();
+            } else {
+                closeHeadcountFlow();
+            }
+        }
+
+        function initAssignmentDraft() {
+            hcFlow.assignments = {};
+            hcFlow.shiftIds.forEach(id => {
+                const existing = todayAssignments[id];
+                if (existing) Object.keys(existing.byArea).forEach(area => {
+                    hcFlow.assignments[`${id}::${area}`] = existing.byArea[area].slice();
+                });
+            });
+        }
+
+        function asgZone(shiftId, zi) {
+            const shift = checklistsData.find(s => s.id === shiftId);
+            return shift ? shift.zones[zi] : null;
+        }
+
+        document.addEventListener("scroll", () => hideAllAsgOptions(), true);
+
+        function hideAllAsgOptions() {
+            document.querySelectorAll('[id^="asgOptions-"]').forEach(el => { el.style.display = "none"; });
+        }
+
+        function asgMatches(shiftId, zi) {
+            const input = document.getElementById(`asgInput-${shiftId}-${zi}`);
+            const zone = asgZone(shiftId, zi);
+            if (!input || !zone) return [];
+            const chosen = hcFlow.assignments[`${shiftId}::${zone.name}`] || [];
+            const q = input.value.trim().toLowerCase();
+            return getSortedNames().filter(n => !chosen.includes(n) && (!q || n.toLowerCase().includes(q)));
+        }
+
+        function asgFilter(shiftId, zi) {
+            const input = document.getElementById(`asgInput-${shiftId}-${zi}`);
+            const box = document.getElementById(`asgOptions-${shiftId}-${zi}`);
+            if (!input || !box) return;
+            hideAllAsgOptions();
+            const matches = asgMatches(shiftId, zi);
+            if (!matches.length) { box.innerHTML = ""; return; }
+            const rect = input.getBoundingClientRect();
+            box.style.left = rect.left + "px";
+            box.style.top = (rect.bottom + 4) + "px";
+            box.style.width = rect.width + "px";
+            box.innerHTML = matches.map(n =>
+                `<div class="eod-name-option" onmousedown="event.preventDefault(); asgAdd('${shiftId}', ${zi}, '${n.replace(/'/g, "\\'")}')">${n}</div>`
+            ).join("");
+            box.style.display = "block";
+        }
+
+        function asgKey(ev, shiftId, zi) {
+            if (ev.key !== "Enter") return;
+            ev.preventDefault();
+            const m = asgMatches(shiftId, zi);
+            if (m.length) asgAdd(shiftId, zi, m[0]);
+        }
+
+        function asgAdd(shiftId, zi, name) {
+            const zone = asgZone(shiftId, zi);
+            if (!zone) return;
+            const key = `${shiftId}::${zone.name}`;
+            if (!hcFlow.assignments[key]) hcFlow.assignments[key] = [];
+            if (!hcFlow.assignments[key].includes(name)) hcFlow.assignments[key].push(name);
+            renderHcFlow();
+            const input = document.getElementById(`asgInput-${shiftId}-${zi}`);
+            if (input) input.focus();
+        }
+
+        function asgRemove(shiftId, zi, ni) {
+            const zone = asgZone(shiftId, zi);
+            if (!zone) return;
+            const key = `${shiftId}::${zone.name}`;
+            (hcFlow.assignments[key] || []).splice(ni, 1);
+            renderHcFlow();
+        }
+
+        async function submitAssignments() {
+            if (hcFlow.busy) return;
+            const leaderName = currentUser ? currentUser.name : "Leader";
+            const today = getLogicalBusinessDate(new Date()).toDateString();
+            const jobs = [];
+
+            hcFlow.shiftIds.forEach(id => {
+                const shift = checklistsData.find(s => s.id === id);
+                if (!shift) return;
+                const parts = [];
+                const byArea = {};
+                shift.zones.forEach(zone => {
+                    const names = hcFlow.assignments[`${id}::${zone.name}`] || [];
+                    if (!names.length) return;
+                    byArea[zone.name] = names.slice();
+                    names.forEach(n => parts.push(`${n} - ${zone.name}`));
+                });
+                if (!parts.length) return;
+                const text = [`${leaderName} - verified`, ...parts].join(", ");
+                jobs.push({ id, byArea, text });
+            });
+
+            if (!jobs.length) { closeHeadcountFlow(); return; }
+
+            hcFlow.busy = true;
+            renderHcFlow();
+
+            // One form carries both periods: include the period we did not touch
+            // so its latest answer stays intact.
+            const posts = {};
+            Object.keys(ASSIGNMENTS_CONFIGS).forEach(id => {
+                const cfg = ASSIGNMENTS_CONFIGS[id];
+                if (!assignmentsEnabled(id)) return;
+                if (!posts[cfg.formId]) posts[cfg.formId] = {};
+                const job = jobs.find(j => j.id === id);
+                if (job) posts[cfg.formId][cfg.entryKey] = job.text;
+                else if (todayAssignments[id]) posts[cfg.formId][cfg.entryKey] = assignmentText(todayAssignments[id]);
+            });
+            await Promise.all(Object.keys(posts).map(formId => submitToGoogleForm(formId, posts[formId])));
+            jobs.forEach(j => {
+                const info = { leader: leaderName, byArea: j.byArea };
+                todayAssignments[j.id] = info;
+                localAssignments[j.id] = { day: today, value: info };
+            });
+            hcFlow.busy = false;
+            closeHeadcountFlow();
+            renderApp();
+        }
+
 
         let currentAmPm = 'PM'; 
         let activeTabIndex = 0; 
@@ -1794,16 +2719,201 @@ function getLogicalBusinessDate(date = new Date()) {
             }, duration);
         }
 
-        function showSubmitNudge() {
-            const bar = document.getElementById("statusMessageBar");
-            bar.innerHTML = `<div>Would you like to submit the checklist?</div><div style="font-size: 0.8em; font-weight: 400; margin-top: 0.2rem;">If not, please tap the submit button at the bottom.</div>`;
-            bar.className = "info";
-            bar.style.display = "block";
+        // ---------- Tabs ----------
+        function isTabVisibleFor(shift) {
+            if (shift.id === 'preclose') return false;
+            if (shift.period && shift.period !== currentAmPm) return false;
+            if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return false;
+            return true;
+        }
 
-            if (window.statusTimeout) clearTimeout(window.statusTimeout);
-            window.statusTimeout = setTimeout(() => {
-                bar.style.display = "none";
-            }, 6000);
+        function ensureValidTab() {
+            const active = checklistsData[activeTabIndex];
+            if (!active || !isTabVisibleFor(active)) {
+                const i = checklistsData.findIndex(isTabVisibleFor);
+                activeTabIndex = i !== -1 ? i : 0;
+                activeZoneIndex = null;
+            }
+        }
+
+        function autoPickPeriod() {
+            const h = new Date().getHours();
+            currentAmPm = (h >= 4 && h < 15) ? 'AM' : 'PM';
+            document.querySelectorAll(".am-pm-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.innerText === currentAmPm);
+            });
+            ensureValidTab();
+        }
+
+        // ---------- Personal settings (per person, stored on this device) ----------
+        const DEFAULT_SETTINGS = { viewMode: 'cards', scale: null, showWelcome: true };
+        let userSettings = { ...DEFAULT_SETTINGS };
+
+        function settingsKey() {
+            return 'checklistSettings:' + (currentUser ? currentUser.name : '_device');
+        }
+
+        function loadUserSettings() {
+            try {
+                const raw = localStorage.getItem(settingsKey());
+                userSettings = { ...DEFAULT_SETTINGS, ...(raw ? JSON.parse(raw) : {}) };
+            } catch (e) {
+                userSettings = { ...DEFAULT_SETTINGS };
+            }
+            applyScale();
+        }
+
+        function saveUserSettings() {
+            try { localStorage.setItem(settingsKey(), JSON.stringify(userSettings)); } catch (e) {}
+        }
+
+        function applyScale() {
+            document.documentElement.style.fontSize = userSettings.scale ? (16 * userSettings.scale / 100) + 'px' : '';
+        }
+
+        function openSettings() {
+            renderSettings();
+            document.getElementById("settingsModal").classList.add("active");
+        }
+
+        function closeSettings() {
+            document.getElementById("settingsModal").classList.remove("active");
+        }
+
+        function renderSettings() {
+            const sc = userSettings.scale;
+            document.getElementById("settingsContent").innerHTML = `
+                <div class="set-row">
+                    <div class="set-label">Area view<span>Cards flip as you go. List looks like a paper checklist.</span></div>
+                    <div class="set-seg">
+                        <button type="button" class="${userSettings.viewMode === 'cards' ? 'on' : ''}" onclick="setViewMode('cards')">Cards</button>
+                        <button type="button" class="${userSettings.viewMode === 'list' ? 'on' : ''}" onclick="setViewMode('list')">List</button>
+                    </div>
+                </div>
+                <div class="set-row">
+                    <div class="set-label">Display size<span>Override the automatic scaling for this device.</span></div>
+                    <div class="set-scale">
+                        <button type="button" onclick="scaleStep(-10)">−</button>
+                        <div class="set-scale-val">${sc ? sc + '%' : 'Auto'}</div>
+                        <button type="button" onclick="scaleStep(10)">+</button>
+                        <button type="button" class="set-auto ${sc ? '' : 'on'}" onclick="scaleAuto()">Auto</button>
+                    </div>
+                </div>
+                <div class="set-row">
+                    <div class="set-label">Show welcome screen<span>When off, you go straight to the checklists after signing in.</span></div>
+                    <button type="button" class="set-switch ${userSettings.showWelcome ? 'on' : ''}" onclick="toggleWelcomeSetting()" aria-label="Show welcome screen"><i></i></button>
+                </div>`;
+        }
+
+        function setViewMode(m) {
+            userSettings.viewMode = m;
+            saveUserSettings();
+            renderSettings();
+            renderApp();
+        }
+
+        function scaleStep(delta) {
+            const cur = userSettings.scale || 100;
+            userSettings.scale = Math.max(60, Math.min(160, cur + delta));
+            applyScale(); saveUserSettings(); renderSettings();
+        }
+
+        function scaleAuto() {
+            userSettings.scale = null;
+            applyScale(); saveUserSettings(); renderSettings();
+        }
+
+        function toggleWelcomeSetting() {
+            userSettings.showWelcome = !userSettings.showWelcome;
+            saveUserSettings(); renderSettings();
+        }
+
+        // ---------- Submit / verify nudge (centered, with a real button) ----------
+        let currentCardIds = [];
+        let nudgeMode = 'submit';
+        let nudgeTimer = null;
+
+        function getActiveShift() {
+            if (precloseMode) return checklistsData.find(sh => sh.id === 'preclose');
+            return checklistsData[activeTabIndex];
+        }
+
+        function maybeNudgeSubmit() {
+            if (nudgeTimer) clearTimeout(nudgeTimer);
+            nudgeTimer = setTimeout(() => {
+                if (!currentCardIds.length || !currentCardIds.every(id => completedTasks.has(id))) return;
+                showSubmitNudge();
+            }, 650);
+        }
+
+        function showSubmitNudge() {
+            const shift = getActiveShift();
+            const zone = shift && activeZoneIndex !== null ? shift.zones[activeZoneIndex] : null;
+            if (!zone) return;
+            const areaState = cloudSyncedAreas[`${shift.id}::${zone.name}`];
+            let mode = 'submit';
+            if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) mode = 'verify';
+            else if (areaState) return;
+            nudgeMode = mode;
+            document.getElementById("nudgeTitle").innerText = mode === 'verify'
+                ? "Would you like to verify the area?"
+                : (shift.id === 'preclose' ? "Would you like to save your preclose?" : "Would you like to submit the checklist?");
+            document.getElementById("nudgeConfirmBtn").innerText = mode === 'verify' ? "Verify" : (shift.id === 'preclose' ? "Save Preclose" : "Submit");
+            document.getElementById("nudgeOverlay").classList.add("active");
+        }
+
+        function nudgeDismiss() {
+            document.getElementById("nudgeOverlay").classList.remove("active");
+        }
+
+        function nudgeConfirm() {
+            nudgeDismiss();
+            if (nudgeMode === 'verify') verifyArea(); else submitZoneChecklist();
+        }
+
+        // ---------- Preclose (offered from the area menu) ----------
+        let precloseMode = false;
+        let pendingPrecloseIndex = null;
+        let precloseDeclined = {};
+        const PRECLOSE_ZONES = {
+            'close-930': ["Dining Room", "Front Counter"],
+            'close-1030': ["Desserts", "Drinks", "Chutes"]
+        };
+
+        function getPrecloseZoneFor(shiftId, zoneName) {
+            if (!(PRECLOSE_ZONES[shiftId] || []).includes(zoneName)) return null;
+            const pre = checklistsData.find(sh => sh.id === 'preclose');
+            return pre ? (pre.zones.find(z => z.name === zoneName) || null) : null;
+        }
+
+        function isZoneFullyPreclosed(preZone) {
+            const map = getPreclosedMap();
+            return preZone.tasks.every(t => map[`${preZone.name}::${t.title}`] === true);
+        }
+
+        function precloseChoose(yes) {
+            document.getElementById("precloseModal").classList.remove("active");
+            const shift = checklistsData[activeTabIndex];
+            const idx = pendingPrecloseIndex;
+            pendingPrecloseIndex = null;
+            if (idx === null || !shift) return;
+            const zone = shift.zones[idx];
+            if (yes) {
+                const pre = checklistsData.find(sh => sh.id === 'preclose');
+                const pIdx = pre.zones.findIndex(z => z.name === zone.name);
+                if (pIdx === -1) return;
+                precloseMode = true;
+                activeZoneIndex = pIdx;
+            } else {
+                precloseDeclined[`${shift.id}::${zone.name}`] = true;
+                activeZoneIndex = idx;
+            }
+            renderApp();
+        }
+
+        function cancelPrecloseChoice() {
+            document.getElementById("precloseModal").classList.remove("active");
+            pendingPrecloseIndex = null;
         }
 
         function getPreclosedMap() {
@@ -1932,9 +3042,13 @@ function getLogicalBusinessDate(date = new Date()) {
 
             try {
                 const fetchPromises = [];
+                fetchPromises.push(refreshHeadcounts());
+                fetchPromises.push(refreshAssignments("close-930"));
+                fetchPromises.push(refreshAssignments("close-1030"));
                 for (const shift of checklistsData) {
                     if (shift.id === 'preclose') continue;
-                    for (const zone of shift.zones) {
+                    // Use the full zone list so areas hidden by a low headcount are still read
+                    for (const zone of (baseZonesByShift[shift.id] || shift.zones)) {
                         const areaKey = `${shift.id}::${zone.name}`;
                         const config = FORM_MAPPINGS[areaKey];
                         if (config && config.sheetId) {
@@ -1986,6 +3100,20 @@ function getLogicalBusinessDate(date = new Date()) {
             document.getElementById("authPinInput").focus();
 
             staffDatabaseLoadPromise = loadStaffDatabaseInBackground();
+
+            setInterval(checkAutoEod, 30000);
+            setTimeout(checkAutoEod, 8000);
+
+            snapshotBaseZones();
+            loadChecklistsFromSheets().then(changed => {
+                if (changed) {
+                    baseZonesByShift = {};
+                    snapshotBaseZones();
+                    applyRedistributionToChecklistsData();
+                    if (currentUser) { renderTabs(); renderApp(); }
+                }
+            });
+            loadRedistributionRules().then(ok => { if (ok && currentUser) renderApp(); });
         });
 
         async function loadStaffDatabaseInBackground() {
@@ -2126,10 +3254,18 @@ function getLogicalBusinessDate(date = new Date()) {
                     activeZoneIndex = null;
                 }
             }
+            ensureValidTab();
 
             document.getElementById("authOverlay").classList.remove("active");
             pinInput.value = ""; 
-            startWelcomeFlow();
+
+            loadUserSettings();
+            if (userSettings.showWelcome === false) {
+                autoPickPeriod();
+                finishWelcomeFlow();
+            } else {
+                startWelcomeFlow();
+            }
         }
 
         function startWelcomeFlow() {
@@ -2228,7 +3364,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 // They're filling out a normal checklist today, not their
                 // own leader checklist - make sure we're not still sitting
                 // on the Leader tab from a previous login.
-                const nonLeaderIdx = checklistsData.findIndex(s => s.id !== 'leader' && (!s.period || s.period === currentAmPm));
+                const nonLeaderIdx = checklistsData.findIndex(s => s.id !== 'leader' && s.id !== 'preclose' && (!s.period || s.period === currentAmPm));
                 if (nonLeaderIdx !== -1) {
                     activeTabIndex = nonLeaderIdx;
                     activeZoneIndex = null;
@@ -2247,6 +3383,7 @@ function getLogicalBusinessDate(date = new Date()) {
             // Make sure the tab we land on is actually valid for the chosen
             // AM/PM period and the user's role.
             const isVisible = (shift) => {
+                if (shift.id === 'preclose') return false;
                 if (shift.period && shift.period !== currentAmPm) return false;
                 if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return false;
                 return true;
@@ -2291,9 +3428,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 overallLogBtn.style.display = "block";
                 eodBar.classList.add("active");
                 document.body.classList.add("eod-bar-active");
-                if (checklistsData[activeTabIndex] && checklistsData[activeTabIndex].id === 'preclose') {
-                    activeTabIndex = 1; 
-                }
+                ensureValidTab();
             } else {
                 btn.classList.remove("active-mode");
                 btn.innerText = "Leader Overview";
@@ -2317,7 +3452,7 @@ function getLogicalBusinessDate(date = new Date()) {
             navContainer.innerHTML = "";
             
             checklistsData.forEach((shift, index) => {
-                if (isLeaderOverviewMode && shift.id === 'preclose') return;
+                if (shift.id === 'preclose') return;
                 if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return;
                 if (shift.period && shift.period !== currentAmPm) return;
 
@@ -2346,7 +3481,8 @@ function getLogicalBusinessDate(date = new Date()) {
 
         function renderApp() {
             const appViewport = document.getElementById("appViewport");
-            const shift = checklistsData[activeTabIndex];
+            if (activeZoneIndex === null) precloseMode = false;
+            const shift = getActiveShift();
             const submittedAreas = cloudSyncedAreas;
 
             if (isLeaderOverviewMode) {
@@ -2354,6 +3490,8 @@ function getLogicalBusinessDate(date = new Date()) {
             } else {
                 document.body.classList.remove("leader-mode-active");
             }
+
+            maybePromptHeadcount();
             
             if (activeZoneIndex === null) {
                 const SHIFT_EOD_CATEGORY = { 'close-930': 'pm', 'close-1030': 'pm', 'opening': 'am', 'leader': 'leader' };
@@ -2376,11 +3514,32 @@ function getLogicalBusinessDate(date = new Date()) {
                     return;
                 }
 
+                // Headcount gate: nobody sees areas until a leader submits today's headcount
+                if (headcountEnabled(shift.id) && todayHeadcounts[shift.id] === null && !isSyncingCloudData) {
+                    const gateAction = isLeaderOverviewMode
+                        ? `<button class="btn-submit-area" onclick="hcPromptDismissed = false; openHeadcountFlow('${shift.id}')">Submit Headcount</button>`
+                        : `<button class="btn-submit-area" onclick="loadShiftStatusFromCloud()">Check Again</button>`;
+                    appViewport.innerHTML = `
+                        <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
+                            <h2 style="font-size: 2.2rem; color: var(--text-main); margin-bottom: 1rem;">Headcount Not Submitted</h2>
+                            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">A leader needs to submit today's headcount before the <b>${shift.title}</b> areas are available.</p>
+                            ${gateAction}
+                        </div>
+                    `;
+                    return;
+                }
+
+                const canAssignHere = isLeaderOverviewMode && headcountEnabled(shift.id) && assignmentsEnabled(shift.id) && todayHeadcounts[shift.id] !== null;
+                const assignBtnHtml = canAssignHere
+                    ? `<button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', true)">${todayAssignments[shift.id] ? 'Edit Assignments' : 'Assign Areas'}</button>`
+                    : '';
+
                 let html = `
                     <div class="main-content-box">
                         <div class="view-header">
                             <h2 class="view-title">${shift.title} Areas</h2>
                             <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
+                            ${assignBtnHtml}
                         </div>
                         <div class="areas-grid">
                 `;
@@ -2429,12 +3588,22 @@ function getLogicalBusinessDate(date = new Date()) {
                             completedByHtml = `<p class="area-subtitle" style="margin-top: 0.4rem;">Completed by ${completedByName}</p>`;
                         }
 
+                        let assignedHtml = '';
+                        const asg = todayAssignments[shift.id];
+                        if (asg && asg.byArea[zone.name] && asg.byArea[zone.name].length) {
+                            assignedHtml = `<p class="area-subtitle assigned-line">Assigned to: ${asg.byArea[zone.name].join(', ')}</p>`
+                                + (asg.leader ? `<p class="area-subtitle assigned-line assigned-by">Assigned by: ${asg.leader}</p>` : '');
+                        }
+
+                        const notStartedBlocked = isLeaderOverviewMode && !isSubmitted && shift.id !== 'leader';
+
                         count++;
                         html += `
-                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''}" onclick="selectZone(${zIndex})">
+                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''} ${notStartedBlocked ? 'blocked-card' : ''}" onclick="selectZone(${zIndex})">
                                 ${badgeHtml}
-                                <h3>${zone.name}</h3>
+                                <h3>${zoneLabel(zone)}</h3>
                                 ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
+                                ${assignedHtml}
                                 ${completedByHtml}
                             </div>
                         `;
@@ -2457,13 +3626,16 @@ function getLogicalBusinessDate(date = new Date()) {
                 const usingVerifyCards = !!verifyCards;
                 const displayCards = usingVerifyCards ? verifyCards : zone.tasks;
                 const idPrefix = usingVerifyCards ? 'verify-' : '';
+                const listView = userSettings.viewMode === 'list';
+                currentCardIds = [];
+                const paperDate = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
                 
                 let html = `
                     <div class="main-content-box">
                         <div class="task-view-header">
                             <div>
                                 <h2 class="task-zone-title">
-                                    ${zone.name}
+                                    ${zoneLabel(zone)}
                                     ${zone.subtitle ? `<span class="task-subtitle-badge">${zone.subtitle}</span>` : ''}
                                 </h2>
                                 <p style="color: var(--text-muted); margin-top: 0.25rem;">${usingVerifyCards ? shift.title.replace('Close', 'Verify') : `${shift.title} Tasks`}</p>
@@ -2473,11 +3645,14 @@ function getLogicalBusinessDate(date = new Date()) {
                                 Back to Areas
                             </button>
                         </div>
-                        <div class="cards-grid">
+                        ${listView
+                            ? `<div class="paper-sheet"><div class="paper-head"><span>${zoneLabel(zone)}</span><span class="paper-date">${paperDate}</span></div>`
+                            : '<div class="cards-grid">'}
                 `;
 
                 displayCards.forEach((task, tIndex) => {
                     const taskId = `${idPrefix}${shift.id}-${activeZoneIndex}-${tIndex}`;
+                    currentCardIds.push(taskId);
                     const isFlipped = completedTasks.has(taskId) ? 'flipped' : '';
                     
                     const isPreclosed = !usingVerifyCards && shift.id !== 'preclose' && preclosedMap[`${zone.name}::${task.title}`] === true;
@@ -2486,6 +3661,19 @@ function getLogicalBusinessDate(date = new Date()) {
 
                     let stepsHtml = task.steps.map(step => `<li>${step}</li>`).join('');
                     const stampText = isLeaderOverviewMode ? "VERIFIED" : "COMPLETED";
+
+                    if (listView) {
+                        const done = completedTasks.has(taskId);
+                        html += `
+                            <div class="paper-task ${done ? 'checked' : ''}" id="card-${taskId}" onclick="toggleListTask('${taskId}')">
+                                <div class="paper-box">${done ? '✓' : ''}</div>
+                                <div class="paper-task-body">
+                                    <div class="paper-task-title">${task.title}${isPreclosed ? '<span class="paper-pre">Preclosed</span>' : ''}</div>
+                                    <ul>${stepsHtml}</ul>
+                                </div>
+                            </div>`;
+                        return;
+                    }
 
                     html += `
                         <div class="task-card-container ${isFlipped} ${preclosedClass}" id="card-${taskId}" onpointerdown="handleCardPointerDown(event)" onpointerup="handleCardPointerUp(event, this, '${taskId}')">
@@ -2507,12 +3695,12 @@ function getLogicalBusinessDate(date = new Date()) {
 
                 html += `</div>`;
                 
-                const submitButtonText = shift.id === 'preclose' ? `Submit ${zone.name} Preclose` : `Submit ${zone.name} Checklist`;
+                const submitButtonText = shift.id === 'preclose' ? `Submit ${zoneLabel(zone)} Preclose` : `Submit ${zoneLabel(zone)} Checklist`;
 
                 if (isLeaderOverviewMode && areaState && !areaState.leaderVerified) {
                     html += `
                         <div class="submit-section">
-                            <button class="btn-submit-area" onclick="verifyArea()">Verify ${zone.name}</button>
+                            <button class="btn-submit-area" onclick="verifyArea()">Verify ${zoneLabel(zone)}</button>
                         </div>`;
                 } else if (!areaState) {
                     html += `
@@ -2549,11 +3737,27 @@ function getLogicalBusinessDate(date = new Date()) {
                 }
             }
 
+            if (isLeaderOverviewMode && !areaState && shift.id !== 'leader') {
+                showStatusMessage(`${zone.name} hasn't been started yet, so there is nothing to verify.`, 'warning');
+                return;
+            }
+
+            if (!isLeaderOverviewMode && !areaState) {
+                const preZone = getPrecloseZoneFor(shift.id, zone.name);
+                if (preZone && !precloseDeclined[`${shift.id}::${zone.name}`] && !isZoneFullyPreclosed(preZone)) {
+                    pendingPrecloseIndex = index;
+                    document.getElementById("precloseSub").innerText = zone.name;
+                    document.getElementById("precloseModal").classList.add("active");
+                    return;
+                }
+            }
+
             activeZoneIndex = index;
             renderApp();
         }
 
         function goBackToAreas() {
+            precloseMode = false;
             activeZoneIndex = null;
             renderApp();
         }
@@ -2565,6 +3769,7 @@ function getLogicalBusinessDate(date = new Date()) {
             });
 
             const isVisible = (shift) => {
+                if (shift.id === 'preclose') return false;
                 if (shift.period && shift.period !== val) return false;
                 if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return false;
                 return true;
@@ -2620,12 +3825,18 @@ function getLogicalBusinessDate(date = new Date()) {
                 // If that was the last card, nudge them to actually hit
                 // Submit - people were finishing every card but still not
                 // tapping the submit button afterward.
-                const activeShift = checklistsData[activeTabIndex];
-                const activeZone = (activeShift && activeZoneIndex !== null) ? activeShift.zones[activeZoneIndex] : null;
-                if (activeZone && completedTasks.size === activeZone.tasks.length) {
-                    showSubmitNudge();
-                }
+                maybeNudgeSubmit();
             }
+        }
+
+        function toggleListTask(taskId) {
+            const el = document.getElementById(`card-${taskId}`);
+            if (!el) return;
+            const nowChecked = !completedTasks.has(taskId);
+            if (nowChecked) { completedTasks.add(taskId); playChime(); } else { completedTasks.delete(taskId); }
+            el.classList.toggle('checked', nowChecked);
+            el.querySelector('.paper-box').innerText = nowChecked ? '✓' : '';
+            if (nowChecked) maybeNudgeSubmit();
         }
 
         async function submitToGoogleForm(formId, formDataObj) {
@@ -2665,7 +3876,7 @@ function getLogicalBusinessDate(date = new Date()) {
         }
 
         async function submitZoneChecklist() {
-            const shift = checklistsData[activeTabIndex];
+            const shift = getActiveShift();
             const zone = shift.zones[activeZoneIndex];
             
             let totalTasks = zone.tasks.length;
@@ -2730,24 +3941,32 @@ function getLogicalBusinessDate(date = new Date()) {
                 }
             }
 
-            await loadShiftStatusFromCloud();
-
-            // Google's backend doesn't always have the new row queryable
-            // the instant our fixed submission wait finishes - if our own
-            // submission isn't showing up yet, retry a few times rather
-            // than silently leaving the area looking un-submitted (which
-            // just invites someone to submit it again).
-            if (shift.id !== 'preclose' && formConfig && !cloudSyncedAreas[areaKey]) {
-                for (let attempt = 0; attempt < 4 && !cloudSyncedAreas[areaKey]; attempt++) {
-                    await new Promise(r => setTimeout(r, 1500));
-                    const status = await fetchSheetLatestStatus(formConfig.sheetId);
-                    if (status) {
-                        cloudSyncedAreas[areaKey] = status;
-                    }
-                }
-            }
-
+            // Leave the area right away so the person is never left staring
+            // at a finished checklist while the status refresh runs.
+            completedTasks.clear();
             goBackToAreas();
+
+            try {
+                await loadShiftStatusFromCloud();
+
+                // Google's backend doesn't always have the new row queryable
+                // the instant our fixed submission wait finishes - if our own
+                // submission isn't showing up yet, retry a few times rather
+                // than silently leaving the area looking un-submitted (which
+                // just invites someone to submit it again).
+                if (shift.id !== 'preclose' && formConfig && !cloudSyncedAreas[areaKey]) {
+                    for (let attempt = 0; attempt < 4 && !cloudSyncedAreas[areaKey]; attempt++) {
+                        await new Promise(r => setTimeout(r, 1500));
+                        const status = await fetchSheetLatestStatus(formConfig.sheetId);
+                        if (status) {
+                            cloudSyncedAreas[areaKey] = status;
+                        }
+                    }
+                    renderApp();
+                }
+            } catch (e) {
+                console.error("Post-submit refresh failed:", e);
+            }
         }
 
         async function verifyArea() {
@@ -2869,9 +4088,9 @@ function getLogicalBusinessDate(date = new Date()) {
 
         let eodCurrentCategory = 'pm';
 
-        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm', comments = {}) {
+        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm', comments = {}, leaderLabel = null) {
             let logParts = [];
-            let leaderName = currentUser ? currentUser.name : "Leader";
+            let leaderName = leaderLabel || (currentUser ? currentUser.name : "Leader");
 
             // A comment is embedded as {the comment} at the end of an
             // assignment's segment. The whole log line is comma-delimited,
@@ -3152,6 +4371,64 @@ function getLogicalBusinessDate(date = new Date()) {
             }
         }
 
+        // ---------- Automatic 3 AM EOD ----------
+        // Any period that has some activity but no EOD by 3 AM is logged with
+        // whatever exists, with "Not Verified" in place of a leader's name.
+        // This only runs while the app is open on some device overnight.
+        let autoEodRunning = false;
+
+        async function checkAutoEod() {
+            if (autoEodRunning || eodSubmissionInProgress) return;
+            const now = new Date();
+            if (now.getHours() !== 3) return;
+            const dayKey = getLogicalBusinessDate(now).toDateString();
+            try { if (localStorage.getItem('autoEodDone') === dayKey) return; } catch (e) {}
+
+            autoEodRunning = true;
+            try {
+                // Spread devices out so two open screens don't both submit
+                await new Promise(r => setTimeout(r, Math.random() * 20000));
+                await loadShiftStatusFromCloud();
+
+                let submittedAny = false;
+                for (const catKey of Object.keys(EOD_CATEGORIES)) {
+                    if (eodSubmittedToday[catKey]) continue;
+                    const cat = EOD_CATEGORIES[catKey];
+                    const shifts = checklistsData.filter(sh => cat.shiftIds.includes(sh.id));
+                    const anyActivity = shifts.some(sh => sh.zones.some(z => cloudSyncedAreas[`${sh.id}::${z.name}`]));
+                    if (!anyActivity) continue;
+
+                    for (const shift of shifts) {
+                        const overrides = {};
+                        const comments = {};
+                        shift.zones.forEach(zone => {
+                            const state = cloudSyncedAreas[`${shift.id}::${zone.name}`];
+                            if (!state) {
+                                const asg = todayAssignments[shift.id];
+                                const who = (asg && asg.byArea[zone.name] && asg.byArea[zone.name][0]) || "Unassigned";
+                                overrides[zone.name] = { name: who, tag: "Unfinished" };
+                            } else if (!state.leaderVerified) {
+                                overrides[zone.name] = { name: state.teamMember || state.leaderName || "Unassigned", tag: "Incomplete" };
+                            }
+                        });
+                        await submitOverallLogForShift(shift, overrides, cat.configKey, comments, "Not Verified");
+                    }
+                    submittedAny = true;
+                }
+
+                try { localStorage.setItem('autoEodDone', dayKey); } catch (e) {}
+                if (submittedAny) {
+                    await refreshEodSubmittedStatus();
+                    checkAndSubmitDayLog();
+                    renderApp();
+                }
+            } catch (e) {
+                console.error("Auto EOD failed:", e);
+            } finally {
+                autoEodRunning = false;
+            }
+        }
+
         let dayLogSubmittedToday = false;
         let eodSubmittedToday = { am: false, pm: false, leader: false };
 
@@ -3429,7 +4706,7 @@ function getLogicalBusinessDate(date = new Date()) {
             filteredLogsData.forEach((log, idx) => {
                 const opt = document.createElement("option");
                 opt.value = idx;
-                opt.textContent = `${log.formattedTime} — Verified by ${log.leader} (${log.assignments.length} positions)`;
+                opt.textContent = `${log.formattedTime} — ${log.leader === 'Not Verified' ? 'Not Verified' : 'Verified by ' + log.leader} (${log.assignments.length} positions)`;
                 selectEl.appendChild(opt);
             });
 
@@ -3520,7 +4797,7 @@ function getLogicalBusinessDate(date = new Date()) {
                             <h4 style="font-size: 1.2rem; color: var(--text-main); font-weight: 700; margin-top: 0.1rem;">${log.formattedTime}</h4>
                         </div>
                         <div style="background: var(--leader-gold); color: #1e293b; padding: 0.4rem 0.8rem; border-radius: 0.5rem; font-weight: 800; font-size: 0.9rem;">
-                            Verified Leader: ${log.leader}
+                            ${log.leader === 'Not Verified' ? 'Not Verified' : 'Verified Leader: ' + log.leader}
                         </div>
                     </div>
             `;
