@@ -1020,6 +1020,19 @@
         .paper-pre { margin-left: 0.5rem; font-size: 0.7rem; background: #f59e0b; color: #1e293b; padding: 0.1rem 0.45rem; border-radius: 999px; vertical-align: middle; }
         @media (max-width: 480px) { .paper-sheet { padding: 1rem 0.9rem 1rem 2.9rem; } .paper-sheet::before { left: 2rem; } .paper-head { font-size: 1.35rem; } }
 
+
+        /* --- Verification photos --- */
+        .photo-row { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .photo-thumb { width: 96px; height: 96px; object-fit: cover; border-radius: 0.5rem; border: 2px solid var(--border-color); }
+        .photo-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+        .photo-btn { padding: 0.6rem 1.1rem; border-radius: 0.5rem; border: none; background: var(--leader-gold); color: #1e293b; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .photo-btn.ghost { background: transparent; border: 2px solid var(--border-color); color: var(--text-main); }
+        .log-photo-btn { margin-top: 0.5rem; padding: 0.3rem 0.6rem; border-radius: 0.4rem; border: 1px solid currentColor; background: rgba(255,255,255,0.15); color: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+        .photo-fig { margin: 0 0 1rem; text-align: center; }
+        .photo-fig img { max-width: 100%; border-radius: 0.5rem; image-rendering: auto; }
+        .photo-fig figcaption { margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-muted); }
+        .photo-none { text-align: center; color: var(--text-muted); padding: 1rem 0; }
+
         @media (max-width: 768px) {
             header { padding: 1rem 1rem 0 1rem; }
             .viewport-container { padding: 0 1rem 1rem 1rem; }
@@ -1266,6 +1279,16 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="photoViewModal" style="z-index: 1600;" onclick="if(event.target===this) this.classList.remove('active')">
+        <div class="modal-card hc-card" style="max-width: 460px;">
+            <div class="hc-card-header">
+                <h3 id="photoViewTitle" style="font-size: 1.3rem; color: var(--text-main); margin: 0;">Photo</h3>
+                <button type="button" onclick="document.getElementById('photoViewModal').classList.remove('active')" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
+            </div>
+            <div id="photoViewBody"></div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="overallLogModal">
         <div class="modal-card" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
@@ -1427,13 +1450,13 @@
 
             // Simplified mappings (no per-task entries) - just a name and a
             // single completed/verified flag per submission.
-            "opening::6": {
+            "opening::Drive-Thru": {
                 formId: "1FAIpQLSfZAgMIHl1nXYRBJrSDLTRrmhyl-c0CRZycJR5lO0k63FfPcQ",
                 sheetId: "1I9FxowD9HHvpa8_XHCMf11JCr2Lf791-u0kpvkl4QVA",
                 nameEntry: "entry.210288742",
                 completedEntry: "entry.391687405"
             },
-            "opening::615": {
+            "opening::Dining Room": {
                 formId: "1FAIpQLSe34jOT19DsvJnHPHMMGpszxZ6N57q48jxhl1iM7PnoVfmaOQ",
                 sheetId: "1T5l-pS6AoULgMMYGypCPK01REW3MNQtZEU8sUOQIQOo",
                 nameEntry: "entry.130234696",
@@ -1717,7 +1740,7 @@
                 period: "AM",
                 zones: [
                     {
-                        name: "6",
+                        name: "Drive-Thru",
                         subtitle: "6:00 AM",
                         tasks: [
                             { title: "Tea", steps: ["Start brewing tea for FC"] },
@@ -1733,7 +1756,7 @@
                         ]
                     },
                     {
-                        name: "615",
+                        name: "Dining Room",
                         subtitle: "6:15 AM",
                         tasks: [
                             { title: "Rugs", steps: ["Lay out all of the rugs"] },
@@ -1999,8 +2022,8 @@
                 "Floors":   "1twif2-sM0LOD-UuiJvNYsJaHyVnpPLUkVP5scARg6HA"
             },
             "opening": {
-                "6":   "1B1YpNYMgcAueDhEDf535P_oyWORwCU_nVArbyPZTT3Q",
-                "615": "1ypeXhpHAeyGg71Lv3OLCkUtsii41Ref_q9foZlki6UU"
+                "Drive-Thru": "1B1YpNYMgcAueDhEDf535P_oyWORwCU_nVArbyPZTT3Q",
+                "Dining Room": "1ypeXhpHAeyGg71Lv3OLCkUtsii41Ref_q9foZlki6UU"
             },
             "leader": {
                 "Opening":  "17-Vv3Cx1V3jOTGNRVxw76b0CoHTLi0B49DOhNjLiKS0",
@@ -2122,7 +2145,7 @@
         //   Task | Step
         // Type is "Do" (default) or "Verify".
         function parseZoneSheetRows(rows, zoneName) {
-            const isType = v => ["do", "verify", "preclose"].includes(String(v || "").trim().toLowerCase());
+            const isType = v => ["do", "verify", "preclose", "title"].includes(String(v || "").trim().toLowerCase());
             let typeCol = -1;
             for (const col of [4, 3, 2]) {
                 if (rows.some(r => isType(cellText((r.c || [])[col])))) { typeCol = col; break; }
@@ -2133,16 +2156,24 @@
                 : { sub: -1, task: 0, step: 1, type: -1 };
 
             const synthetic = [];
+            let title = "";
             rows.forEach(r => {
                 const c = r.c || [];
                 const task = cellText(c[layout.task]);
                 const step = cellText(c[layout.step]);
+                // A row with Type "Title" sets the card's header text (Task column)
+                if (layout.type >= 0 && cellText(c[layout.type]).toLowerCase() === "title") {
+                    if (!title) title = task || step;
+                    return;
+                }
                 if (task.toLowerCase() === "task" && step.toLowerCase() === "step") return; // header row
                 const sub = layout.sub >= 0 ? cellText(c[layout.sub]) : "";
                 const type = layout.type >= 0 ? cellText(c[layout.type]) : "Do";
                 synthetic.push({ c: [{ v: zoneName }, { v: sub }, { v: task }, { v: step }, { v: type || "Do" }] });
             });
-            return parseChecklistRows(synthetic);
+            const out = parseChecklistRows(synthetic);
+            out.title = title;
+            return out;
         }
 
         // Copies preclose rows found in an area sheet onto the hidden Preclose list
@@ -2185,7 +2216,9 @@
                         if (existing) {
                             existing.tasks = loaded.tasks;
                             if (loaded.subtitle) existing.subtitle = loaded.subtitle;
+                            if (parsed.title) existing.displayName = parsed.title;
                         } else {
+                            if (parsed.title) loaded.displayName = parsed.title;
                             shift.zones.push(loaded);
                         }
                         if (parsed.verifyByZone[zoneName]) {
@@ -2216,6 +2249,133 @@
                 activeZoneIndex = null;
             }
             return changed;
+        }
+
+        // ---------- Verification photos (leaders, AM and PM areas) ----------
+        // One form + response sheet. Question order (= sheet columns B..E):
+        //   Shift, Area, Leader, Photo (long answer). Column A is the timestamp.
+        const PHOTO_FORM = {
+            formId: "PASTE_PHOTO_FORM_ID_HERE",
+            sheetId: "PASTE_PHOTO_SHEET_ID_HERE",
+            shiftEntry: "entry.PASTE_PHOTO_SHIFT_ENTRY",
+            areaEntry: "entry.PASTE_PHOTO_AREA_ENTRY",
+            leaderEntry: "entry.PASTE_PHOTO_LEADER_ENTRY",
+            photoEntry: "entry.PASTE_PHOTO_PHOTO_ENTRY"
+        };
+        const PHOTO_SHIFTS = ['opening', 'close-930', 'close-1030'];
+        const PHOTO_SHIFT_LABEL = { 'opening': 'AM', 'close-930': '9:30', 'close-1030': '10:30' };
+        const PHOTO_MAX_CHARS = 38000; // stays well under a Sheets cell (50,000)
+        let pendingPhotos = {}; // areaKey -> data URL
+
+        function photosEnabled() {
+            return ["formId", "sheetId", "shiftEntry", "areaEntry", "leaderEntry", "photoEntry"]
+                .every(k => !isPlaceholderSheetId(String(PHOTO_FORM[k]).replace("entry.", "")));
+        }
+
+        function compressImageFile(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    let maxSide = 320, quality = 0.72;
+                    for (let tries = 0; tries < 14; tries++) {
+                        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+                        const c = document.createElement('canvas');
+                        c.width = Math.max(1, Math.round(img.width * scale));
+                        c.height = Math.max(1, Math.round(img.height * scale));
+                        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+                        const out = c.toDataURL('image/jpeg', quality);
+                        if (out.length <= PHOTO_MAX_CHARS) return resolve(out);
+                        if (quality > 0.4) quality -= 0.1; else maxSide = Math.round(maxSide * 0.85);
+                    }
+                    reject(new Error("Photo could not be made small enough"));
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Could not read that photo")); };
+                img.src = url;
+            });
+        }
+
+        // EOD screen: one optional photo per area, next to "+ Add Comment"
+        function eodPhotoKey(idx) {
+            const it = eodAllAreas[idx];
+            return `${it.shift.id}::${it.zone.name}`;
+        }
+        function eodPhotoSlotHtml(idx) {
+            const data = pendingPhotos[eodPhotoKey(idx)];
+            if (!data) return '';
+            return `<div class="photo-row"><img class="photo-thumb" src="${data}" alt="Area photo">
+                <div class="photo-actions"><button type="button" class="photo-btn" onclick="document.getElementById('eodPhotoInput-${idx}').click()">Retake</button>
+                <button type="button" class="photo-btn ghost" onclick="removeEODPhoto(${idx})">Remove</button></div></div>`;
+        }
+        function refreshEODPhoto(idx) {
+            const slot = document.getElementById(`eodPhotoSlot-${idx}`);
+            if (slot) slot.innerHTML = eodPhotoSlotHtml(idx);
+            const btn = document.getElementById(`eodPhotoBtn-${idx}`);
+            if (btn) btn.textContent = pendingPhotos[eodPhotoKey(idx)] ? '📷 Photo added' : '📷 Add Photo';
+        }
+        async function handleEODPhoto(input, idx) {
+            const file = input.files && input.files[0];
+            input.value = "";
+            if (!file) return;
+            try {
+                pendingPhotos[eodPhotoKey(idx)] = await compressImageFile(file);
+            } catch (e) {
+                showStatusMessage(e.message, 'error');
+                return;
+            }
+            refreshEODPhoto(idx);
+        }
+        function removeEODPhoto(idx) {
+            delete pendingPhotos[eodPhotoKey(idx)];
+            refreshEODPhoto(idx);
+        }
+
+        function submitPendingPhoto(shift, zone) {
+            const key = `${shift.id}::${zone.name}`;
+            const data = pendingPhotos[key];
+            if (!data || !photosEnabled() || !PHOTO_SHIFTS.includes(shift.id)) return Promise.resolve(true);
+            const form = {};
+            form[PHOTO_FORM.shiftEntry] = shift.id;
+            form[PHOTO_FORM.areaEntry] = zone.name;
+            form[PHOTO_FORM.leaderEntry] = currentUser ? currentUser.name : "Leader";
+            form[PHOTO_FORM.photoEntry] = data;
+            delete pendingPhotos[key];
+            return submitToGoogleForm(PHOTO_FORM.formId, form);
+        }
+
+        // Log viewer: fetch and show the saved photo(s) for an area on a given day
+        async function viewAreaPhoto(encodedArea, logTimeMs) {
+            const area = decodeURIComponent(encodedArea);
+            const modal = document.getElementById("photoViewModal");
+            const body = document.getElementById("photoViewBody");
+            document.getElementById("photoViewTitle").innerText = area;
+            body.innerHTML = '<div class="spinner"></div>';
+            modal.classList.add("active");
+
+            const day = getLogicalBusinessDate(new Date(logTimeMs)).toDateString();
+            const safeArea = area.replace(/'/g, "\\'");
+            const rows = await gvizRows(PHOTO_FORM.sheetId, `SELECT A, B, C, D, E WHERE C = '${safeArea}' ORDER BY A DESC LIMIT 8`, 15000);
+            if (rows === null) { body.innerHTML = '<p class="photo-none">Could not load photos right now.</p>'; return; }
+
+            const seen = new Set();
+            const found = [];
+            rows.forEach(r => {
+                const c = r.c || [];
+                if (gvizCellBusinessDay(c[0]) !== day) return;
+                const shiftId = cellText(c[1]);
+                const photo = cellText(c[4]);
+                if (!photo.startsWith("data:image") || seen.has(shiftId)) return;
+                seen.add(shiftId);
+                found.push({ shiftId, leader: cellText(c[3]), photo });
+            });
+
+            if (!found.length) { body.innerHTML = '<p class="photo-none">No photo was saved for this area that day.</p>'; return; }
+            body.innerHTML = found.map(f => `
+                <figure class="photo-fig">
+                    <img src="${f.photo}" alt="${area} photo">
+                    <figcaption>${PHOTO_SHIFT_LABEL[f.shiftId] || f.shiftId}${f.leader ? ' · taken by ' + f.leader : ''}</figcaption>
+                </figure>`).join("");
         }
 
         // ---------- Headcount + redistribution ----------
@@ -2349,11 +2509,11 @@
             if (zonesChanged) activeZoneIndex = null;
         }
 
-        async function fetchTodayHeadcount(shiftId) {
+        async function fetchTodayHeadcount(shiftId, dayStr) {
             const cfg = HEADCOUNT_CONFIGS[shiftId];
             const rows = await gvizRows(cfg.sheetId, "SELECT A, B, C ORDER BY A DESC");
             if (!rows) return undefined; // could not read: keep what we have
-            const today = getLogicalBusinessDate(new Date()).toDateString();
+            const today = dayStr || getLogicalBusinessDate(new Date()).toDateString();
             for (const row of rows) {
                 const c = row.c || [];
                 if (gvizCellBusinessDay(c[0]) !== today) continue;
@@ -2390,10 +2550,10 @@
         }
 
         // Latest non-empty value for today in a given column (A is the timestamp)
-        async function fetchLatestColumnTextForToday(sheetId, colIdx) {
+        async function fetchLatestColumnTextForToday(sheetId, colIdx, dayStr) {
             const rows = await gvizRows(sheetId, "SELECT A, B, C ORDER BY A DESC");
             if (!rows) return null;
-            const today = getLogicalBusinessDate(new Date()).toDateString();
+            const today = dayStr || getLogicalBusinessDate(new Date()).toDateString();
             for (const row of rows) {
                 const c = row.c || [];
                 if (gvizCellBusinessDay(c[0]) !== today) continue;
@@ -2473,11 +2633,11 @@
             const box = document.getElementById("hcContent");
             if (hcFlow.step === 'count') {
                 title.innerText = "Today's Headcount";
-                let html = `<p class="hc-help">How many people are working each period? Areas are redistributed automatically if you have fewer people than areas.</p>`;
+                let html = `<p class="hc-help">How many people can fill out checklists each period? Areas are redistributed automatically if you have fewer people than areas.</p>`;
                 hcFlow.shiftIds.forEach(id => {
                     html += `
                         <div class="hc-row">
-                            <div class="hc-row-label">How many <b>${hcTitleFor(id)}</b> people?</div>
+                            <div class="hc-row-label">How many <b>${hcTitleFor(id)}</b> people are able to fill out checklists?<div style="font-size:0.8rem; font-weight:500; opacity:0.75; margin-top:0.2rem;">Don't count anyone who is in position.</div></div>
                             <div class="hc-stepper">
                                 <button type="button" class="hc-step-btn" onclick="hcAdjust('${id}', -1)" ${hcFlow.busy || hcFlow.counts[id] <= HEADCOUNT_CONFIGS[id].min ? 'disabled' : ''}>−</button>
                                 <div class="hc-count">${hcFlow.counts[id]}</div>
@@ -2546,7 +2706,26 @@
                 if (value !== null && value !== undefined) posts[cfg.formId][cfg.countEntry] = String(value);
                 if (!isPlaceholderSheetId(cfg.nameEntry.replace("entry.", ""))) posts[cfg.formId][cfg.nameEntry] = leaderName;
             });
-            await Promise.all(Object.keys(posts).map(formId => submitToGoogleForm(formId, posts[formId])));
+            const expected = {};
+            hcFlow.shiftIds.forEach(id => { expected[id] = hcFlow.counts[id]; });
+            const postAll = () => Promise.all(Object.keys(posts).map(formId => submitToGoogleForm(formId, posts[formId])));
+            const landed = async () => {
+                for (let i = 0; i < 4; i++) {
+                    await new Promise(r => setTimeout(r, 2500));
+                    const checks = await Promise.all(Object.keys(expected).map(async id => (await fetchTodayHeadcount(id)) === expected[id]));
+                    if (checks.every(Boolean)) return true;
+                }
+                return false;
+            };
+            await postAll();
+            let saved = await landed();
+            if (!saved) { await postAll(); saved = await landed(); }
+            if (!saved) {
+                hcFlow.busy = false;
+                renderHcFlow();
+                showStatusMessage("Headcount did NOT save - Google never received it, so nobody else can see it. Check that the headcount form's questions are not required, then try again.", "error", 15000);
+                return;
+            }
 
             hcFlow.shiftIds.forEach(id => {
                 todayHeadcounts[id] = hcFlow.counts[id];
@@ -2678,7 +2857,27 @@
                 if (job) posts[cfg.formId][cfg.entryKey] = job.text;
                 else if (todayAssignments[id]) posts[cfg.formId][cfg.entryKey] = assignmentText(todayAssignments[id]);
             });
-            await Promise.all(Object.keys(posts).map(formId => submitToGoogleForm(formId, posts[formId])));
+            const postAllA = () => Promise.all(Object.keys(posts).map(formId => submitToGoogleForm(formId, posts[formId])));
+            const landedA = async () => {
+                for (let i = 0; i < 4; i++) {
+                    await new Promise(r => setTimeout(r, 2500));
+                    const checks = await Promise.all(jobs.map(async j => {
+                        const cfg = ASSIGNMENTS_CONFIGS[j.id];
+                        return (await fetchLatestColumnTextForToday(cfg.sheetId, cfg.col)) === j.text;
+                    }));
+                    if (checks.every(Boolean)) return true;
+                }
+                return false;
+            };
+            await postAllA();
+            let savedA = await landedA();
+            if (!savedA) { await postAllA(); savedA = await landedA(); }
+            if (!savedA) {
+                hcFlow.busy = false;
+                renderHcFlow();
+                showStatusMessage("Assignments did NOT save - Google never received them, so nobody else can see them. Check that the assignments form's questions are not required, then try again.", "error", 15000);
+                return;
+            }
             jobs.forEach(j => {
                 const info = { leader: leaderName, byArea: j.byArea };
                 todayAssignments[j.id] = info;
@@ -2863,6 +3062,7 @@ function getLogicalBusinessDate(date = new Date()) {
         }
 
         function nudgeDismiss() {
+            if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = null; }
             document.getElementById("nudgeOverlay").classList.remove("active");
         }
 
@@ -2927,7 +3127,8 @@ function getLogicalBusinessDate(date = new Date()) {
             } catch (e) { return {}; }
         }
 
-        async function fetchSheetLatestStatus(sheetId) {
+        async function fetchSheetLatestStatus(sheetId, targetDay) {
+            const FAIL = targetDay ? undefined : null; // undefined = could not read (only for back-dated reads)
             if (!sheetId) return null;
             
             const query = encodeURIComponent("SELECT *");
@@ -2940,12 +3141,12 @@ function getLogicalBusinessDate(date = new Date()) {
             try {
                 const res = await fetch(url, { signal: controller.signal });
                 clearTimeout(timeoutId);
-                if (!res.ok) return null;
+                if (!res.ok) return FAIL;
                 
                 const text = await res.text();
                 const prefix = "setResponse(";
                 const startIndex = text.indexOf(prefix);
-                if (startIndex === -1) return null;
+                if (startIndex === -1) return FAIL;
                 
                 const jsonStart = startIndex + prefix.length;
                 const jsonEnd = text.lastIndexOf(")");
@@ -2958,7 +3159,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 const allRows = data.table.rows;
                 
                 // Use the logical business date offset for "today"
-                const today = getLogicalBusinessDate(new Date());
+                const today = targetDay || getLogicalBusinessDate(new Date());
                 
                 let teamMember = null;
                 let leaderVerified = false;
@@ -3032,7 +3233,7 @@ function getLogicalBusinessDate(date = new Date()) {
             } catch(e) {
                 clearTimeout(timeoutId);
             }
-            return null;
+            return FAIL;
         }
 
         async function loadShiftStatusFromCloud() {
@@ -3105,7 +3306,7 @@ function getLogicalBusinessDate(date = new Date()) {
             setTimeout(checkAutoEod, 8000);
 
             snapshotBaseZones();
-            loadChecklistsFromSheets().then(changed => {
+            const sheetsLoad = loadChecklistsFromSheets().then(changed => {
                 if (changed) {
                     baseZonesByShift = {};
                     snapshotBaseZones();
@@ -3113,7 +3314,8 @@ function getLogicalBusinessDate(date = new Date()) {
                     if (currentUser) { renderTabs(); renderApp(); }
                 }
             });
-            loadRedistributionRules().then(ok => { if (ok && currentUser) renderApp(); });
+            const rulesLoad = loadRedistributionRules().then(ok => { if (ok && currentUser) renderApp(); });
+            Promise.allSettled([sheetsLoad, rulesLoad]).then(() => { sheetsLoadedOnce = true; });
         });
 
         async function loadStaffDatabaseInBackground() {
@@ -3841,9 +4043,9 @@ function getLogicalBusinessDate(date = new Date()) {
 
         async function submitToGoogleForm(formId, formDataObj) {
             const formUrl = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
-            
+
             return new Promise((resolve) => {
-                const iframeName = 'hidden_iframe_' + Date.now();
+                const iframeName = 'hidden_iframe_' + Date.now() + '_' + Math.random().toString(36).slice(2);
                 const iframe = document.createElement('iframe');
                 iframe.name = iframeName;
                 iframe.id = iframeName;
@@ -3865,17 +4067,23 @@ function getLogicalBusinessDate(date = new Date()) {
                 }
 
                 document.body.appendChild(form);
-                form.submit();
 
-                setTimeout(() => {
-                    form.remove();
-                    iframe.remove();
-                    resolve(true);
-                }, 1500);
+                // Keep the iframe alive until Google answers (or 15s), so a slow
+                // connection can't cancel the post by removing it too early.
+                let done = false;
+                const finish = () => {
+                    if (done) return;
+                    done = true;
+                    setTimeout(() => { form.remove(); iframe.remove(); resolve(true); }, 400);
+                };
+                iframe.addEventListener('load', finish);
+                setTimeout(finish, 15000);
+                form.submit();
             });
         }
 
         async function submitZoneChecklist() {
+            nudgeDismiss(); // cancel a pending "Would you like to submit?" popup
             const shift = getActiveShift();
             const zone = shift.zones[activeZoneIndex];
             
@@ -3970,6 +4178,7 @@ function getLogicalBusinessDate(date = new Date()) {
         }
 
         async function verifyArea() {
+            nudgeDismiss();
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[activeZoneIndex];
             const verifyCards = getVerifyCards(shift.id, zone.name);
@@ -4088,7 +4297,7 @@ function getLogicalBusinessDate(date = new Date()) {
 
         let eodCurrentCategory = 'pm';
 
-        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm', comments = {}, leaderLabel = null) {
+        async function submitOverallLogForShift(shift, unfinishedOverrides = {}, configKey = 'pm', comments = {}, leaderLabel = null, opts = {}) {
             let logParts = [];
             let leaderName = leaderLabel || (currentUser ? currentUser.name : "Leader");
 
@@ -4102,7 +4311,7 @@ function getLogicalBusinessDate(date = new Date()) {
             logParts.push(`${leaderName} - verified`);
 
             // 2. Iterate through all zones in the shift to gather team members and areas
-            shift.zones.forEach(zone => {
+            (opts.zones || shift.zones).forEach(zone => {
                 const rawComment = comments[zone.name];
                 const commentSuffix = rawComment ? ` {${sanitizeComment(rawComment)}}` : '';
 
@@ -4113,13 +4322,14 @@ function getLogicalBusinessDate(date = new Date()) {
                 }
 
                 const areaKey = `${shift.id}::${zone.name}`;
-                const areaState = cloudSyncedAreas[areaKey];
+                const areaState = (opts.states || cloudSyncedAreas)[areaKey];
 
                 // Use the team member who completed it; fall back to whoever
                 // verified it (leader-shift zones submit+verify in one step
                 // so teamMember is never separately captured for those), and
                 // only fall back to the current EOD-runner as a last resort.
-                const memberName = (areaState && areaState.teamMember)
+                const realMember = areaState && areaState.teamMember && areaState.teamMember !== "Team Member";
+                const memberName = realMember
                     ? areaState.teamMember
                     : (areaState && areaState.leaderName)
                         ? areaState.leaderName
@@ -4129,6 +4339,7 @@ function getLogicalBusinessDate(date = new Date()) {
             });
 
             // Combine into the requested format: "Josh E - verified, Josh E - Front Counter, ..."
+            if (opts.marker) logParts.push(opts.marker);
             const formattedLogString = logParts.join(", ");
 
             // Prepare payload for the correct category's overall log Google Form
@@ -4137,6 +4348,7 @@ function getLogicalBusinessDate(date = new Date()) {
             overallFormData[config.entryKey] = formattedLogString;
 
             await submitToGoogleForm(config.formId, overallFormData);
+            return formattedLogString;
         }
 
         async function manualRefresh() {
@@ -4196,6 +4408,11 @@ function getLogicalBusinessDate(date = new Date()) {
             modal.classList.add("active");
             document.getElementById("eodModalTitle").innerText = `End of Day — ${catInfo.label}`;
             const container = document.getElementById("eodContent");
+            if (eodSubmittedToday[category] || eodLocalDone(category)) {
+                container.innerHTML = `<p style="text-align:center; font-weight:700; color: var(--success-dark); font-size:1.1rem; margin: 1.5rem 0;">${catInfo.label} end of day was already submitted today.</p>
+                    <button class="btn-submit-area" style="width:100%;" onclick="closeEODModal()">Close</button>`;
+                return;
+            }
             container.innerHTML = '<div class="spinner"></div><p style="text-align: center; color: var(--text-muted);">Checking today\'s status...</p>';
 
             eodAllNames = getSortedNames();
@@ -4214,9 +4431,9 @@ function getLogicalBusinessDate(date = new Date()) {
                     if (!state) {
                         eodAllAreas.push({ shift, zone, status: "Not submitted", defaultTag: "Unfinished", incomplete: true, completedBy: null });
                     } else if (!state.leaderVerified) {
-                        eodAllAreas.push({ shift, zone, status: "Not verified", defaultTag: "Incomplete", incomplete: true, completedBy: state.teamMember || state.leaderName || null });
+                        eodAllAreas.push({ shift, zone, status: "Not verified", defaultTag: "Incomplete", incomplete: true, completedBy: (state.teamMember !== "Team Member" && state.teamMember) || state.leaderName || null });
                     } else {
-                        eodAllAreas.push({ shift, zone, status: "Verified", defaultTag: null, incomplete: false, completedBy: state.teamMember || state.leaderName || null });
+                        eodAllAreas.push({ shift, zone, status: "Verified", defaultTag: null, incomplete: false, completedBy: (state.teamMember !== "Team Member" && state.teamMember) || state.leaderName || null });
                     }
                 });
             });
@@ -4255,7 +4472,10 @@ function getLogicalBusinessDate(date = new Date()) {
                             </div>
                             ${rightSideHtml}
                             <button type="button" class="eod-comment-toggle" onclick="toggleEODComment(${idx})">+ Add Comment</button>
+                            ${photosEnabled() && PHOTO_SHIFTS.includes(item.shift.id) ? `<button type="button" class="eod-comment-toggle" id="eodPhotoBtn-${idx}" onclick="document.getElementById('eodPhotoInput-${idx}').click()">${pendingPhotos[`${item.shift.id}::${item.zone.name}`] ? '📷 Photo added' : '📷 Add Photo'}</button>
+                            <input type="file" accept="image/*" id="eodPhotoInput-${idx}" style="display:none" onchange="handleEODPhoto(this, ${idx})">` : ''}
                         </div>
+                        <div id="eodPhotoSlot-${idx}">${photosEnabled() ? eodPhotoSlotHtml(idx) : ''}</div>
                         <div class="eod-comment-area" id="eodCommentArea-${idx}" style="display: none; margin-top: 0.6rem;">
                             <textarea id="eodComment-${idx}" placeholder="e.g. didn't deep clean lowboy" rows="2" style="width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 0.4rem; background: var(--card-bg); color: var(--text-main); resize: vertical; box-sizing: border-box;"></textarea>
                         </div>
@@ -4337,25 +4557,53 @@ function getLogicalBusinessDate(date = new Date()) {
                 const catInfo = EOD_CATEGORIES[eodCurrentCategory];
                 const relevantShifts = checklistsData.filter(s => catInfo.shiftIds.includes(s.id));
 
-                for (const shift of relevantShifts) {
-                    const overrides = {};
-                    const comments = {};
-                    eodAllAreas.forEach((item, idx) => {
-                        if (item.shift.id !== shift.id) return;
-                        const a = assignments[idx];
-                        if (!a) return;
-                        if (item.incomplete) {
-                            overrides[item.zone.name] = { name: a.name, tag: a.tag };
-                            if (a.comment) comments[item.zone.name] = a.comment;
-                        } else if (a.comment) {
-                            comments[item.zone.name] = a.comment;
-                        }
-                    });
-                    await submitOverallLogForShift(shift, overrides, catInfo.configKey, comments);
+                showSubmittingOverlay("Saving end of day log...");
+                const postAll = async () => {
+                    for (const shift of relevantShifts) {
+                        const overrides = {};
+                        const comments = {};
+                        eodAllAreas.forEach((item, idx) => {
+                            if (item.shift.id !== shift.id) return;
+                            const a = assignments[idx];
+                            if (!a) return;
+                            if (item.incomplete) {
+                                overrides[item.zone.name] = { name: a.name, tag: a.tag };
+                                if (a.comment) comments[item.zone.name] = a.comment;
+                            } else if (a.comment) {
+                                comments[item.zone.name] = a.comment;
+                            }
+                        });
+                        await submitOverallLogForShift(shift, overrides, catInfo.configKey, comments);
+                    }
+                };
+                const landed = async (tries) => {
+                    for (let i = 0; i < tries; i++) {
+                        await new Promise(r => setTimeout(r, 3000));
+                        const txt = await fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS[catInfo.configKey].sheetId);
+                        if (txt) return true;
+                    }
+                    return false;
+                };
+
+                await postAll();
+                let saved = await landed(3);
+                if (!saved) { await postAll(); saved = await landed(3); }
+                hideSubmittingOverlay();
+                if (!saved) {
+                    showStatusMessage(`The ${catInfo.label} end of day log did NOT save (Google never received it). Check your connection and try again.`, "error", 12000);
+                    document.querySelectorAll('#eodContent button').forEach(b => b.disabled = false);
+                    return;
+                }
+                if (photosEnabled()) {
+                    await Promise.all(eodAllAreas.map(it => submitPendingPhoto(it.shift, it.zone)));
                 }
 
+                markEodLocalDone(eodCurrentCategory);
+                eodSubmittedToday[eodCurrentCategory] = true;
                 showStatusMessage(`${catInfo.label} end of day log submitted.`, "success", 6000);
                 closeEODModal();
+                renderApp();
+                setTimeout(() => { refreshEodSubmittedStatus().then(() => renderApp()).catch(() => {}); }, 4000);
 
                 setTimeout(() => {
                     showExplosionPopup(
@@ -4367,6 +4615,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 // automatically compile and submit the full-day conglomerate log.
                 checkAndSubmitDayLog();
             } finally {
+                hideSubmittingOverlay();
                 eodSubmissionInProgress = false;
             }
         }
@@ -4376,57 +4625,154 @@ function getLogicalBusinessDate(date = new Date()) {
         // whatever exists, with "Not Verified" in place of a leader's name.
         // This only runs while the app is open on some device overnight.
         let autoEodRunning = false;
+        let sheetsLoadedOnce = false;
+        const autoEodDoneKey = d => 'autoEodDone:' + d.toDateString();
+        function isAutoEodDone(d) { try { return localStorage.getItem(autoEodDoneKey(d)) === '1'; } catch (e) { return false; } }
+        function setAutoEodDone(d) { try { localStorage.setItem(autoEodDoneKey(d), '1'); } catch (e) {} }
 
+        // Any business day (looking back up to 3 days) that is past 3 AM of the
+        // following morning and is missing an AM / PM / Leader EOD gets one
+        // filed silently, using whatever was submitted, with "Not Verified".
         async function checkAutoEod() {
-            if (autoEodRunning || eodSubmissionInProgress) return;
+            if (autoEodRunning || eodSubmissionInProgress || !staffDatabaseReady || !sheetsLoadedOnce) return;
             const now = new Date();
-            if (now.getHours() !== 3) return;
-            const dayKey = getLogicalBusinessDate(now).toDateString();
-            try { if (localStorage.getItem('autoEodDone') === dayKey) return; } catch (e) {}
+            const L = getLogicalBusinessDate(now);
+            const due = [];
+            // Never reach back before yesterday as of the first run on this device
+            let floor = null;
+            try {
+                const saved = localStorage.getItem('autoEodFloor');
+                if (saved) floor = new Date(+saved);
+                else {
+                    floor = new Date(L.getFullYear(), L.getMonth(), L.getDate() - 1);
+                    localStorage.setItem('autoEodFloor', String(floor.getTime()));
+                }
+            } catch (e) {}
+            for (let k = 3; k >= 0; k--) {
+                const D = new Date(L.getFullYear(), L.getMonth(), L.getDate() - k);
+                const dueAt = new Date(D.getFullYear(), D.getMonth(), D.getDate() + 1, 3, 0, 0);
+                if (floor && D < floor) continue;
+                if (now >= dueAt && !isAutoEodDone(D)) due.push(D);
+            }
+            if (!due.length) return;
 
             autoEodRunning = true;
             try {
-                // Spread devices out so two open screens don't both submit
-                await new Promise(r => setTimeout(r, Math.random() * 20000));
-                await loadShiftStatusFromCloud();
-
-                let submittedAny = false;
-                for (const catKey of Object.keys(EOD_CATEGORIES)) {
-                    if (eodSubmittedToday[catKey]) continue;
-                    const cat = EOD_CATEGORIES[catKey];
-                    const shifts = checklistsData.filter(sh => cat.shiftIds.includes(sh.id));
-                    const anyActivity = shifts.some(sh => sh.zones.some(z => cloudSyncedAreas[`${sh.id}::${z.name}`]));
-                    if (!anyActivity) continue;
-
-                    for (const shift of shifts) {
-                        const overrides = {};
-                        const comments = {};
-                        shift.zones.forEach(zone => {
-                            const state = cloudSyncedAreas[`${shift.id}::${zone.name}`];
-                            if (!state) {
-                                const asg = todayAssignments[shift.id];
-                                const who = (asg && asg.byArea[zone.name] && asg.byArea[zone.name][0]) || "Unassigned";
-                                overrides[zone.name] = { name: who, tag: "Unfinished" };
-                            } else if (!state.leaderVerified) {
-                                overrides[zone.name] = { name: state.teamMember || state.leaderName || "Unassigned", tag: "Incomplete" };
-                            }
-                        });
-                        await submitOverallLogForShift(shift, overrides, cat.configKey, comments, "Not Verified");
-                    }
-                    submittedAny = true;
+                let any = false;
+                for (const D of due) {
+                    if (await autoEodForDay(D)) any = true;
                 }
-
-                try { localStorage.setItem('autoEodDone', dayKey); } catch (e) {}
-                if (submittedAny) {
+                if (any) {
                     await refreshEodSubmittedStatus();
-                    checkAndSubmitDayLog();
-                    renderApp();
+                    if (currentUser) renderApp();
                 }
             } catch (e) {
                 console.error("Auto EOD failed:", e);
             } finally {
                 autoEodRunning = false;
             }
+        }
+
+        // Returns true if anything was submitted. Marks the day done only when
+        // every sheet it needed could be read.
+        async function autoEodForDay(D) {
+            // Spread devices out so two open screens don't both file it
+            await new Promise(r => setTimeout(r, Math.random() * 15000));
+
+            const dayStr = D.toDateString();
+            const marker = eodMarkerFor(D);
+            const logicalDay = new Date(D.getFullYear(), D.getMonth(), D.getDate(), 12, 0, 0);
+
+            const existing = {};
+            for (const catKey of Object.keys(EOD_CATEGORIES)) {
+                const t = await fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS[catKey].sheetId, dayStr);
+                if (t === undefined) return false; // couldn't read: try again later
+                existing[catKey] = t;
+            }
+            if (Object.values(existing).every(Boolean)) {
+                // All three already exist; make sure the full-day log exists too
+                await maybeBackfillDayLog(D, dayStr, marker, existing);
+                setAutoEodDone(D);
+                return false;
+            }
+
+            // That day's headcounts -> which areas were actually in play
+            const counts = {};
+            for (const id of Object.keys(HEADCOUNT_CONFIGS)) {
+                if (!headcountEnabled(id)) { counts[id] = null; continue; }
+                const v = await fetchTodayHeadcount(id, dayStr);
+                counts[id] = (v === undefined) ? null : v;
+            }
+            const savedHC = { ...todayHeadcounts };
+            let zonesByShift;
+            try {
+                Object.keys(counts).forEach(id => { todayHeadcounts[id] = counts[id]; });
+                zonesByShift = buildRedistributedZones();
+            } finally {
+                Object.keys(savedHC).forEach(id => { todayHeadcounts[id] = savedHC[id]; });
+            }
+
+            const asgByShift = {};
+            for (const id of ['close-930', 'close-1030']) {
+                if (!assignmentsEnabled(id)) continue;
+                const cfg = ASSIGNMENTS_CONFIGS[id];
+                const text = await fetchLatestColumnTextForToday(cfg.sheetId, cfg.col, dayStr);
+                if (text) asgByShift[id] = buildAssignmentInfo(parseLogSegment(text));
+            }
+
+            const texts = { ...existing };
+            let submittedAny = false;
+            for (const catKey of Object.keys(EOD_CATEGORIES)) {
+                if (existing[catKey]) continue;
+                const cat = EOD_CATEGORIES[catKey];
+                const shifts = checklistsData.filter(sh => cat.shiftIds.includes(sh.id));
+
+                const plans = [];
+                let anyActivity = false;
+                for (const shift of shifts) {
+                    const zones = (zonesByShift && zonesByShift[shift.id]) || shift.zones;
+                    const states = {};
+                    for (const zone of zones) {
+                        const key = `${shift.id}::${zone.name}`;
+                        const cfg = FORM_MAPPINGS[key];
+                        if (!cfg || !cfg.sheetId) continue;
+                        const st = await fetchSheetLatestStatus(cfg.sheetId, logicalDay);
+                        if (st === undefined) return false; // couldn't read: try again later
+                        if (st) { states[key] = st; anyActivity = true; }
+                    }
+                    plans.push({ shift, zones, states });
+                }
+                for (const { shift, zones, states } of plans) {
+                    const overrides = {};
+                    zones.forEach(zone => {
+                        const st = states[`${shift.id}::${zone.name}`];
+                        if (!st) {
+                            const asg = asgByShift[shift.id];
+                            const who = (asg && asg.byArea[zone.name] && asg.byArea[zone.name][0]) || "Unassigned";
+                            overrides[zone.name] = { name: who, tag: "Unfinished" };
+                        } else if (!st.leaderVerified) {
+                            const member = (st.teamMember && st.teamMember !== "Team Member") ? st.teamMember : null;
+                            overrides[zone.name] = { name: member || st.leaderName || "Unassigned", tag: "Incomplete" };
+                        }
+                    });
+                    texts[catKey] = await submitOverallLogForShift(shift, overrides, cat.configKey, {}, "Not Verified", { zones, states, marker });
+                    submittedAny = true;
+                }
+            }
+
+            await maybeBackfillDayLog(D, dayStr, marker, texts);
+            setAutoEodDone(D);
+            return submittedAny;
+        }
+
+        async function maybeBackfillDayLog(D, dayStr, marker, texts) {
+            if (!(texts.am && texts.pm && texts.leader)) return;
+            const have = await fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.day.sheetId, dayStr);
+            if (have !== null) return; // exists, or unreadable: don't risk a duplicate
+            const formData = {};
+            formData[OVERALL_LOG_CONFIGS.day.entryKey] =
+                `AM: ${stripEodMarker(texts.am)} | PM: ${stripEodMarker(texts.pm)} | LEADER: ${stripEodMarker(texts.leader)} | ${marker}`;
+            await submitToGoogleForm(OVERALL_LOG_CONFIGS.day.formId, formData);
         }
 
         let dayLogSubmittedToday = false;
@@ -4438,42 +4784,52 @@ function getLogicalBusinessDate(date = new Date()) {
                 fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.pm.sheetId),
                 fetchLatestLogTextForToday(OVERALL_LOG_CONFIGS.leader.sheetId)
             ]);
-            eodSubmittedToday = { am: !!amText, pm: !!pmText, leader: !!leaderText };
+            eodSubmittedToday = {
+                am: !!amText || eodLocalDone('am'),
+                pm: !!pmText || eodLocalDone('pm'),
+                leader: !!leaderText || eodLocalDone('leader')
+            };
         }
 
-        async function fetchLatestLogTextForToday(sheetId) {
-            try {
-                const query = encodeURIComponent("SELECT A, B ORDER BY A DESC");
-                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=${query}&_cb=${Date.now()}`;
-                const res = await fetch(url);
-                if (!res.ok) return null;
-                const text = await res.text();
-                const prefix = "setResponse(";
-                const startIndex = text.indexOf(prefix);
-                if (startIndex === -1) return null;
-                const jsonStart = startIndex + prefix.length;
-                const jsonEnd = text.lastIndexOf(")");
-                const data = JSON.parse(text.substring(jsonStart, jsonEnd));
-                if (!data.table || !data.table.rows) return null;
+        // The response sheet can lag a few seconds behind a form post, so a
+        // submit is also remembered on this device for the business day.
+        function eodLocalDone(cat) {
+            try { return localStorage.getItem('eodDone:' + cat) === getLogicalBusinessDate(new Date()).toDateString(); } catch (e) { return false; }
+        }
+        function markEodLocalDone(cat) {
+            try { localStorage.setItem('eodDone:' + cat, getLogicalBusinessDate(new Date()).toDateString()); } catch (e) {}
+        }
 
-                const today = getLogicalBusinessDate(new Date());
-                for (const row of data.table.rows) {
-                    if (!row.c || !row.c[0] || !row.c[1]) continue;
-                    const dateVal = row.c[0].v ? row.c[0].v.toString() : "";
-                    let dateObj = null;
-                    if (dateVal.startsWith('Date(')) {
-                        const parts = dateVal.match(/\d+/g);
-                        if (parts && parts.length >= 3) dateObj = getLogicalBusinessDate(new Date(parts[0], parts[1], parts[2], parts[3] || 0, parts[4] || 0, parts[5] || 0));
-                    }
-                    if (!dateObj) continue;
-                    if (dateObj.toDateString() === today.toDateString()) {
-                        return row.c[1].v ? row.c[1].v.toString() : null;
-                    }
+        // Back-filled logs carry an "@YYYY-MM-DD" marker naming the business day
+        // they belong to (the form timestamp is only when they were posted).
+        const EOD_MARKER_RE = /@(\d{4})-(\d{2})-(\d{2})/;
+        function stripEodMarker(text) {
+            return String(text || "").replace(/\s*[,|]?\s*@\d{4}-\d{2}-\d{2}/g, "").trim();
+        }
+        function eodMarkerFor(d) {
+            const p = n => String(n).padStart(2, "0");
+            return `@${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+        }
+
+        // Returns the latest log text for a business day (default today),
+        // null if there is none, undefined if the sheet could not be read.
+        async function fetchLatestLogTextForToday(sheetId, dayStr) {
+            try {
+                const rows = await gvizRows(sheetId, "SELECT A, B ORDER BY A DESC");
+                if (!rows) return undefined;
+                const want = dayStr || getLogicalBusinessDate(new Date()).toDateString();
+                for (const row of rows) {
+                    const c = row.c || [];
+                    const text = cellText(c[1]);
+                    if (!text) continue;
+                    const m = text.match(EOD_MARKER_RE);
+                    const day = m ? new Date(+m[1], +m[2] - 1, +m[3]).toDateString() : gvizCellBusinessDay(c[0]);
+                    if (day === want) return text;
                 }
                 return null;
             } catch (e) {
                 console.error("Error checking day log source:", e);
-                return null;
+                return undefined;
             }
         }
 
@@ -4488,7 +4844,7 @@ function getLogicalBusinessDate(date = new Date()) {
 
             if (amText && pmText && leaderText) {
                 dayLogSubmittedToday = true;
-                const combined = `AM: ${amText} | PM: ${pmText} | LEADER: ${leaderText}`;
+                const combined = `AM: ${stripEodMarker(amText)} | PM: ${stripEodMarker(pmText)} | LEADER: ${stripEodMarker(leaderText)}`;
                 const formData = {};
                 formData[OVERALL_LOG_CONFIGS.day.entryKey] = combined;
                 await submitToGoogleForm(OVERALL_LOG_CONFIGS.day.formId, formData);
@@ -4514,6 +4870,7 @@ function getLogicalBusinessDate(date = new Date()) {
             const assignments = [];
 
             parts.forEach(part => {
+                if (part.charAt(0) === '@') return; // back-fill date marker
                 // Pull off a trailing {comment} first, if present
                 let comment = null;
                 let workingPart = part;
@@ -4594,8 +4951,14 @@ function getLogicalBusinessDate(date = new Date()) {
                             dateObj = new Date(); 
                         }
 
-                        const logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
+                        let logText = (row.c[1] && row.c[1].v) ? row.c[1].v.toString() : "";
                         if (!logText) return;
+                        const markerMatch = logText.match(EOD_MARKER_RE);
+                        if (markerMatch) {
+                            // Back-filled log: file it under the day it belongs to
+                            dateObj = new Date(+markerMatch[1], +markerMatch[2] - 1, +markerMatch[3], 23, 59, 0);
+                            logText = stripEodMarker(logText);
+                        }
 
                         let leader = "Unknown Leader";
                         let assignments = [];
@@ -4621,9 +4984,8 @@ function getLogicalBusinessDate(date = new Date()) {
                         const namesSet = new Set(assignments.map(a => a.name));
                         const areasSet = new Set(assignments.map(a => a.area));
 
-                        const isoDateString = !isNaN(dateObj.getTime()) 
-                            ? dateObj.toISOString().split('T')[0] 
-                            : new Date().toISOString().split('T')[0];
+                        const pad2 = n => String(n).padStart(2, '0');
+                        const isoDateString = `${dateObj.getFullYear()}-${pad2(dateObj.getMonth() + 1)}-${pad2(dateObj.getDate())}`; // local date
 
                         logs.push({
                             timestamp: dateObj,
@@ -4726,7 +5088,7 @@ function getLogicalBusinessDate(date = new Date()) {
             'Incomplete': 'Area Finished - Checklist Unfinished'
         };
 
-        function renderAssignmentBox(item, filterName, filterArea) {
+        function renderAssignmentBox(item, filterName, filterArea, logTimeMs) {
             const isUnfinished = item.tag === 'Unfinished';
             const isIncomplete = item.tag === 'Incomplete';
             const isNameMatch = filterName && item.name.toLowerCase().includes(filterName);
@@ -4764,6 +5126,7 @@ function getLogicalBusinessDate(date = new Date()) {
                     <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: ${textColor}; ${hasComment ? 'padding-right: 1.25rem;' : ''}">${item.area}</div>
                     <div style="font-size: 1.1rem; font-weight: 700; color: ${nameColor}; margin-top: 0.2rem;">${item.name}</div>
                     ${item.tag ? `<div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; color: ${textColor}; margin-top: 0.3rem;">${TAG_DISPLAY_TEXT[item.tag] || item.tag}</div>` : ''}
+                    ${photosEnabled() && logTimeMs && item.section !== 'LEADER' ? `<button type="button" class="log-photo-btn" onclick="event.stopPropagation(); viewAreaPhoto('${encodeURIComponent(item.area)}', ${logTimeMs})">📷 Photo</button>` : ''}
                     ${hasComment ? `<div class="log-comment-text" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid ${textColor}; opacity: 0.85; font-size: 0.85rem; font-style: italic; color: ${textColor};">"${escapedComment}"</div>` : ''}
                 </div>
             `;
@@ -4811,7 +5174,7 @@ function getLogicalBusinessDate(date = new Date()) {
                     html += `
                         <h5 style="font-size: 1rem; color: var(--text-main); margin: 1rem 0 0.75rem 0;">${section} (${items.length})</h5>
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
-                            ${items.map(item => renderAssignmentBox(item, filterName, filterArea)).join('')}
+                            ${items.map(item => renderAssignmentBox(item, filterName, filterArea, log.timestamp.getTime())).join('')}
                         </div>
                     `;
                 });
@@ -4819,7 +5182,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 html += `
                     <h5 style="font-size: 1rem; color: var(--text-main); margin-bottom: 0.75rem;">Completed Area Positions (${log.assignments.length})</h5>
                     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.85rem;">
-                        ${log.assignments.map(item => renderAssignmentBox(item, filterName, filterArea)).join('')}
+                        ${log.assignments.map(item => renderAssignmentBox(item, filterName, filterArea, log.timestamp.getTime())).join('')}
                     </div>
                 `;
             }
