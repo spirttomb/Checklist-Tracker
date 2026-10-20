@@ -1033,6 +1033,39 @@
         .photo-fig figcaption { margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-muted); }
         .photo-none { text-align: center; color: var(--text-muted); padding: 1rem 0; }
 
+        /* --- Checklist editor (owner only) --- */
+        .ed-overlay { z-index: 1700; align-items: stretch; }
+        .ed-card { background: var(--card-bg); color: var(--text-main); width: 100%; max-width: 760px; margin: 0 auto; height: 100%; display: flex; flex-direction: column; box-shadow: 0 0 40px rgba(0,0,0,0.25); }
+        .ed-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.9rem 1rem; border-bottom: 1px solid var(--border-color); }
+        .ed-head h3 { margin: 0; font-size: 1.25rem; }
+        .ed-body { flex: 1; overflow-y: auto; padding: 1rem; -webkit-overflow-scrolling: touch; }
+        .ed-foot { padding: 0.75rem 1rem; border-top: 1px solid var(--border-color); display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+        .ed-msg { flex: 1; min-width: 160px; font-size: 0.9rem; color: var(--text-muted); }
+        .ed-msg.err { color: #dc2626; font-weight: 700; }
+        .ed-msg.ok { color: #15803d; font-weight: 700; }
+        .ed-btn { padding: 0.6rem 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .ed-btn.primary { background: var(--leader-gold); color: #1e293b; border-color: transparent; }
+        .ed-btn:disabled { opacity: 0.45; cursor: default; }
+        .ed-group-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; color: var(--text-muted); margin: 1.1rem 0 0.4rem; }
+        .ed-area-btn { display: block; width: 100%; text-align: left; padding: 0.85rem 1rem; margin-bottom: 0.45rem; border: 1px solid var(--border-color); border-radius: 0.6rem; background: var(--card-bg); color: var(--text-main); font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .ed-seg { display: flex; gap: 0.4rem; margin: 0.75rem 0; flex-wrap: wrap; }
+        .ed-seg button { flex: 1; min-width: 90px; padding: 0.55rem 0.7rem; border-radius: 0.5rem; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-main); font-weight: 700; cursor: pointer; }
+        .ed-seg button.on { background: var(--leader-gold); color: #1e293b; border-color: transparent; }
+        .ed-field { width: 100%; box-sizing: border-box; padding: 0.55rem 0.7rem; border: 1px solid var(--border-color); border-radius: 0.45rem; background: var(--card-bg); color: var(--text-main); font: inherit; }
+        .ed-label { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin: 0.6rem 0 0.25rem; display: block; }
+        .ed-task { border: 1px solid var(--border-color); border-radius: 0.7rem; padding: 0.7rem; margin-bottom: 0.75rem; background: var(--card-bg); }
+        .ed-task-head, .ed-step { display: flex; align-items: flex-start; gap: 0.5rem; }
+        .ed-task-head .ed-field { font-weight: 800; }
+        .ed-steps { margin: 0.55rem 0 0.2rem 1.6rem; }
+        .ed-step { margin-bottom: 0.4rem; background: var(--card-bg); }
+        .ed-step textarea { resize: none; overflow: hidden; min-height: 2.3rem; }
+        .ed-handle { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; font-size: 1.25rem; line-height: 1; padding: 0.45rem 0.35rem; color: var(--text-muted); }
+        .ed-x { border: none; background: transparent; color: #dc2626; font-size: 1.1rem; font-weight: 800; cursor: pointer; padding: 0.4rem 0.5rem; }
+        .ed-add { border: 1.5px dashed var(--border-color); background: transparent; color: var(--text-muted); border-radius: 0.5rem; padding: 0.5rem 0.8rem; font-weight: 700; cursor: pointer; margin: 0.15rem 0 0 1.6rem; }
+        .ed-add.big { margin: 0.25rem 0 1rem; width: 100%; padding: 0.8rem; font-size: 1rem; }
+        .ed-dragging { opacity: 0.75; box-shadow: 0 8px 22px rgba(0,0,0,0.25); position: relative; z-index: 3; }
+        .ed-empty { color: var(--text-muted); font-size: 0.9rem; padding: 0.4rem 0; }
+
         @media (max-width: 768px) {
             header { padding: 1rem 1rem 0 1rem; }
             .viewport-container { padding: 0 1rem 1rem 1rem; }
@@ -1276,6 +1309,22 @@
                 <button type="button" onclick="closeHeadcountFlow()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
             </div>
             <div id="hcContent"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay ed-overlay" id="edModal">
+        <div class="ed-card">
+            <div class="ed-head">
+                <button type="button" class="ed-btn" id="edBackBtn" onclick="edBack()">← Back</button>
+                <h3 id="edTitle">Edit checklists</h3>
+                <button type="button" class="ed-btn" onclick="edClose()">✕</button>
+            </div>
+            <div class="ed-body" id="edBody"></div>
+            <div class="ed-foot" id="edFoot" style="display:none;">
+                <div class="ed-msg" id="edMsg"></div>
+                <button type="button" class="ed-btn" onclick="edDiscard()" id="edDiscardBtn">Discard</button>
+                <button type="button" class="ed-btn primary" onclick="edSave()" id="edSaveBtn">Save changes</button>
+            </div>
         </div>
     </div>
 
@@ -2378,6 +2427,361 @@
                 </figure>`).join("");
         }
 
+        // ---------- Checklist editor (owner only) ----------
+        // Edits an area's checklist sheet through a small Google Apps Script web app
+        // (checklist-editor-script.gs). The script re-checks the PIN and the allowed
+        // editor name, keeps a History tab, then rewrites the sheet.
+        const CHECKLIST_EDITOR_URL = "https://script.google.com/macros/s/AKfycby0sPMkW3Q145qzE1hg4uToIJ4cwNsF7Iu3YcIK2ZbfZYs0g-jlGNFyObLzSRF39MPehw/exec";
+        const CHECKLIST_EDITORS = ["PASTE_YOUR_NAME_AS_IN_STAFF_SHEET"]; // exactly as in the staff sheet
+
+        // The Apps Script is the real lock (it checks name + PIN against its own EDITORS list).
+        // Here: if names are listed above, only they see the button; otherwise any leader does
+        // and the script refuses everyone who is not on its list.
+        function checklistEditorAllowed() {
+            if (!currentUser) return false;
+            const named = CHECKLIST_EDITORS.filter(n => !String(n).startsWith("PASTE_"));
+            if (named.length) return named.some(n => String(n).trim().toLowerCase() === String(currentUser.name).trim().toLowerCase());
+            return currentUser.role === "leader";
+        }
+
+        let ed = null; // { shiftId, zone, sheetId, model, tab, dirty, saving }
+        const ED_SECTIONS = ['Do', 'Verify', 'Preclose'];
+        const ED_SECTION_LABEL = { Do: 'Checklist', Verify: 'Verify', Preclose: 'Preclose' };
+
+        function edEsc(s) {
+            return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function edOpen() {
+            if (!checklistEditorAllowed()) return;
+            closeSettings();
+            ed = null;
+            document.getElementById("edModal").classList.add("active");
+            edRenderAreas();
+        }
+
+        function edClose() {
+            if (ed && ed.dirty && !confirm("You have unsaved changes. Close without saving?")) return;
+            ed = null;
+            document.getElementById("edModal").classList.remove("active");
+        }
+
+        function edBack() {
+            if (!ed) { edClose(); return; }
+            if (ed.dirty && !confirm("You have unsaved changes. Leave without saving?")) return;
+            ed = null;
+            edRenderAreas();
+        }
+
+        function edDiscard() {
+            if (!ed || !ed.dirty) return;
+            if (!confirm("Throw away your unsaved changes?")) return;
+            edLoad(ed.shiftId, ed.zone, true);
+        }
+
+        function edRenderAreas() {
+            document.getElementById("edTitle").innerText = "Edit checklists";
+            document.getElementById("edBackBtn").style.visibility = "hidden";
+            document.getElementById("edFoot").style.display = "none";
+            let html = '<p class="ed-empty">Pick an area to edit. Changes go to its Google Sheet and show up for everyone the next time they open the app.</p>';
+            Object.keys(CHECKLIST_ZONE_SHEETS).forEach(shiftId => {
+                const shift = checklistsData.find(s => s.id === shiftId);
+                html += `<div class="ed-group-title">${edEsc(shift ? shift.title : shiftId)}</div>`;
+                Object.keys(CHECKLIST_ZONE_SHEETS[shiftId]).forEach(zone => {
+                    html += `<button type="button" class="ed-area-btn" data-shift="${edEsc(shiftId)}" data-zone="${edEsc(zone)}" onclick="edLoad(this.dataset.shift, this.dataset.zone)">${edEsc(zone)}</button>`;
+                });
+            });
+            document.getElementById("edBody").innerHTML = html;
+        }
+
+        function edParseRows(rows) {
+            const typeOf = c => cellText(c).toLowerCase();
+            const isType = v => ["do", "verify", "preclose", "title"].includes(v);
+            let typeCol = -1;
+            for (const col of [4, 3, 2]) {
+                if (rows.some(r => isType(typeOf((r.c || [])[col])))) { typeCol = col; break; }
+            }
+            const L = typeCol === 4 ? { sub: 1, task: 2, step: 3, type: 4 }
+                : typeCol === 3 ? { sub: 0, task: 1, step: 2, type: 3 }
+                : typeCol === 2 ? { sub: -1, task: 0, step: 1, type: 2 }
+                : { sub: -1, task: 0, step: 1, type: -1 };
+            const model = { title: "", sections: {} };
+            ED_SECTIONS.forEach(s => { model.sections[s] = { subtitle: "", tasks: [] }; });
+            rows.forEach(r => {
+                const c = r.c || [];
+                const task = cellText(c[L.task]);
+                const step = cellText(c[L.step]);
+                const type = L.type >= 0 ? typeOf(c[L.type]) : "do";
+                if (task.toLowerCase() === "task" && step.toLowerCase() === "step") return;
+                if (type === "title") { if (!model.title) model.title = task || step; return; }
+                if (!task || !step) return;
+                const sec = model.sections[type === "verify" ? "Verify" : type === "preclose" ? "Preclose" : "Do"];
+                const sub = L.sub >= 0 ? cellText(c[L.sub]) : "";
+                if (sub && !sec.subtitle) sec.subtitle = sub;
+                let t = sec.tasks.find(x => x.title === task);
+                if (!t) { t = { title: task, steps: [] }; sec.tasks.push(t); }
+                t.steps.push(step);
+            });
+            return model;
+        }
+
+        function edBuildRows(model, zone) {
+            const rows = [["Area", "Subtitle", "Task", "Step", "Type"]];
+            const errors = [];
+            if (model.title.trim()) rows.push([zone, "", model.title.trim(), "", "Title"]);
+            ED_SECTIONS.forEach(name => {
+                const sec = model.sections[name];
+                sec.tasks.forEach((t, i) => {
+                    const title = t.title.trim();
+                    const steps = t.steps.map(s => s.trim()).filter(Boolean);
+                    if (!title && !steps.length) return;
+                    if (!title) { errors.push(`${ED_SECTION_LABEL[name]}: a task has steps but no name.`); return; }
+                    if (!steps.length) { errors.push(`${ED_SECTION_LABEL[name]}: "${title}" needs at least one step.`); return; }
+                    steps.forEach(s => rows.push([zone, name === "Verify" ? "" : sec.subtitle.trim(), title, s, name]));
+                });
+            });
+            return { rows, errors };
+        }
+
+        async function edLoad(shiftId, zone, silent) {
+            const sheetId = (CHECKLIST_ZONE_SHEETS[shiftId] || {})[zone];
+            if (!sheetId) return;
+            document.getElementById("edBody").innerHTML = '<div class="spinner"></div>';
+            document.getElementById("edFoot").style.display = "none";
+            const rows = await gvizRows(sheetId, "SELECT A, B, C, D, E");
+            if (rows === null) {
+                document.getElementById("edBody").innerHTML = '<p class="ed-empty">Could not read that sheet right now. Check your connection and try again.</p>';
+                document.getElementById("edBackBtn").style.visibility = "visible";
+                ed = null;
+                return;
+            }
+            ed = { shiftId, zone, sheetId, model: edParseRows(rows), tab: "Do", dirty: false, saving: false };
+            edRenderEditor();
+        }
+
+        function edHasPreclose() {
+            return !!ed && (PRECLOSE_ZONES[ed.shiftId] || []).includes(ed.zone);
+        }
+
+        function edSetMsg(text, kind) {
+            const el = document.getElementById("edMsg");
+            if (!el) return;
+            el.className = "ed-msg" + (kind ? " " + kind : "");
+            el.innerText = text || "";
+        }
+
+        function edTouch() {
+            if (!ed) return;
+            ed.dirty = true;
+            const b = document.getElementById("edSaveBtn");
+            if (b) b.disabled = false;
+            const d = document.getElementById("edDiscardBtn");
+            if (d) d.disabled = false;
+            edSetMsg("Unsaved changes", "");
+        }
+
+        function edRenderEditor() {
+            if (!ed) return;
+            const shift = checklistsData.find(s => s.id === ed.shiftId);
+            document.getElementById("edTitle").innerText = ed.zone;
+            document.getElementById("edBackBtn").style.visibility = "visible";
+            document.getElementById("edFoot").style.display = "flex";
+            document.getElementById("edSaveBtn").disabled = !ed.dirty;
+            document.getElementById("edDiscardBtn").disabled = !ed.dirty;
+            if (!ed.dirty) edSetMsg("", "");
+
+            const tabs = ED_SECTIONS.filter(s => s !== "Preclose" || edHasPreclose());
+            if (!tabs.includes(ed.tab)) ed.tab = "Do";
+            const sec = ed.model.sections[ed.tab];
+            const hint = {
+                Do: "What the person doing this area sees as cards.",
+                Verify: "What the leader checks when verifying this area.",
+                Preclose: "Tasks that can be done early."
+            }[ed.tab];
+
+            let html = `<div class="ed-small" style="font-size:0.8rem;color:var(--text-muted);">${edEsc(shift ? shift.title : "")}</div>`;
+            html += `<label class="ed-label">Card title (leave empty to use "${edEsc(ed.zone)}")</label>
+                <input class="ed-field" value="${edEsc(ed.model.title)}" placeholder="${edEsc(ed.zone)}" oninput="edSetTitle(this.value)">`;
+            html += `<div class="ed-seg">${tabs.map(t => `<button type="button" class="${t === ed.tab ? 'on' : ''}" onclick="edTab('${t}')">${ED_SECTION_LABEL[t]}</button>`).join("")}</div>`;
+            html += `<p class="ed-empty" style="margin-top:0;">${hint} Drag ☰ to reorder.</p>`;
+            if (ed.tab !== "Verify") {
+                html += `<label class="ed-label">${ed.tab === "Preclose" ? 'Preclose note, e.g. "Start at 8:00 PM"' : 'Subtitle under the area name (optional)'}</label>
+                    <input class="ed-field" value="${edEsc(sec.subtitle)}" oninput="edSetSub(this.value)" style="margin-bottom:0.9rem;">`;
+            }
+            html += `<div id="edTasks">`;
+            sec.tasks.forEach((t, ti) => {
+                html += `<div class="ed-task" data-ti="${ti}">
+                    <div class="ed-task-head">
+                        <span class="ed-handle" title="Drag to reorder">☰</span>
+                        <input class="ed-field" value="${edEsc(t.title)}" placeholder="Task name (e.g. Make Lemonades)" oninput="edSetTask(${ti}, this.value)">
+                        <button type="button" class="ed-x" title="Delete task" onclick="edDelTask(${ti})">✕</button>
+                    </div>
+                    <div class="ed-steps">`;
+                t.steps.forEach((s, si) => {
+                    html += `<div class="ed-step" data-si="${si}">
+                        <span class="ed-handle" title="Drag to reorder">☰</span>
+                        <textarea class="ed-field" rows="1" placeholder="Step description" oninput="edSetStep(${ti}, ${si}, this.value); edAutosize(this)">${edEsc(s)}</textarea>
+                        <button type="button" class="ed-x" title="Delete step" onclick="edDelStep(${ti}, ${si})">✕</button>
+                    </div>`;
+                });
+                html += `</div><button type="button" class="ed-add" onclick="edAddStep(${ti})">+ Add step</button></div>`;
+            });
+            html += `</div><button type="button" class="ed-add big" onclick="edAddTask()">+ Add task</button>`;
+            const body = document.getElementById("edBody");
+            const keep = body.scrollTop;
+            body.innerHTML = html;
+            body.scrollTop = keep;
+            body.querySelectorAll(".ed-step textarea").forEach(edAutosize);
+        }
+
+        function edAutosize(el) {
+            el.style.height = "auto";
+            el.style.height = (el.scrollHeight + 2) + "px";
+        }
+
+        function edTab(t) { ed.tab = t; edRenderEditor(); }
+        function edSec() { return ed.model.sections[ed.tab]; }
+        function edSetTitle(v) { ed.model.title = v; edTouch(); }
+        function edSetSub(v) { edSec().subtitle = v; edTouch(); }
+        function edSetTask(ti, v) { edSec().tasks[ti].title = v; edTouch(); }
+        function edSetStep(ti, si, v) { edSec().tasks[ti].steps[si] = v; edTouch(); }
+        function edAddTask() {
+            edSec().tasks.push({ title: "", steps: [""] });
+            edTouch(); edRenderEditor();
+            const tasks = document.querySelectorAll("#edTasks .ed-task");
+            const last = tasks[tasks.length - 1];
+            if (last) { last.scrollIntoView({ block: "center" }); const i = last.querySelector(".ed-task-head input"); if (i) i.focus(); }
+        }
+        function edAddStep(ti) {
+            edSec().tasks[ti].steps.push("");
+            edTouch(); edRenderEditor();
+            const t = document.querySelectorAll("#edTasks .ed-task")[ti];
+            if (t) { const steps = t.querySelectorAll(".ed-step textarea"); const l = steps[steps.length - 1]; if (l) { l.focus(); l.scrollIntoView({ block: "center" }); } }
+        }
+        function edDelTask(ti) {
+            const t = edSec().tasks[ti];
+            if ((t.title.trim() || t.steps.some(s => s.trim())) && !confirm(`Delete the task "${t.title || 'untitled'}" and its steps?`)) return;
+            edSec().tasks.splice(ti, 1);
+            edTouch(); edRenderEditor();
+        }
+        function edDelStep(ti, si) {
+            edSec().tasks[ti].steps.splice(si, 1);
+            edTouch(); edRenderEditor();
+        }
+
+        // Drag to reorder: works with mouse and touch via pointer events on the ☰ handle.
+        document.addEventListener("pointerdown", e => {
+            const handle = e.target.closest && e.target.closest(".ed-handle");
+            if (!handle || !ed) return;
+            const item = handle.closest(".ed-task, .ed-step");
+            if (!item) return;
+            e.preventDefault();
+            const isTask = item.classList.contains("ed-task");
+            const container = item.parentElement;
+            const body = document.getElementById("edBody");
+            item.classList.add("ed-dragging");
+            let lastY = e.clientY;
+
+            const move = ev => {
+                lastY = ev.clientY;
+                const sibs = Array.from(container.children).filter(c => c !== item && c.classList.contains(isTask ? "ed-task" : "ed-step"));
+                let placed = false;
+                for (const s of sibs) {
+                    const r = s.getBoundingClientRect();
+                    if (lastY < r.top + r.height / 2) { container.insertBefore(item, s); placed = true; break; }
+                }
+                if (!placed) container.appendChild(item);
+                // keep the dragged card in view
+                const br = body.getBoundingClientRect();
+                if (lastY < br.top + 50) body.scrollTop -= 14;
+                else if (lastY > br.bottom - 50) body.scrollTop += 14;
+            };
+            const up = () => {
+                document.removeEventListener("pointermove", move);
+                document.removeEventListener("pointerup", up);
+                document.removeEventListener("pointercancel", up);
+                item.classList.remove("ed-dragging");
+                const attr = isTask ? "data-ti" : "data-si";
+                const order = Array.from(container.children).filter(c => c.hasAttribute(attr)).map(c => parseInt(c.getAttribute(attr), 10));
+                if (order.some((v, i) => v !== i)) {
+                    if (isTask) {
+                        const list = edSec().tasks;
+                        edSec().tasks = order.map(i => list[i]);
+                    } else {
+                        const ti = parseInt(item.closest(".ed-task").getAttribute("data-ti"), 10);
+                        const list = edSec().tasks[ti].steps;
+                        edSec().tasks[ti].steps = order.map(i => list[i]);
+                    }
+                    edTouch();
+                }
+                edRenderEditor();
+            };
+            document.addEventListener("pointermove", move);
+            document.addEventListener("pointerup", up);
+            document.addEventListener("pointercancel", up);
+        });
+
+        async function edReloadChecklists() {
+            const changed = await loadChecklistsFromSheets();
+            if (changed) {
+                baseZonesByShift = {};
+                snapshotBaseZones();
+                applyRedistributionToChecklistsData();
+                if (currentUser) { renderTabs(); renderApp(); }
+            }
+        }
+
+        async function edVerifySaved(expectedRows) {
+            const want = JSON.stringify(expectedRows);
+            for (let i = 0; i < 6; i++) {
+                await new Promise(r => setTimeout(r, 2000));
+                const rows = await gvizRows(ed.sheetId, "SELECT A, B, C, D, E");
+                if (rows && JSON.stringify(edBuildRows(edParseRows(rows), ed.zone).rows) === want) return true;
+            }
+            return false;
+        }
+
+        async function edSave() {
+            if (!ed || ed.saving) return;
+            const { rows, errors } = edBuildRows(ed.model, ed.zone);
+            if (errors.length) { edSetMsg(errors[0], "err"); return; }
+            if (isPlaceholderSheetId(CHECKLIST_EDITOR_URL)) {
+                edSetMsg("Saving isn't connected yet: paste the Apps Script web app URL into the app first.", "err");
+                return;
+            }
+            ed.saving = true;
+            document.getElementById("edSaveBtn").disabled = true;
+            document.getElementById("edSaveBtn").innerText = "Saving...";
+            edSetMsg("Saving...", "");
+            const payload = JSON.stringify({ action: "save", name: currentUser.name, pin: currentUser.pin, sheetId: ed.sheetId, rows });
+            let ok = false, err = null;
+            try {
+                const res = await fetch(CHECKLIST_EDITOR_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload });
+                const j = await res.json();
+                if (j && j.ok) ok = true; else err = (j && j.error) || "The script refused the save.";
+            } catch (e) {
+                // The browser would not let us read the answer: send it blind, then check the sheet
+                try {
+                    await fetch(CHECKLIST_EDITOR_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload });
+                    ok = await edVerifySaved(rows);
+                    if (!ok) err = "Could not confirm the save. Open the sheet to check, then try again.";
+                } catch (e2) {
+                    err = "Could not reach the editor script. Check your connection.";
+                }
+            }
+            ed.saving = false;
+            document.getElementById("edSaveBtn").innerText = "Save changes";
+            if (!ok) {
+                document.getElementById("edSaveBtn").disabled = false;
+                edSetMsg(err, "err");
+                return;
+            }
+            ed.dirty = false;
+            document.getElementById("edDiscardBtn").disabled = true;
+            edSetMsg("Saved. Everyone sees it the next time the app loads.", "ok");
+            edReloadChecklists();
+        }
+
         // ---------- Headcount + redistribution ----------
         let todayHeadcounts = { "close-930": null, "close-1030": null };
         let localHeadcounts = {};   // optimistic copy right after a submit: {shiftId: {day, value}}
@@ -2530,7 +2934,7 @@
                 const v = await fetchTodayHeadcount(shiftId);
                 const local = localHeadcounts[shiftId];
                 if (v === undefined) return;
-                if (v === null && local && local.day === today) todayHeadcounts[shiftId] = local.value;
+                if (v === null && local && local.day === today && Date.now() - (local.at || 0) < 120000) todayHeadcounts[shiftId] = local.value;
                 else todayHeadcounts[shiftId] = v;
             }));
             applyRedistributionToChecklistsData();
@@ -2575,7 +2979,7 @@
             const text = await fetchLatestColumnTextForToday(ASSIGNMENTS_CONFIGS[shiftId].sheetId, ASSIGNMENTS_CONFIGS[shiftId].col);
             const local = localAssignments[shiftId];
             if (text) todayAssignments[shiftId] = buildAssignmentInfo(parseLogSegment(text));
-            else if (local && local.day === today) todayAssignments[shiftId] = local.value;
+            else if (local && local.day === today && Date.now() - (local.at || 0) < 120000) todayAssignments[shiftId] = local.value;
             else todayAssignments[shiftId] = null;
         }
 
@@ -2594,17 +2998,20 @@
             openHeadcountFlow(shift.id);
         }
 
-        function openHeadcountFlow(shiftId, forceAssignOnly) {
-            const missing = Object.keys(HEADCOUNT_CONFIGS).filter(id => headcountEnabled(id) && todayHeadcounts[id] === null);
+        function openHeadcountFlow(shiftId, forceAssignOnly, editCounts) {
+            const missing = Object.keys(HEADCOUNT_CONFIGS).filter(id => headcountEnabled(id) && (editCounts || todayHeadcounts[id] === null));
             hcFlow = { open: true, step: 'count', shiftIds: missing, counts: {}, assignments: {}, busy: false };
 
-            if (forceAssignOnly || missing.length === 0) {
+            if (!editCounts && (forceAssignOnly || missing.length === 0)) {
                 if (!assignmentsEnabled(shiftId)) { hcFlow.open = false; return; }
                 hcFlow.step = 'assign';
                 hcFlow.shiftIds = [shiftId];
                 initAssignmentDraft();
             } else {
-                missing.forEach(id => { hcFlow.counts[id] = HEADCOUNT_CONFIGS[id].defaultCount; });
+                missing.forEach(id => {
+                    const cur = todayHeadcounts[id];
+                    hcFlow.counts[id] = (editCounts && cur !== null && cur !== undefined) ? cur : HEADCOUNT_CONFIGS[id].defaultCount;
+                });
             }
             document.getElementById("headcountModal").classList.add("active");
             renderHcFlow();
@@ -2729,7 +3136,7 @@
 
             hcFlow.shiftIds.forEach(id => {
                 todayHeadcounts[id] = hcFlow.counts[id];
-                localHeadcounts[id] = { day: today, value: hcFlow.counts[id] };
+                localHeadcounts[id] = { day: today, value: hcFlow.counts[id], at: Date.now() };
             });
             applyRedistributionToChecklistsData();
             renderApp();
@@ -2881,7 +3288,7 @@
             jobs.forEach(j => {
                 const info = { leader: leaderName, byArea: j.byArea };
                 todayAssignments[j.id] = info;
-                localAssignments[j.id] = { day: today, value: info };
+                localAssignments[j.id] = { day: today, value: info, at: Date.now() };
             });
             hcFlow.busy = false;
             closeHeadcountFlow();
@@ -3001,7 +3408,11 @@ function getLogicalBusinessDate(date = new Date()) {
                 <div class="set-row">
                     <div class="set-label">Show welcome screen<span>When off, you go straight to the checklists after signing in.</span></div>
                     <button type="button" class="set-switch ${userSettings.showWelcome ? 'on' : ''}" onclick="toggleWelcomeSetting()" aria-label="Show welcome screen"><i></i></button>
-                </div>`;
+                </div>
+                ${checklistEditorAllowed() ? `<div class="set-row">
+                    <div class="set-label">Edit checklists<span>Add, change, reorder and delete tasks and steps.</span></div>
+                    <button type="button" class="ed-btn primary" onclick="edOpen()">Open editor</button>
+                </div>` : ''}`;
         }
 
         function setViewMode(m) {
@@ -3733,7 +4144,8 @@ function getLogicalBusinessDate(date = new Date()) {
 
                 const canAssignHere = isLeaderOverviewMode && headcountEnabled(shift.id) && assignmentsEnabled(shift.id) && todayHeadcounts[shift.id] !== null;
                 const assignBtnHtml = canAssignHere
-                    ? `<button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', true)">${todayAssignments[shift.id] ? 'Edit Assignments' : 'Assign Areas'}</button>`
+                    ? `<button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', true)">${todayAssignments[shift.id] ? 'Edit Assignments' : 'Assign Areas'}</button>
+                       <button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', false, true)">Edit Headcount</button>`
                     : '';
 
                 let html = `
