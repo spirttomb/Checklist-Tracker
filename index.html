@@ -3208,6 +3208,8 @@ function getLogicalBusinessDate(date = new Date()) {
                         if (!rowName) {
                             if (Object.values(PIN_DATABASE).some(u => u.name === cellVal)) {
                                 rowName = cellVal;
+                            } else if (FULL_TO_SHORT_NAME[cellVal]) {
+                                rowName = FULL_TO_SHORT_NAME[cellVal];
                             } else if (PIN_DATABASE[cellVal]) {
                                 rowName = PIN_DATABASE[cellVal].name;
                             }
@@ -3353,6 +3355,56 @@ function getLogicalBusinessDate(date = new Date()) {
             staffDatabaseLoadPromise = loadStaffDatabaseInBackground();
         }
 
+        // ---------- Short display names ----------
+        // Staff sheet names look like "Ariane Braggs (Ari)". The app shows and records
+        // "Ari B" (nickname, or first name, plus last initial). If two people would look
+        // the same, letters are added to the last name until they differ.
+        let FULL_TO_SHORT_NAME = {};
+
+        function splitStaffName(full) {
+            let base = String(full || "").trim(), nick = "";
+            const m = base.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+            if (m) { base = m[1].trim(); nick = m[2].trim(); }
+            if (base.includes(",")) { // "Last, First"
+                const p = base.split(",");
+                base = (p.slice(1).join(" ").trim() + " " + p[0].trim()).trim();
+            }
+            const tokens = base.split(/\s+/).filter(Boolean);
+            const first = nick || tokens[0] || base;
+            const last = tokens.length > 1 ? tokens[tokens.length - 1] : "";
+            return { first, last };
+        }
+
+        function buildShortNames(fullNames) {
+            const people = fullNames.map(full => ({ full, ...splitStaffName(full), k: 1 }));
+            const label = p => p.last ? `${p.first} ${p.last.slice(0, p.k)}` : p.first;
+            for (let guard = 0; guard < 40; guard++) {
+                const groups = {};
+                people.forEach(p => { (groups[label(p).toLowerCase()] = groups[label(p).toLowerCase()] || []).push(p); });
+                let changed = false;
+                Object.values(groups).forEach(g => {
+                    if (g.length < 2) return;
+                    g.forEach(p => { if (p.last && p.k < p.last.length) { p.k++; changed = true; } });
+                });
+                if (!changed) break;
+            }
+            // Still identical (same first and last name): number them
+            const seen = {};
+            const out = {};
+            people.forEach(p => {
+                const base = label(p);
+                const key = base.toLowerCase();
+                seen[key] = (seen[key] || 0) + 1;
+                out[p.full] = seen[key] > 1 ? `${base} ${seen[key]}` : base;
+            });
+            return out;
+        }
+
+        // Old log rows may hold the full sheet name; show them the same way
+        function displayNameFor(n) {
+            return FULL_TO_SHORT_NAME[n] || n;
+        }
+
         async function loadPinDatabase() {
             try {
                 const query = encodeURIComponent("SELECT A, B, C, D");
@@ -3384,6 +3436,11 @@ function getLogicalBusinessDate(date = new Date()) {
                 }
 
                 if (Object.keys(newDb).length === 0) throw new Error("No staff records found in sheet");
+
+                // Replace each full sheet name with its short display name
+                const shortMap = buildShortNames(Object.values(newDb).map(u => u.name));
+                Object.values(newDb).forEach(u => { u.fullName = u.name; u.name = shortMap[u.fullName]; });
+                FULL_TO_SHORT_NAME = shortMap;
 
                 PIN_DATABASE = newDb;
                 return true;
@@ -4886,7 +4943,7 @@ function getLogicalBusinessDate(date = new Date()) {
 
                 const dashIdx = workingPart.indexOf('-');
                 if (dashIdx === -1) return;
-                const person = workingPart.substring(0, dashIdx).trim();
+                const person = displayNameFor(workingPart.substring(0, dashIdx).trim());
                 let actionOrArea = workingPart.substring(dashIdx + 1).trim();
                 if (!person || !actionOrArea) return;
 
