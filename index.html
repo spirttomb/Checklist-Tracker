@@ -51,6 +51,8 @@
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
         }
 
+        body.no-anim, body.no-anim * { transition: none !important; }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -319,7 +321,7 @@
             background: #dc2626;
         }
 
-        body.eod-bar-active .viewport-container {
+        body.eod-bar-active-disabled .viewport-container {
             padding-bottom: 6rem;
         }
 
@@ -1169,8 +1171,9 @@
 
         <div class="leader-controls">
             <button class="leader-btn leader-btn-primary leader-btn-icon" id="refreshDataBtn" style="display: none;" onclick="manualRefresh()" title="Refresh area status">&#8635;</button>
-            <button class="leader-btn leader-btn-primary" id="overallLogBtn" style="display: none;" onclick="openOverallLogModal()">Overall Log</button>
-            <button class="leader-btn leader-btn-primary" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Leader Overview</button>
+            <button class="leader-btn leader-btn-primary" id="overallLogBtn" style="display: none;" onclick="openOverallLogModal()">History</button>
+            <button class="leader-btn leader-btn-primary" id="eodMenuBtn" style="display: none;" onclick="openEODMenu()">Add Notes</button>
+            <button class="leader-btn leader-btn-primary" id="leaderOverviewToggle" onclick="toggleLeaderMode()">Verify</button>
             <button class="leader-btn leader-btn-primary leader-btn-icon" id="settingsBtn" onclick="openSettings()" title="Settings" aria-label="Settings">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </button>
@@ -1180,13 +1183,7 @@
 
     <div class="viewport-container" id="appViewport"></div>
 
-    <div class="eod-bottom-bar" id="eodBottomBar">
-        <div class="eod-bottom-bar-inner">
-            <button class="btn-eod-submit" onclick="openEODCheck('am')">Submit AM EOD</button>
-            <button class="btn-eod-submit" onclick="openEODCheck('pm')">Submit PM EOD</button>
-            <button class="btn-eod-submit" onclick="openEODCheck('leader')">Submit Leader EOD</button>
-        </div>
-    </div>
+    <div class="eod-bottom-bar" id="eodBottomBar" style="display:none !important;"></div>
 
     <div class="modal-overlay" id="authOverlay">
         <div class="modal-card">
@@ -1292,7 +1289,7 @@
     <div class="modal-overlay" id="overallLogModal">
         <div class="modal-card" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto; text-align: left; padding: 2rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem;">
-                <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">Overall Shift Log Viewer</h3>
+                <h3 style="font-size: 1.5rem; color: var(--text-main); margin: 0;">History</h3>
                 <button onclick="closeOverallLogModal()" class="btn-back" style="padding: 0.4rem 0.8rem; font-size: 0.9rem;">✕ Close</button>
             </div>
 
@@ -1333,7 +1330,7 @@
             </div>
 
             <div id="overallLogDisplay">
-                <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading overall log data from spreadsheet...</p>
+                <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading history from spreadsheet...</p>
             </div>
         </div>
     </div>
@@ -1519,7 +1516,7 @@
                     },
                     {
                         name: "Desserts",
-                        subtitle: "Start at 9:30 PM",
+                        subtitle: "Start at 9 PM",
                         tasks: [
                             { title: "Taylor Wash", steps: ["Put one side of Taylor on wash"] },
                             { title: "Kay-5 Sanitizer", steps: ["Pour 1 packet of Kay-5 Sanitizer into a 12-quart container, then fill container with 10 quarts of lukewarm water", "Stir with a metal spoon to ensure that the solution is mixed", "Verify chlorine concentration of Kay-5 sanitizing solution. (Follow instructions on Chlorine test strip bottle. Chlorine concentration should be 50-100 ppm.)"] },
@@ -1539,7 +1536,7 @@
                     },
                     {
                         name: "Drinks",
-                        subtitle: "Start at 9:30 PM",
+                        subtitle: "Start at 9 PM",
                         tasks: [
                             { title: "Break Down Lemonades", steps: ["Turn lemonade dispenser off", "Drain lemonade into empty pitchers", "Remove the lid, remove the metal plunger, remove the lemonade container, remove the gaskets, remove the spinners, remove drip tray", "Bring all removed parts to dish"] },
                             { title: "Bring Back Remaining Dishes", steps: ["Bring back disassembled strawberry shooter, tea drip tray, sugar scoop, whisks, spoons, one tea brewing urn, dump sink insert, and tea brewing inserts"] },
@@ -1551,7 +1548,7 @@
                     },
                     {
                         name: "Chutes",
-                        subtitle: "Start at 9:30 PM",
+                        subtitle: "Start at 9 PM",
                         tasks: [
                             { title: "Fry Bins", steps: ["Bring fry bins back to dish"] },
                             { title: "Clean Lowboy", steps: ["Spray lowboy with blue spray, wipe clean with a paper towel", "Spray the lowboy with stainless steel polish, polish in circular motions with a paper towel"] },
@@ -1564,7 +1561,7 @@
             },
             {
                 id: "close-930",
-                title: "9:30 Close",
+                title: "9pm Close",
                 period: "PM",
                 zones: [
                     {
@@ -1639,7 +1636,7 @@
             },
             {
                 id: "close-1030",
-                title: "10:30 Close",
+                title: "10:30pm Close",
                 period: "PM",
                 zones: [
                     {
@@ -2263,7 +2260,7 @@
             photoEntry: "entry.PASTE_PHOTO_PHOTO_ENTRY"
         };
         const PHOTO_SHIFTS = ['opening', 'close-930', 'close-1030'];
-        const PHOTO_SHIFT_LABEL = { 'opening': 'AM', 'close-930': '9:30', 'close-1030': '10:30' };
+        const PHOTO_SHIFT_LABEL = { 'opening': 'AM', 'close-930': '9pm', 'close-1030': '10:30pm' };
         const PHOTO_MAX_CHARS = 38000; // stays well under a Sheets cell (50,000)
         let pendingPhotos = {}; // areaKey -> data URL
 
@@ -3241,10 +3238,14 @@ function getLogicalBusinessDate(date = new Date()) {
             return FAIL;
         }
 
-        async function loadShiftStatusFromCloud() {
-            isSyncingCloudData = true;
-            cloudSyncedAreas = {};
-            renderApp();
+        async function loadShiftStatusFromCloud(silent) {
+            // silent: refresh in the background without blanking the screen (used when
+            // switching modes, so the page doesn't flicker through a spinner)
+            if (!silent) {
+                isSyncingCloudData = true;
+                cloudSyncedAreas = {};
+                renderApp();
+            }
 
             try {
                 const fetchPromises = [];
@@ -3497,7 +3498,7 @@ function getLogicalBusinessDate(date = new Date()) {
                 refreshDataBtn.style.display = "block";
                 isLeaderOverviewMode = false;
                 leaderBtn.classList.remove("active-mode");
-                leaderBtn.innerText = "Leader Overview";
+                leaderBtn.innerText = "Verify";
                 document.getElementById("eodBottomBar").classList.remove("active");
                 document.body.classList.remove("eod-bar-active");
             } else {
@@ -3686,14 +3687,15 @@ function getLogicalBusinessDate(date = new Date()) {
 
             if (isLeaderOverviewMode) {
                 btn.classList.add("active-mode");
-                btn.innerText = "Close Leader Overview";
+                btn.innerText = "Exit Verify";
+                document.getElementById("eodMenuBtn").style.display = "block";
                 overallLogBtn.style.display = "block";
                 eodBar.classList.add("active");
-                document.body.classList.add("eod-bar-active");
+                
                 ensureValidTab();
             } else {
                 btn.classList.remove("active-mode");
-                btn.innerText = "Leader Overview";
+                btn.innerText = "Verify";
                 eodBar.classList.remove("active");
                 document.body.classList.remove("eod-bar-active");
                 if (currentUser && currentUser.role !== 'leader') {
@@ -3704,31 +3706,48 @@ function getLogicalBusinessDate(date = new Date()) {
         }
 
         function toggleLeaderMode() {
+            // Turn off colour transitions for the switch so everything changes at once
+            document.body.classList.add("no-anim");
             setLeaderOverviewMode(!isLeaderOverviewMode);
+            document.body.classList.toggle("leader-mode-active", isLeaderOverviewMode);
             renderTabs();
-            loadShiftStatusFromCloud();
+            renderApp();
+            loadShiftStatusFromCloud(true);
+            setTimeout(() => document.body.classList.remove("no-anim"), 500);
         }
 
+        // AM and PM each show one scrolling page. Only leaders get a second
+        // tab, for their own Leader checklist.
         function renderTabs() {
             const navContainer = document.getElementById("checklistNav");
             navContainer.innerHTML = "";
-            
-            checklistsData.forEach((shift, index) => {
-                if (shift.id === 'preclose') return;
-                if (shift.id === 'leader' && (!currentUser || currentUser.role !== 'leader')) return;
-                if (shift.period && shift.period !== currentAmPm) return;
+            if (!currentUser || currentUser.role !== 'leader') return;
 
+            const onLeader = checklistsData[activeTabIndex] && checklistsData[activeTabIndex].id === 'leader';
+            const mk = (label, active, idx) => {
                 const tab = document.createElement("button");
-                tab.className = `nav-tab ${index === activeTabIndex ? 'active' : ''}`;
-                tab.innerText = shift.title;
+                tab.className = `nav-tab ${active ? 'active' : ''}`;
+                tab.innerText = label;
                 tab.onclick = () => {
-                    activeTabIndex = index;
-                    activeZoneIndex = null; 
+                    activeTabIndex = idx;
+                    activeZoneIndex = null;
                     renderTabs();
-                    loadShiftStatusFromCloud(); 
+                    loadShiftStatusFromCloud();
                 };
                 navContainer.appendChild(tab);
-            });
+            };
+            const mainIdx = checklistsData.findIndex(sh => sh.id !== 'leader' && sh.id !== 'preclose' && (!sh.period || sh.period === currentAmPm));
+            const leaderIdx = checklistsData.findIndex(sh => sh.id === 'leader');
+            if (mainIdx !== -1) mk("Checklists", !onLeader, mainIdx);
+            if (leaderIdx !== -1) mk("Leader", onLeader, leaderIdx);
+        }
+
+        // The two PM close blocks are shown together on one page
+        function shiftGroupFor(shift) {
+            if (shift.id === 'close-930' || shift.id === 'close-1030') {
+                return ['close-930', 'close-1030'].map(id => checklistsData.find(x => x.id === id)).filter(Boolean);
+            }
+            return [shift];
         }
 
         function isShiftComplete(shiftId) {
@@ -3744,6 +3763,8 @@ function getLogicalBusinessDate(date = new Date()) {
         function renderApp() {
             const appViewport = document.getElementById("appViewport");
             if (activeZoneIndex === null) precloseMode = false;
+            const eodMenuBtn = document.getElementById("eodMenuBtn");
+            if (eodMenuBtn) eodMenuBtn.style.display = (isLeaderOverviewMode && currentUser && currentUser.role === 'leader') ? "block" : "none";
             const shift = getActiveShift();
             const submittedAreas = cloudSyncedAreas;
 
@@ -3757,78 +3778,73 @@ function getLogicalBusinessDate(date = new Date()) {
             
             if (activeZoneIndex === null) {
                 const SHIFT_EOD_CATEGORY = { 'close-930': 'pm', 'close-1030': 'pm', 'opening': 'am', 'leader': 'leader' };
-                const is930Locked = isShiftComplete('close-930') || eodSubmittedToday.pm;
-                const is1030Locked = isShiftComplete('close-1030') || eodSubmittedToday.pm;
-                const isPrecloseFullyLocked = shift.id === 'preclose' && is930Locked && is1030Locked;
-                const eodCategoryForShift = SHIFT_EOD_CATEGORY[shift.id];
-                const currentShiftLocked = shift.id !== 'preclose'
-                    ? (isShiftComplete(shift.id) || (eodCategoryForShift && eodSubmittedToday[eodCategoryForShift]))
-                    : isPrecloseFullyLocked;
-                
-                if (currentShiftLocked) {
+                const group = shiftGroupFor(shift);
+                const multi = group.length > 1;
+
+                const sectionLocked = sh => {
+                    const cat = SHIFT_EOD_CATEGORY[sh.id];
+                    return isShiftComplete(sh.id) || !!(cat && eodSubmittedToday[cat]);
+                };
+
+                if (group.every(sectionLocked)) {
                     appViewport.innerHTML = `
                         <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
                             <h2 style="font-size: 2.5rem; color: var(--success-dark); margin-bottom: 1rem;">Shift Completed!</h2>
-                            <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${shift.title}</b> have been submitted and verified for today.</p>
+                            <p style="color: var(--text-muted); font-size: 1.2rem;">All areas for <b>${group.map(g => g.title).join(' and ')}</b> have been submitted and verified for today.</p>
                             <p style="color: var(--text-muted); margin-top: 1rem;">This shift is now locked until tomorrow.</p>
                         </div>
                     `;
                     return;
                 }
 
-                // Headcount gate: nobody sees areas until a leader submits today's headcount
-                if (headcountEnabled(shift.id) && todayHeadcounts[shift.id] === null && !isSyncingCloudData) {
-                    const gateAction = isLeaderOverviewMode
-                        ? `<button class="btn-submit-area" onclick="hcPromptDismissed = false; openHeadcountFlow('${shift.id}')">Submit Headcount</button>`
-                        : `<button class="btn-submit-area" onclick="loadShiftStatusFromCloud()">Check Again</button>`;
-                    appViewport.innerHTML = `
-                        <div class="main-content-box" style="text-align: center; padding: 4rem 2rem;">
-                            <h2 style="font-size: 2.2rem; color: var(--text-main); margin-bottom: 1rem;">Headcount Not Submitted</h2>
+                const buildSection = (shift) => {
+                    const head = multi
+                        ? `<h2 class="view-title">${shift.title}</h2>`
+                        : `<h2 class="view-title">${shift.title} Areas</h2><p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>`;
+
+                    if (multi && sectionLocked(shift)) {
+                        return `<div class="main-content-box"><div class="view-header">${head}<p style="color: var(--success-dark); font-weight: 700; margin-top: 0.5rem;">&#10003; Completed and locked until tomorrow</p></div></div>`;
+                    }
+
+                    // Headcount gate: nobody sees areas until a leader submits today's headcount
+                    if (headcountEnabled(shift.id) && todayHeadcounts[shift.id] === null && !isSyncingCloudData) {
+                        const gateAction = isLeaderOverviewMode
+                            ? `<button class="btn-submit-area" onclick="hcPromptDismissed = false; openHeadcountFlow('${shift.id}')">Submit Headcount</button>`
+                            : `<button class="btn-submit-area" onclick="loadShiftStatusFromCloud()">Check Again</button>`;
+                        return `<div class="main-content-box" style="text-align: center; padding: ${multi ? '2rem' : '4rem'} 2rem;">
+                            ${multi ? `<div class="view-header">${head}</div>` : ''}
+                            <h2 style="font-size: 1.8rem; color: var(--text-main); margin-bottom: 1rem;">Headcount Not Submitted</h2>
                             <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">A leader needs to submit today's headcount before the <b>${shift.title}</b> areas are available.</p>
                             ${gateAction}
-                        </div>
+                        </div>`;
+                    }
+
+                    const submittedAreas = cloudSyncedAreas;
+                    const canAssignHere = isLeaderOverviewMode && headcountEnabled(shift.id) && assignmentsEnabled(shift.id) && todayHeadcounts[shift.id] !== null;
+                    const assignBtnHtml = canAssignHere
+                        ? `<button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', true)">${todayAssignments[shift.id] ? 'Edit Assignments' : 'Assign Areas'}</button>
+                           <button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', false, true)">Edit Headcount</button>`
+                        : '';
+
+                    let html = `
+                        <div class="main-content-box">
+                            <div class="view-header">
+                                ${head}
+                                ${assignBtnHtml}
+                            </div>
+                            <div class="areas-grid">
                     `;
-                    return;
-                }
 
-                const canAssignHere = isLeaderOverviewMode && headcountEnabled(shift.id) && assignmentsEnabled(shift.id) && todayHeadcounts[shift.id] !== null;
-                const assignBtnHtml = canAssignHere
-                    ? `<button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', true)">${todayAssignments[shift.id] ? 'Edit Assignments' : 'Assign Areas'}</button>
-                       <button class="hc-assign-btn" onclick="openHeadcountFlow('${shift.id}', false, true)">Edit Headcount</button>`
-                    : '';
-
-                let html = `
-                    <div class="main-content-box">
-                        <div class="view-header">
-                            <h2 class="view-title">${shift.title} Areas</h2>
-                            <p style="color: var(--text-muted); margin-top: 0.5rem;">Select an area below to view its checklist.</p>
-                            ${assignBtnHtml}
-                        </div>
-                        <div class="areas-grid">
-                `;
-                
-                let count = 0;
-                if (isSyncingCloudData) {
-                    html += `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 3rem 2rem;">
-                            <div class="spinner"></div>
-                            <p style="color: var(--text-muted); margin-top: 1rem;">Checking today's status...</p>
-                        </div>
-                    `;
-                } else {
-                    shift.zones.forEach((zone, zIndex) => {
-                        if (shift.id === 'preclose') {
-                            const preclose930Zones = ["Dining Room", "Front Counter"];
-                            const preclose1030Zones = ["Desserts", "Drinks", "Chutes"];
-
-                            if (is930Locked && preclose930Zones.includes(zone.name)) {
-                                return; 
-                            }
-                            if (is1030Locked && preclose1030Zones.includes(zone.name)) {
-                                return; 
-                            }
-                        }
-
+                    let count = 0;
+                    if (isSyncingCloudData) {
+                        html += `
+                            <div style="grid-column: 1/-1; text-align: center; padding: 3rem 2rem;">
+                                <div class="spinner"></div>
+                                <p style="color: var(--text-muted); margin-top: 1rem;">Checking today's status...</p>
+                            </div>
+                        `;
+                    } else {
+                        shift.zones.forEach((zone, zIndex) => {
                         const areaKey = `${shift.id}::${zone.name}`;
                         const areaState = submittedAreas[areaKey];
                         const isSubmitted = !!areaState;
@@ -3862,7 +3878,7 @@ function getLogicalBusinessDate(date = new Date()) {
 
                         count++;
                         html += `
-                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''} ${notStartedBlocked ? 'blocked-card' : ''}" onclick="selectZone(${zIndex})">
+                            <div class="area-card ${isSubmitted ? 'submitted-card' : ''} ${notStartedBlocked ? 'blocked-card' : ''}" onclick="selectZone(${zIndex}, '${shift.id}')">
                                 ${badgeHtml}
                                 <h3>${zoneLabel(zone)}</h3>
                                 ${zone.subtitle ? `<p class="area-subtitle">${zone.subtitle}</p>` : ''}
@@ -3870,15 +3886,18 @@ function getLogicalBusinessDate(date = new Date()) {
                                 ${completedByHtml}
                             </div>
                         `;
-                    });
+                        });
 
-                    if (isLeaderOverviewMode && count === 0) {
-                        html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No areas found for ${shift.title}.</p>`;
+                        if (isLeaderOverviewMode && count === 0) {
+                            html += `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); font-size: 1.1rem; padding: 2rem;">No areas found for ${shift.title}.</p>`;
+                        }
                     }
-                }
 
-                html += `</div></div>`;
-                appViewport.innerHTML = html;
+                    html += `</div></div>`;
+                    return html;
+                };
+
+                appViewport.innerHTML = group.map(buildSection).join('<div style="height: 1.5rem;"></div>');
             } else {
                 const zone = shift.zones[activeZoneIndex];
                 const areaKey = `${shift.id}::${zone.name}`;
@@ -3982,7 +4001,11 @@ function getLogicalBusinessDate(date = new Date()) {
             }
         }
 
-        function selectZone(index) {
+        function selectZone(index, shiftId) {
+            if (shiftId) {
+                const si = checklistsData.findIndex(x => x.id === shiftId);
+                if (si !== -1) activeTabIndex = si;
+            }
             const shift = checklistsData[activeTabIndex];
             const zone = shift.zones[index];
             const areaKey = `${shift.id}::${zone.name}`;
@@ -4459,6 +4482,23 @@ function getLogicalBusinessDate(date = new Date()) {
         function hideEODNameOptions(idx) {
             const optionsBox = document.getElementById(`eodNameOptions-${idx}`);
             if (optionsBox) optionsBox.style.display = "none";
+        }
+
+        // One "End of Day" button (in Verify mode) replaces the old bottom bar. It
+        // opens the same screen for adding comments, photos and names; anything
+        // not submitted by hand is still filed automatically after 3 AM.
+        function openEODMenu() {
+            const modal = document.getElementById("eodModal");
+            modal.classList.add("active");
+            document.getElementById("eodModalTitle").innerText = "Add Notes";
+            const rows = Object.keys(EOD_CATEGORIES).filter(k => k !== 'day').map(k => {
+                const done = eodSubmittedToday[k] || eodLocalDone(k);
+                return `<button class="btn-submit-area" style="width:100%; margin-bottom:0.6rem;" ${done ? 'disabled' : ''} onclick="openEODCheck('${k}')">${EOD_CATEGORIES[k].label}${done ? ' \u2713 submitted' : ''}</button>`;
+            }).join('');
+            document.getElementById("eodContent").innerHTML = `
+                <p style="color: var(--text-muted); margin-bottom: 1rem; text-align:center;">Add comments and photos, then submit. Anything left alone is filed automatically after 3 AM.</p>
+                ${rows}
+                <button class="btn-back" style="width:100%; justify-content:center;" onclick="closeEODModal()">Close</button>`;
         }
 
         async function openEODCheck(category) {
